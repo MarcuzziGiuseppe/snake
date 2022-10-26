@@ -1,12 +1,12 @@
 /* Marcuzzi Giuseppe 21/10/2022 - 23/10/2022
-    Campagnolo Alberto
     TO DO
-    --> algoritmo IA (tengo la mano sul muro di dx)
+    --> "cancellare" la posizione precedente della testa
+    --> algoritmo IA (pensavo di farlo andare sempre a dx quando poteva e quando no controllava se sotto c'era spazio se c'era andava sotto e poi a dx appena poteva altrimenti andava sopra e a dx appena poteva)
     --> Concludere il menù
     --> Distanza Colonne ed ampiezza di esse fissa o meno
+    --> Usando i file aggiungere le lingue
     // to do molto improbabili da fare
     --> Una specie di caricamento (LOADING... magari scritto pure in modo carino)
-    --> Usando i file aggiungere le lingue
     --> aggiungere varie difficoltà (con i muri che si spostano)
     --> altro
 */
@@ -54,73 +54,27 @@ int main(int argc, char const *argv[]) {
     posizione testaSerpernte;
     int punteggio=0;
 
-    printf("Ciao, ben venuto in snake\n");
+    char campo[altezzaCampo][larghezzaCampo];
+    
+    punteggio = randomNumber(100, 1); // attualmente random giusto per test
+
+    testaSerpernte = creazioneCampo(campo, testaSerpernte);
+    stampaCampo(campo, punteggio, testaSerpernte);
+
+    bool arrivatoAllaFine=false;
     do {
-        printf("Menu' di gioco:\n--> 1) Giocare = 1\n--> 2) Manuale = 2\n--> 3) IA = 3\n--> 4) Partecipanti = 4\n--> 0) Esci dal programma = 0\nquando hai scelto premi il numero corrispondente\n");
-        esciDalGioco=false;
-        sceltaErrata=false;
-        char sceltaPlayer;
-        sceltaPlayer=getch();
-        switch (sceltaPlayer) {
-        case '1':{
-            // Giocare
-            // le parentesi grafe servono per evitare l'errore jump-to-case-label-in-switch-statement 
-            // dovuto alla inizializzazione di variabili all'interno di un case dello switch ma che non vengono inizializzate nei case successivi
-                system("CLS");
-                char campo[altezzaCampo][larghezzaCampo];
-                
-                punteggio = randomNumber(100, 1); // attualmente random giusto per test
-
-                testaSerpernte = creazioneCampo(campo, testaSerpernte);
-                stampaCampo(campo, punteggio, testaSerpernte);
-
-                bool arrivatoAllaFine=false;
-                do {
-                    int risultatoSpostamento = spostamento(campo, recevimentoMovimentoSpostamento(), &testaSerpernte);
-                    if (risultatoSpostamento==-1) {
-                        printf("Direzione non Consentita perche' andresti contro il muro o andresti fuori dalla mappa\n");
-                    } else {
-                        if (testaSerpernte.posizioneX==larghezzaCampo-1) {
-                            printf("Sei arrivato alla fine del percorso\nComplimenti hai vinto\n");
-                            arrivatoAllaFine=true;
-                        }
-                    }
-                    stampaCampo(campo, punteggio, testaSerpernte);
-                } while (arrivatoAllaFine==false);
-                fermaStampa();
-            } break;
-        case '2':
-            // Manuale
-            system("CLS");
-            printf("Manuale\n");
-            fermaStampa();
-            break;
-        case '3':
-            // IA
-            system("CLS");
-            printf("IA\n");
-            fermaStampa();
-            break;
-        case '4':
-            // Partecipanti
-            system("CLS");
-            printf("Credits\n");
-            fermaStampa();
-            break;
-        case '0':
-            // esce dal programma
-            esciDalGioco=true;
-            break;
-        default:
-            sceltaErrata=true;
-            system("CLS");
-            printf("Scelta errata\n\n");
-            break;
+        int risultatoSpostamento = spostamento(campo, recevimentoMovimentoSpostamento(), &testaSerpernte);
+        if (risultatoSpostamento==-1) {
+            printf("Direzione non Consentita perche' andresti contro il muro o andresti fuori dalla mappa\n");
+        } else {
+            if (testaSerpernte.posizioneX==larghezzaCampo-1) {
+                printf("Sei arrivato alla fine del percorso\nComplimenti hai vinto\n");
+                arrivatoAllaFine=true;
+            }
         }
-        if (sceltaErrata!=true) {
-            system("CLS");
-        }
-    } while (esciDalGioco==false);
+        stampaCampo(campo, punteggio, testaSerpernte);
+    } while (arrivatoAllaFine==false);
+    fermaStampa();
     
     return 0;
 }
@@ -211,48 +165,37 @@ char recevimentoMovimentoSpostamento() {
 
 int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testaSerpente) {
 
-    int posizioneXOriginale = testaSerpente->posizioneX;
-    int posizioneYOriginale = testaSerpente->posizioneY;
-
-    bool spostamenteoRiuscito=false;
-
     switch (direction) {
     case 'w':
         //alto
         if (matrix[testaSerpente->posizioneY-1][testaSerpente->posizioneX]!='#') {
             testaSerpente->posizioneY-=1;
-            spostamenteoRiuscito=true;
+            return 0;
         }
         break;
     case 's':
         //basso
         if (matrix[testaSerpente->posizioneY+1][testaSerpente->posizioneX]!='#') {
             testaSerpente->posizioneY+=1;
-            spostamenteoRiuscito=true;
+            return 0;
         }
         break;
     case 'a':
         //sinistra
         if (matrix[testaSerpente->posizioneY][testaSerpente->posizioneX-1]!='#' && testaSerpente->posizioneX-1>0) {
             testaSerpente->posizioneX-=1;
-            spostamenteoRiuscito=true;
+            return 0;
         }
         break;
     case 'd':
         //destra
         if (matrix[testaSerpente->posizioneY][testaSerpente->posizioneX+1]!='#') {
             testaSerpente->posizioneX= testaSerpente->posizioneX+1;
-            spostamenteoRiuscito=true;
+            return 0;
         }
         break;
     default:
         break;
     }
-
-    if (spostamenteoRiuscito==true) {
-        matrix[posizioneYOriginale][posizioneXOriginale]=' ';
-        return 0;
-    }
-    
     return -1; // al momento mi serve per capire se è andato contro un muro o se cerca di uscire dalla mappa
 }
