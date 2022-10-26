@@ -1,4 +1,4 @@
-/* Marcuzzi Giuseppe 21/10/2022 - 23/10/2022
+/* Marcuzzi Giuseppe 21/10/2022 - 26/10/2022
     Campagnolo Alberto
     TO DO
     --> algoritmo IA (tengo la mano sul muro di dx)
@@ -24,10 +24,10 @@
 #define distanzaMassimaTraColonne 6
 
 // serve per salvarsi la posizione della testa
-typedef struct _posizione {
-    int posizioneX=0;
-    int posizioneY=1;
-    char simboloCheIndicaLaTesta='?';
+typedef struct {
+    int posizioneX;
+    int posizioneY;
+    char simboloCheIndicaLaTesta;
 
 } posizione;
 
@@ -52,6 +52,9 @@ int main(int argc, char const *argv[]) {
     bool sceltaErrata = false;
 
     posizione testaSerpernte;
+    testaSerpernte.posizioneX=0;
+    testaSerpernte.posizioneY=0;
+    testaSerpernte.simboloCheIndicaLaTesta='?';
     int punteggio=0;
 
     printf("Ciao, ben venuto in snake\n");
