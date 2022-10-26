@@ -1,10 +1,10 @@
-/* Marcuzzi Giuseppe 21/10/2022 - 23/10/2022
+/* Marcuzzi Giuseppe 21/10/2022 - 26/10/2022
+    Campagnolo Alberto
     TO DO
-    --> "cancellare" la posizione precedente della testa
-    --> algoritmo IA (pensavo di farlo andare sempre a dx quando poteva e quando no controllava se sotto c'era spazio se c'era andava sotto e poi a dx appena poteva altrimenti andava sopra e a dx appena poteva)
+    --> Usando i file aggiungere le lingue fatto solo per l'Italiano, aggiungere anche l'inglese (Giuseppe)
+    --> algoritmo IA (tengo la mano sul muro di dx) (Alberto (+ Giuseppe?))
     --> Concludere il menù
-    --> Distanza Colonne ed ampiezza di esse fissa o meno
-    --> Usando i file aggiungere le lingue
+    --> Distanza Colonne ed ampiezza di esse fissa o meno (bho non se se lo faremo, non  trovo molta utilità)
     // to do molto improbabili da fare
     --> Una specie di caricamento (LOADING... magari scritto pure in modo carino)
     --> aggiungere varie difficoltà (con i muri che si spostano)
@@ -15,6 +15,7 @@
 #include <stdbool.h>
 #include <conio.h>
 #include <time.h>
+#include <string.h>
 
 #define altezzaCampo 10
 #define larghezzaCampo 25
@@ -22,18 +23,22 @@
 #define ampiezzaMassimaSpazioPerPassare 2
 #define distanzaMinimaTraColonne 4 // non minore di 2
 #define distanzaMassimaTraColonne 6
+#define lunghezzaMassimaStringa 100
+
+#define linguaDefault "italiano" // solamente temporanea al momento
 
 // serve per salvarsi la posizione della testa
-typedef struct _posizione {
-    int posizioneX=0;
-    int posizioneY=1;
-    char simboloCheIndicaLaTesta='?';
+typedef struct {
+    int posizioneX;
+    int posizioneY;
+    char simboloCheIndicaLaTesta;
 
 } posizione;
 
 // funzioni "strane"
 void fermaStampa(); // non fa altro che impedire che le stampe successive vengano eseguite
 int randomNumber(int max, int min);
+void clearScreen();
 
 // int setOrGetPunteggio(int serOrGet); //0 = set, 1 = get
 
@@ -45,6 +50,10 @@ void stampaCampo(char (*matrix)[larghezzaCampo], int punteggio, posizione testaS
 char recevimentoMovimentoSpostamento();
 int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testaSerpente);
 
+// gestione dei file
+bool controlloDeiFile(char lingua[]);
+void stampaAVideoIlTesto(char paragrafo[], char lingua[]);
+
 int main(int argc, char const *argv[]) {
     srand(time(NULL));
 
@@ -52,42 +61,95 @@ int main(int argc, char const *argv[]) {
     bool sceltaErrata = false;
 
     posizione testaSerpernte;
+    testaSerpernte.posizioneX=0;
+    testaSerpernte.posizioneY=0;
+    testaSerpernte.simboloCheIndicaLaTesta='?';
     int punteggio=0;
 
-    char campo[altezzaCampo][larghezzaCampo];
-    
-    punteggio = randomNumber(100, 1); // attualmente random giusto per test
-
-    testaSerpernte = creazioneCampo(campo, testaSerpernte);
-    stampaCampo(campo, punteggio, testaSerpernte);
-
-    bool arrivatoAllaFine=false;
+    stampaAVideoIlTesto("introduzione", linguaDefault);
     do {
-        int risultatoSpostamento = spostamento(campo, recevimentoMovimentoSpostamento(), &testaSerpernte);
-        if (risultatoSpostamento==-1) {
-            printf("Direzione non Consentita perche' andresti contro il muro o andresti fuori dalla mappa\n");
-        } else {
-            if (testaSerpernte.posizioneX==larghezzaCampo-1) {
-                printf("Sei arrivato alla fine del percorso\nComplimenti hai vinto\n");
-                arrivatoAllaFine=true;
-            }
+        stampaAVideoIlTesto("menu", linguaDefault);
+        esciDalGioco=false;
+        sceltaErrata=false;
+        char sceltaPlayer;
+        sceltaPlayer=getch();
+        switch (sceltaPlayer) {
+        case '1':{
+            // Giocare
+            // le parentesi grafe servono per evitare l'errore jump-to-case-label-in-switch-statement 
+            // dovuto alla inizializzazione di variabili all'interno di un case dello switch ma che non vengono inizializzate nei case successivi
+                clearScreen();
+                char campo[altezzaCampo][larghezzaCampo];
+                
+                punteggio = randomNumber(100, 1); // attualmente random giusto per test
+
+                testaSerpernte = creazioneCampo(campo, testaSerpernte);
+                stampaCampo(campo, punteggio, testaSerpernte);
+
+                bool arrivatoAllaFine=false;
+                do {
+                    int risultatoSpostamento = spostamento(campo, recevimentoMovimentoSpostamento(), &testaSerpernte);
+                    if (risultatoSpostamento==-1) {
+                        stampaAVideoIlTesto("direzioneNonConsentita", linguaDefault);
+                    } else {
+                        if (testaSerpernte.posizioneX==larghezzaCampo-1) {
+                            stampaAVideoIlTesto("vittoriaGioco", linguaDefault);
+                            arrivatoAllaFine=true;
+                        }
+                    }
+                    stampaCampo(campo, punteggio, testaSerpernte);
+                } while (arrivatoAllaFine==false);
+                fermaStampa();
+            } break;
+        case '2':
+            // Manuale
+            clearScreen();
+            stampaAVideoIlTesto("regole", linguaDefault);
+            fermaStampa();
+            break;
+        case '3':
+            // IA
+            clearScreen();
+            stampaAVideoIlTesto("IA", linguaDefault);
+            fermaStampa();
+            break;
+        case '4':
+            // Partecipanti
+            clearScreen();
+            stampaAVideoIlTesto("partecipanti",linguaDefault);
+            fermaStampa();
+            break;
+        case '0':
+            // esce dal programma
+            esciDalGioco=true;
+            break;
+        default:
+            sceltaErrata=true;
+            clearScreen();
+            stampaAVideoIlTesto("sceltaErrata",linguaDefault);
+            break;
         }
-        stampaCampo(campo, punteggio, testaSerpernte);
-    } while (arrivatoAllaFine==false);
-    fermaStampa();
+        if (sceltaErrata!=true) {
+            clearScreen();
+        }
+    } while (esciDalGioco==false);
     
     return 0;
 }
 
 void fermaStampa() {
     // getchar mi peremette di non dover premere invio dopo aver scritto ma ovviamnete prende solo il primo carattere
-    printf("Premi un tasto per continuare\n");
+    stampaAVideoIlTesto("fermaStampa",linguaDefault);
     char fermaStampa = getchar();
 }
 
 int randomNumber(int max, int min){	
 
 	return rand() % (max - min + 1 ) + min;
+}
+
+void clearScreen() {
+    system("@cls||clear");
 }
 
 posizione creazioneCampo(char (*matrix)[larghezzaCampo], posizione testaSerpente) {
@@ -134,7 +196,7 @@ void stampaCampo(char (*matrix)[larghezzaCampo], int punteggio, posizione testaS
             printf("%c", matrix[i][j]);
         }
         if (i==0) {
-            printf("  Il tuo punteggio attuale e': %d", punteggio);
+            printf("  Score: %d", punteggio);
         }
         printf("\n");
     }
@@ -151,51 +213,108 @@ char recevimentoMovimentoSpostamento() {
     char spostamento;
     do {
         sceltaErrata=false;
-        printf("Dimmi dove muovermi: w=su s=giu' d=destra a=sinistra ");
+        stampaAVideoIlTesto("direzione", linguaDefault);
         spostamento = _getch();
         //scanf("%c", &spostamento);
         if (spostamento!='w' && spostamento != 's' && spostamento != 'a' && spostamento!='d') {
             sceltaErrata=true;
-            printf("\nQuesta non e' una direzione consentita\n");
+            stampaAVideoIlTesto("direzioneSbagliata", linguaDefault);
         }
     } while (sceltaErrata==true);
-    printf(" Direzione scelta: %c\n", spostamento);
+    // printf(" Direzione scelta: %c\n", spostamento);
     return spostamento;
 }
 
 int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testaSerpente) {
+
+    int posizioneXOriginale = testaSerpente->posizioneX;
+    int posizioneYOriginale = testaSerpente->posizioneY;
+
+    bool spostamenteoRiuscito=false;
 
     switch (direction) {
     case 'w':
         //alto
         if (matrix[testaSerpente->posizioneY-1][testaSerpente->posizioneX]!='#') {
             testaSerpente->posizioneY-=1;
-            return 0;
+            spostamenteoRiuscito=true;
         }
         break;
     case 's':
         //basso
         if (matrix[testaSerpente->posizioneY+1][testaSerpente->posizioneX]!='#') {
             testaSerpente->posizioneY+=1;
-            return 0;
+            spostamenteoRiuscito=true;
         }
         break;
     case 'a':
         //sinistra
         if (matrix[testaSerpente->posizioneY][testaSerpente->posizioneX-1]!='#' && testaSerpente->posizioneX-1>0) {
             testaSerpente->posizioneX-=1;
-            return 0;
+            spostamenteoRiuscito=true;
         }
         break;
     case 'd':
         //destra
         if (matrix[testaSerpente->posizioneY][testaSerpente->posizioneX+1]!='#') {
             testaSerpente->posizioneX= testaSerpente->posizioneX+1;
-            return 0;
+            spostamenteoRiuscito=true;
         }
         break;
     default:
         break;
     }
+
+    if (spostamenteoRiuscito==true) {
+        matrix[posizioneYOriginale][posizioneXOriginale]=' ';
+        return 0;
+    }
+    
     return -1; // al momento mi serve per capire se è andato contro un muro o se cerca di uscire dalla mappa
+}
+
+bool controlloDeiFile(char lingua[]){
+    char stringaTemp[100];
+    strcpy(stringaTemp, lingua);
+    strcat(stringaTemp, ".txt");
+    FILE *fin = fopen(stringaTemp, "r");
+    if (fin!=NULL) {
+        return true;
+        fclose(fin);
+    }
+    return false;
+}
+
+void stampaAVideoIlTesto(char paragrafo[], char lingua[]){
+
+    if (controlloDeiFile(lingua) == false){
+        printf("Error! opening file, file not in the same folder of the program");
+        fermaStampa();
+        // Programma esce se non esite il file nella stessa cartella del programma-*+
+        exit(1);
+    } else {
+        char stringaTemp[100];
+        strcpy(stringaTemp, lingua);
+        strcat(stringaTemp, ".txt");
+        FILE *fin = fopen(stringaTemp, "r");
+
+        char stringaDaStampare[100]="bho"; 
+        char tagIniziale[100]="<";
+        strcat(strcat(tagIniziale, paragrafo), ">\n");
+        char tagFinale[100]= "</";
+        strcat(strcat(tagFinale, paragrafo), ">\n");
+        do {
+            fgets(stringaDaStampare, sizeof(stringaDaStampare), fin);
+            if (strcmp(stringaDaStampare,tagIniziale)==0) {
+                do {
+                    fgets(stringaDaStampare, sizeof(stringaDaStampare), fin);
+                    if ((strcmp(stringaDaStampare, tagIniziale)!=0) && (strcmp(stringaDaStampare, tagFinale)!=0)){
+                        printf("%s", stringaDaStampare);
+                    }
+                } while (strcmp(stringaDaStampare, tagFinale)!=0);
+            }
+        } while ((strcmp(stringaDaStampare, tagFinale)!=0));
+        fclose(fin);
+    }
+	return;
 }
