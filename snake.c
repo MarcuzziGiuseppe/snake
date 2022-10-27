@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+// a linux conio.h non piace. Per cosa lo usiamo conio??
 #include <conio.h>
 #include <time.h>
 #include <string.h>
