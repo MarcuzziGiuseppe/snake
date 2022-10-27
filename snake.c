@@ -17,7 +17,6 @@
 #include <time.h>
 #include <string.h>
 
-
 #define altezzaCampo 10
 #define larghezzaCampo 25
 #define ampiezzaMinimaSpazioPerPassare 1
