@@ -27,6 +27,8 @@
 #define lunghezzaMassimaStringa 100
 
 #define linguaDefault "italiano" // solamente temporanea al momento
+int numero_monete = 0;
+int punti = 0;
 
 // serve per salvarsi la posizione della testa
 typedef struct {
@@ -54,6 +56,8 @@ int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testa
 // gestione dei file
 bool controlloDeiFile(char lingua[]);
 void stampaAVideoIlTesto(char paragrafo[], char lingua[]);
+
+void loading();
 
 int main(int argc, char const *argv[]) {
     srand(time(NULL));
@@ -177,8 +181,8 @@ posizione creazioneCampo(char (*matrix)[larghezzaCampo], posizione testaSerpente
         for (size_t j = 1; j < altezzaCampo-1; j++) {
             matrix[j][i]='#';
         }
-        int grandezzaSpazioPerPassare = randomNumber(ampiezzaMassimaSpazioPerPassare, ampiezzaMinimaSpazioPerPassare); // quanto grande lo spazio per passare
-        int puntoPerLoSpazio = randomNumber(altezzaCampo-ampiezzaMassimaSpazioPerPassare, 1); // punto in cui creare lo spazio
+        int grandezzaSpazioPerPassare = randomNumber(ampiezzaMassimaSpazioPerPassare, ampiezzaMinimaSpazioPerPassare);
+	int puntoPerLoSpazio = randomNumber(altezzaCampo-ampiezzaMassimaSpazioPerPassare, 1); // punto in cui creare lo spazio
         for (size_t j = 0; j < grandezzaSpazioPerPassare; j++) {
             if (puntoPerLoSpazio<altezzaCampo-1) {
                 matrix[puntoPerLoSpazio][i]=' ';
@@ -319,3 +323,25 @@ void stampaAVideoIlTesto(char paragrafo[], char lingua[]){
     }
 	return;
 }
+
+void loading(){
+	char bar[27];
+	bar[0] = '[';
+	bar[26] = ']';
+	for(int i = 1; i < 26; i++){
+		Sleep(rand() % (500-1+5)+1);
+		bar[i] = '#';
+		system("cls");
+		printf("loading...\n");
+		for(int i = 0; i < 27; i++){
+			printf("%c", bar[i]);
+		}
+	}
+	printf("\n");
+	printf("Loaded!!\n");
+	Sleep(1000);
+
+	clrscr();
+}
+
+
