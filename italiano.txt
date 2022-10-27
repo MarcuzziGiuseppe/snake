@@ -10,6 +10,7 @@ Menu' di gioco:
 --> 2) Manuale = 2
 --> 3) IA = 3
 --> 4) Partecipanti = 4
+--> 5) Lingua = 5
 --> 0) Esci dal programma = 0
 quando hai scelto premi il numero corrispondente
 </menu>
@@ -20,7 +21,7 @@ Manuale
 IA
 </IA>
 <partecipanti>
-Partecipanti
+Partecipanti:
 Marcuzzi Giuseppe 894698
 Campagnolo Alberto 897569
 </partecipanti>
@@ -34,3 +35,15 @@ Dimmi dove muovermi: w=su s=giu' d=destra a=sinistra
 <direzioneSbagliata>
 Questa non e' una direzione consentita
 </direzioneSbagliata>
+<direzioneNonConsentita>
+Direzione non Consentita perche' andresti contro il muro o andresti fuori dalla mappa
+</direzioneNonConsentita>
+<vittoriaGioco>
+Sei arrivato alla fine del percorso
+Complimenti hai vinto
+</vittoriaGioco>
+<lingue>
+Scegli la lingua del gioco
+--> 1) Italiano = 1
+--> 2) Inglese = 2
+</lingue>

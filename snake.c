@@ -1,7 +1,6 @@
 /* Marcuzzi Giuseppe 21/10/2022 - 26/10/2022
     Campagnolo Alberto
     TO DO
-    --> Usando i file aggiungere le lingue fatto solo per l'Italiano, aggiungere anche l'inglese (Giuseppe)
     --> algoritmo IA (tengo la mano sul muro di dx) (Alberto (+ Giuseppe?))
     --> Concludere il menù
     --> Distanza Colonne ed ampiezza di esse fissa o meno (bho non se se lo faremo, non  trovo molta utilità)
@@ -13,10 +12,42 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-// a linux conio.h non piace. Per cosa lo usiamo conio??
-#include <conio.h>
 #include <time.h>
 #include <string.h>
+// a linux conio.h non piace. Per cosa lo usiamo conio?? conio la usiamo per getch
+// possibile soluzione: https://www.includehelp.com/c-programs/gotoxy-clrscr-getch-getche-for-gcc-linux.aspx
+// switch based on os system: https://stackoverflow.com/questions/6649936/c-compiling-on-windows-and-linux-ifdef-switch
+// questa roba dovrebbe piacerli
+#ifdef _WIN32
+    #include <conio.h>
+#elif __linux__
+#include <termios.h>
+static struct termios old, new;
+void initTermios(int echo) {
+    tcgetattr(0, &old); //grab old terminal i/o settings
+    new = old; //make new settings same as old settings
+    new.c_lflag &= ~ICANON; //disable buffered i/o
+    new.c_lflag &= echo ? ECHO : ~ECHO; //set echo mode
+    tcsetattr(0, TCSANOW, &new); //apply terminal io settings
+}
+
+/* Restore old terminal i/o settings */
+void resetTermios(void) {
+    tcsetattr(0, TCSANOW, &old);
+}
+
+/* Read 1 character - echo defines echo mode */
+char getch_(int echo) {
+    char ch;
+    initTermios(echo);
+    ch = getchar();
+    resetTermios();
+    return ch;
+}
+char getch(void) {
+    return getch_(0);
+}
+#endif
 
 #define altezzaCampo 10
 #define larghezzaCampo 25
@@ -26,22 +57,26 @@
 #define distanzaMassimaTraColonne 6
 #define lunghezzaMassimaStringa 100
 
-#define linguaDefault "italiano" // solamente temporanea al momento
+// source di #undef https://stackoverflow.com/questions/9274500/redefining-or-changing-macro-value
+//#define linguaScelta "italiano"
+
+// variabili globali
 int numero_monete = 0;
 int punti = 0;
+int linguaTesto=0; // 0=Italiano 1=Inglese
 
 // serve per salvarsi la posizione della testa
 typedef struct {
     int posizioneX;
     int posizioneY;
     char simboloCheIndicaLaTesta;
-
 } posizione;
 
 // funzioni "strane"
 void fermaStampa(); // non fa altro che impedire che le stampe successive vengano eseguite
 int randomNumber(int max, int min);
 void clearScreen();
+void loading();
 
 // int setOrGetPunteggio(int serOrGet); //0 = set, 1 = get
 
@@ -55,31 +90,31 @@ int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testa
 
 // gestione dei file
 bool controlloDeiFile(char lingua[]);
-void stampaAVideoIlTesto(char paragrafo[], char lingua[]);
-
-void loading();
+void stampaAVideoIlTesto(char paragrafo[], int linguaTesto);
 
 int main(int argc, char const *argv[]) {
     srand(time(NULL));
 
     bool esciDalGioco = false;
     bool sceltaErrata = false;
-
+    
+    // "costruzione" della struct (tipo il constractor nelle classsi)
     posizione testaSerpernte;
     testaSerpernte.posizioneX=0;
     testaSerpernte.posizioneY=0;
     testaSerpernte.simboloCheIndicaLaTesta='?';
+
     int punteggio=0;
 
-    stampaAVideoIlTesto("introduzione", linguaDefault);
+    stampaAVideoIlTesto("introduzione", linguaTesto);
     do {
-        stampaAVideoIlTesto("menu", linguaDefault);
+        stampaAVideoIlTesto("menu", linguaTesto);
         esciDalGioco=false;
         sceltaErrata=false;
         char sceltaPlayer;
         sceltaPlayer=getch();
         switch (sceltaPlayer) {
-        case '1':{
+        case '1':
             // Giocare
             // le parentesi grafe servono per evitare l'errore jump-to-case-label-in-switch-statement 
             // dovuto alla inizializzazione di variabili all'interno di un case dello switch ma che non vengono inizializzate nei case successivi
@@ -89,40 +124,64 @@ int main(int argc, char const *argv[]) {
                 punteggio = randomNumber(100, 1); // attualmente random giusto per test
 
                 testaSerpernte = creazioneCampo(campo, testaSerpernte);
+                loading();
                 stampaCampo(campo, punteggio, testaSerpernte);
 
                 bool arrivatoAllaFine=false;
                 do {
                     int risultatoSpostamento = spostamento(campo, recevimentoMovimentoSpostamento(), &testaSerpernte);
                     if (risultatoSpostamento==-1) {
-                        stampaAVideoIlTesto("direzioneNonConsentita", linguaDefault);
+                        stampaAVideoIlTesto("direzioneNonConsentita", linguaTesto);
                     } else {
                         if (testaSerpernte.posizioneX==larghezzaCampo-1) {
-                            stampaAVideoIlTesto("vittoriaGioco", linguaDefault);
+                            stampaAVideoIlTesto("vittoriaGioco", linguaTesto);
                             arrivatoAllaFine=true;
                         }
                     }
                     stampaCampo(campo, punteggio, testaSerpernte);
                 } while (arrivatoAllaFine==false);
                 fermaStampa();
-            } break;
+            break;
         case '2':
             // Manuale
             clearScreen();
-            stampaAVideoIlTesto("regole", linguaDefault);
+            stampaAVideoIlTesto("regole", linguaTesto);
             fermaStampa();
             break;
         case '3':
             // IA
             clearScreen();
-            stampaAVideoIlTesto("IA", linguaDefault);
+            stampaAVideoIlTesto("IA", linguaTesto);
             fermaStampa();
             break;
         case '4':
             // Partecipanti
             clearScreen();
-            stampaAVideoIlTesto("partecipanti",linguaDefault);
+            stampaAVideoIlTesto("partecipanti",linguaTesto);
             fermaStampa();
+            break;
+        case '5':
+            // Partecipanti
+            bool linguaSelezionataCorrettamente = true;
+            do {
+                clearScreen();
+                stampaAVideoIlTesto("lingue",linguaTesto);
+                sceltaPlayer = getch();
+                switch (sceltaPlayer) {
+                case '1':
+                    linguaTesto=0;
+                    break;
+                case '2':
+                    linguaTesto=1;
+                    break;
+                default:
+                    linguaSelezionataCorrettamente=false;
+                    stampaAVideoIlTesto("sceltaErrata", linguaTesto);
+                    fermaStampa();
+                    break;
+                }
+            } while (linguaSelezionataCorrettamente!=true);
+            fermaStampa(); // solo temporanea finchè non metto che imposta la lingua
             break;
         case '0':
             // esce dal programma
@@ -131,12 +190,10 @@ int main(int argc, char const *argv[]) {
         default:
             sceltaErrata=true;
             clearScreen();
-            stampaAVideoIlTesto("sceltaErrata",linguaDefault);
+            stampaAVideoIlTesto("sceltaErrata",linguaTesto);
             break;
         }
-        if (sceltaErrata!=true) {
-            clearScreen();
-        }
+        clearScreen();
     } while (esciDalGioco==false);
     
     return 0;
@@ -144,7 +201,7 @@ int main(int argc, char const *argv[]) {
 
 void fermaStampa() {
     // getchar mi peremette di non dover premere invio dopo aver scritto ma ovviamnete prende solo il primo carattere
-    stampaAVideoIlTesto("fermaStampa",linguaDefault);
+    stampaAVideoIlTesto("fermaStampa",linguaTesto);
     char fermaStampa = getchar();
 }
 
@@ -218,12 +275,12 @@ char recevimentoMovimentoSpostamento() {
     char spostamento;
     do {
         sceltaErrata=false;
-        stampaAVideoIlTesto("direzione", linguaDefault);
+        stampaAVideoIlTesto("direzione", linguaTesto);
         spostamento = _getch();
         //scanf("%c", &spostamento);
         if (spostamento!='w' && spostamento != 's' && spostamento != 'a' && spostamento!='d') {
             sceltaErrata=true;
-            stampaAVideoIlTesto("direzioneSbagliata", linguaDefault);
+            stampaAVideoIlTesto("direzioneSbagliata", linguaTesto);
         }
     } while (sceltaErrata==true);
     // printf(" Direzione scelta: %c\n", spostamento);
@@ -290,7 +347,12 @@ bool controlloDeiFile(char lingua[]){
     return false;
 }
 
-void stampaAVideoIlTesto(char paragrafo[], char lingua[]){
+void stampaAVideoIlTesto(char paragrafo[], int linguaTesto){
+
+    char lingua[]="italiano";
+    if (linguaTesto==1) {
+        strcpy(lingua, "inglese");
+    }
 
     if (controlloDeiFile(lingua) == false){
         printf("Error! opening file, file not in the same folder of the program");
@@ -329,9 +391,9 @@ void loading(){
 	bar[0] = '[';
 	bar[26] = ']';
 	for(int i = 1; i < 26; i++){
-		Sleep(rand() % (500-1+5)+1);
+		Sleep(randomNumber(500, 5));
 		bar[i] = '#';
-		system("cls");
+        clearScreen();
 		printf("loading...\n");
 		for(int i = 0; i < 27; i++){
 			printf("%c", bar[i]);
@@ -339,9 +401,7 @@ void loading(){
 	}
 	printf("\n");
 	printf("Loaded!!\n");
-	Sleep(1000);
+    fermaStampa();
 
-	clrscr();
+	clearScreen();
 }
-
-

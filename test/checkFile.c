@@ -1,9 +1,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <conio.h>
 #include <time.h>
 #include <string.h>
+#ifdef _WIN32
+    #include <conio.h>
+#elif __linux__
+#include <termios.h>
+static struct termios old, new;
+void initTermios(int echo) {
+    tcgetattr(0, &old); //grab old terminal i/o settings
+    new = old; //make new settings same as old settings
+    new.c_lflag &= ~ICANON; //disable buffered i/o
+    new.c_lflag &= echo ? ECHO : ~ECHO; //set echo mode
+    tcsetattr(0, TCSANOW, &new); //apply terminal io settings
+}
+
+/* Restore old terminal i/o settings */
+void resetTermios(void) {
+    tcsetattr(0, TCSANOW, &old);
+}
+
+/* Read 1 character - echo defines echo mode */
+char getch_(int echo) {
+    char ch;
+    initTermios(echo);
+    ch = getchar();
+    resetTermios();
+    return ch;
+}
+char getch(void) {
+    return getch_(0);
+}
+#endif
 
 #define linguaDefault "italiano"
 
@@ -13,21 +42,29 @@ bool controlloDeiFile(char lingua[]);
 
 void stampaAVideoIlTesto(char paragrafo[], char lingua[]);
 
+
 int main(int argc, char const *argv[]) {
 
 /*
     if (controlloDeiFile("italiano") == true) {
         printf("File esiste\n");
     }
-*/
-    stampaAVideoIlTesto("menu", "italiano");
+*/  char lingua[] = "inglese";
+    //stampaAVideoIlTesto("menu", linguaDefault);
     
+    printf("la lingua di default prima era: %s\n", linguaDefault);
+    #undef linguaDefault
+    #define linguaDefault "inglese"
+    printf("la lingua di default ora e': %s\n", linguaDefault);
+    fermaStampa();
+
     return 0;
 }
 
 void fermaStampa() {
     // getchar mi peremette di non dover premere invio dopo aver scritto ma ovviamnete prende solo il primo carattere
     stampaAVideoIlTesto("fermaStampa",linguaDefault);
+    printf("%s\n", linguaDefault);
     char fermaStampa = getchar();
 }
 

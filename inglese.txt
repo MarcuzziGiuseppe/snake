@@ -1,18 +1,18 @@
 <fermaStampa>
-Premi un tasto per continuare
+Press any key to continue
 </fermaStampa>
 <introduzione>
-Ciao, benvenuto in snake
+Hi, welcome in snake
 </introduzione>
 <menu>
-Menu' di gioco:
---> 1) Giocare = 1
---> 2) Manuale = 2
---> 3) IA = 3
---> 4) Partecipanti = 4
---> 5) Lingua = 5
---> 0) Esci dal programma = 0
-quando hai scelto premi il numero corrispondente
+Game menu':
+--> 1) Play = 1
+--> 2) Manual = 2
+--> 3) AI = 3
+--> 4) Creators = 4
+--> 5) Language = 5
+--> 0) Exit form the program = 0
+Where you are ready press the corrisponding number
 </menu>
 <regole>
 Manuale
