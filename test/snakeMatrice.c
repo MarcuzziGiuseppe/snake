@@ -135,11 +135,15 @@ int main(int argc, char const *argv[]) {
                     if (risultatoSpostamento==-1) {
                         stampaAVideoIlTesto("direzioneNonConsentita", linguaTesto);
                     } else {
-                        if (testaSerpernte.posizioneX==larghezzaCampo-1) {
-                            stampaAVideoIlTesto("vittoriaGioco", linguaTesto);
-                            arrivatoAllaFine=true;
+                        if(risultatoSpostamento==-2){
+                            break;
                         }
                     }
+                    if (testaSerpernte.posizioneX==larghezzaCampo-1) {
+                        stampaAVideoIlTesto("vittoriaGioco", linguaTesto);
+                        arrivatoAllaFine=true;
+                    }
+                    
                     stampaCampo(campo, punti, testaSerpernte);
                 } while (arrivatoAllaFine==false);
                 fermaStampa();
@@ -220,11 +224,11 @@ void generaElemento(char elemento, int numeroMassimo, char (*matrix)[larghezzaCa
 	int elementi_totali = randomNumber(numeroMassimo,1);	
 
 	for(int z=0; z < elementi_totali; z++){
-		int elementox = randomNumber(larghezzaCampo-1,1);
-		int elementoy = randomNumber(altezzaCampo-1,1);
+		int elementox = randomNumber(larghezzaCampo-2,1);
+		int elementoy = randomNumber(altezzaCampo-2,1);
 		while(matrix[elementoy][elementox] == '#'){
-			elementoy = randomNumber(larghezzaCampo-1,1);
-			elementox = randomNumber(altezzaCampo-1,1);
+			elementoy = randomNumber(larghezzaCampo-2,1);
+			elementox = randomNumber(altezzaCampo-2,1);
 		}
 		matrix[elementoy][elementox] = elemento;
 	}
@@ -297,7 +301,7 @@ char recevimentoMovimentoSpostamento() {
         stampaAVideoIlTesto("direzione", linguaTesto);
         spostamento = _getch();
         //scanf("%c", &spostamento);
-        if (spostamento!='w' && spostamento != 's' && spostamento != 'a' && spostamento!='d') {
+        if (spostamento!='w' && spostamento != 's' && spostamento != 'a' && spostamento!='d' && spostamento!='q') {
             sceltaErrata=true;
             stampaAVideoIlTesto("direzioneSbagliata", linguaTesto);
         }
@@ -355,6 +359,9 @@ int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testa
             testaSerpente->posizioneX= testaSerpente->posizioneX+1;
             spostamenteoRiuscito=true;
         }
+        break;
+    case 'q':
+        return -2;
         break;
     default:
         break;
@@ -419,18 +426,56 @@ void stampaAVideoIlTesto(char paragrafo[], int linguaTesto){
 	return;
 }
 
+void stampaLoading(char paragrafo[]){
+
+    char lingua[]="loadings";
+
+    if (controlloDeiFile(lingua) == false){
+        printf("Error! opening file, file not in the same folder of the program");
+        fermaStampa();
+        // Programma esce se non esite il file nella stessa cartella del programma-*+
+        exit(1);
+    } else {
+        char stringaTemp[100];
+        strcpy(stringaTemp, lingua);
+        strcat(stringaTemp, ".txt");
+        FILE *fin = fopen(stringaTemp, "r");
+
+        char stringaDaStampare[300]="bho"; 
+        char tagIniziale[100]="<";
+        strcat(strcat(tagIniziale, paragrafo), ">\n");
+        char tagFinale[100]= "</";
+        strcat(strcat(tagFinale, paragrafo), ">\n");
+        do {
+            fgets(stringaDaStampare, sizeof(stringaDaStampare), fin);
+            if (strcmp(stringaDaStampare,tagIniziale)==0) {
+                do {
+                    fgets(stringaDaStampare, sizeof(stringaDaStampare), fin);
+                    if ((strcmp(stringaDaStampare, tagIniziale)!=0) && (strcmp(stringaDaStampare, tagFinale)!=0)){
+                        printf("%s", stringaDaStampare);
+                    }
+                } while (strcmp(stringaDaStampare, tagFinale)!=0);
+            }
+        } while ((strcmp(stringaDaStampare, tagFinale)!=0));
+        fclose(fin);
+    }
+	return;
+}
+
 void loading(){
 	char a = ' ', b = '#';
 	printf("\n\n\n\n");
-	printf("\n\n\n\n\t\t\t\t\tLoading...\n\n");
-	printf("\t\t\t\t\t[");
+    char c[10];
+    sprintf(c, "%ld", randomNumber(4, 1));
+    stampaLoading(c);
+    printf("\t\t\t[");
 	
 	for(int i = 0;i < 26; i++){	
 		printf("%c", a);
 	}
 	printf("]");
 	printf("\r");
-	printf("\t\t\t\t\t");
+	printf("\t\t\t");
 
 	for(int i=0;i < 26; i++){
 		if(i==0){
