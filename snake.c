@@ -135,11 +135,15 @@ int main(int argc, char const *argv[]) {
                     if (risultatoSpostamento==-1) {
                         stampaAVideoIlTesto("direzioneNonConsentita", linguaTesto);
                     } else {
-                        if (testaSerpernte.posizioneX==larghezzaCampo-1) {
-                            stampaAVideoIlTesto("vittoriaGioco", linguaTesto);
-                            arrivatoAllaFine=true;
+                        if(risultatoSpostamento==-2){
+                            break;
                         }
                     }
+                    if (testaSerpernte.posizioneX==larghezzaCampo-1) {
+                        stampaAVideoIlTesto("vittoriaGioco", linguaTesto);
+                        arrivatoAllaFine=true;
+                    }
+                    
                     stampaCampo(campo, punti, testaSerpernte);
                 } while (arrivatoAllaFine==false);
                 fermaStampa();
@@ -297,7 +301,7 @@ char recevimentoMovimentoSpostamento() {
         stampaAVideoIlTesto("direzione", linguaTesto);
         spostamento = _getch();
         //scanf("%c", &spostamento);
-        if (spostamento!='w' && spostamento != 's' && spostamento != 'a' && spostamento!='d') {
+        if (spostamento!='w' && spostamento != 's' && spostamento != 'a' && spostamento!='d' && spostamento!='q') {
             sceltaErrata=true;
             stampaAVideoIlTesto("direzioneSbagliata", linguaTesto);
         }
@@ -355,6 +359,9 @@ int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testa
             testaSerpente->posizioneX= testaSerpente->posizioneX+1;
             spostamenteoRiuscito=true;
         }
+        break;
+    case 'q':
+        return -2;
         break;
     default:
         break;
@@ -422,8 +429,8 @@ void stampaAVideoIlTesto(char paragrafo[], int linguaTesto){
 void loading(){
 	char a = ' ', b = '#';
 	printf("\n\n\n\n");
-	printf("\n\n\n\n\t\t\t /$$        /$$$$$$   /$$$$$$  /$$$$$$$  /$$$$$$ /$$   /$$  /$$$$$$\n\t\t\t| $$       /$$__  $$ /$$__  $$| $$__  $$|_  $$_/| $$$ | $$ /$$__  $$\n\t\t\t| $$      | $$  \\ $$| $$  \\ $$| $$  \\ $$  | $$  | $$$$| $$| $$  \\__/\n\t\t\t| $$      | $$  | $$| $$$$$$$$| $$  | $$  | $$  | $$ $$ $$| $$ /$$$$\n\t\t\t| $$      | $$  | $$| $$__  $$| $$  | $$  | $$  | $$  $$$$| $$|_  $$\n\t\t\t| $$      | $$  | $$| $$  | $$| $$  | $$  | $$  | $$\\  $$$| $$  \\ $$\n\t\t\t| $$$$$$$$|  $$$$$$/| $$  | $$| $$$$$$$/ /$$$$$$| $$ \\  $$|  $$$$$$//$$ /$$ /$$\n\t\t\t:|________/ \\______/ |__/  |__/|_______/ |______/|__/  \\__/ \\______/|__/|__/|__/\n");
-	printf("\t\t\t[");
+	printf("\n\n\n\n\t\t\t /$$        /$$$$$$   /$$$$$$  /$$$$$$$  /$$$$$$ /$$   /$$  /$$$$$$\n\t\t\t| $$       /$$__  $$ /$$__  $$| $$__  $$|_  $$_/| $$$ | $$ /$$__  $$\n\t\t\t| $$      | $$  \\ $$| $$  \\ $$| $$  \\ $$  | $$  | $$$$| $$| $$  \\__/\n\t\t\t| $$      | $$  | $$| $$$$$$$$| $$  | $$  | $$  | $$ $$ $$| $$ /$$$$\n\t\t\t| $$      | $$  | $$| $$__  $$| $$  | $$  | $$  | $$  $$$$| $$|_  $$\n\t\t\t| $$      | $$  | $$| $$  | $$| $$  | $$  | $$  | $$\\  $$$| $$  \\ $$\n\t\t\t| $$$$$$$$|  $$$$$$/| $$  | $$| $$$$$$$/ /$$$$$$| $$ \\  $$|  $$$$$$//$$ /$$ /$$\n\t\t\t|________/ \\______/ |__/  |__/|_______/ |______/|__/  \\__/ \\______/|__/|__/|__/\n");
+	printf("\n\n\t\t\t[");
 	
 	for(int i = 0;i < 26; i++){	
 		printf("%c", a);
