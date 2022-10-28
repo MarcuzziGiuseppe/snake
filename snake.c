@@ -1,8 +1,8 @@
 /* Marcuzzi Giuseppe 21/10/2022 - 26/10/2022
     Campagnolo Alberto
     TO DO
+    --> Documentazione
     --> algoritmo IA (tengo la mano sul muro di dx) (Alberto (+ Giuseppe?))
-    --> Concludere il menù
     // to do molto improbabili da fare
     --> altro
 */
