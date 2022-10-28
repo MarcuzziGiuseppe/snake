@@ -220,11 +220,11 @@ void generaElemento(char elemento, int numeroMassimo, char (*matrix)[larghezzaCa
 	int elementi_totali = randomNumber(numeroMassimo,1);	
 
 	for(int z=0; z < elementi_totali; z++){
-		int elementox = randomNumber(larghezzaCampo-1,1);
-		int elementoy = randomNumber(altezzaCampo-1,1);
+		int elementox = randomNumber(larghezzaCampo-2,1);
+		int elementoy = randomNumber(altezzaCampo-2,1);
 		while(matrix[elementoy][elementox] == '#'){
-			elementoy = randomNumber(larghezzaCampo-1,1);
-			elementox = randomNumber(altezzaCampo-1,1);
+			elementoy = randomNumber(larghezzaCampo-2,1);
+			elementox = randomNumber(altezzaCampo-2,1);
 		}
 		matrix[elementoy][elementox] = elemento;
 	}
@@ -422,15 +422,15 @@ void stampaAVideoIlTesto(char paragrafo[], int linguaTesto){
 void loading(){
 	char a = ' ', b = '#';
 	printf("\n\n\n\n");
-	printf("\n\n\n\n\t\t\t\t\t/$$        /$$$$$$   /$$$$$$  /$$$$$$$  /$$$$$$ /$$   /$$  /$$$$$$\n| $$       /$$__  $$ /$$__  $$| $$__  $$|_  $$_/| $$$ | $$ /$$__  $$\n| $$      | $$  \\ $$| $$  \\ $$| $$  \\ $$  | $$  | $$$$| $$| $$  \\__/\n| $$      | $$  | $$| $$$$$$$$| $$  | $$  | $$  | $$ $$ $$| $$ /$$$$\n| $$      | $$  | $$| $$__  $$| $$  | $$  | $$  | $$  $$$$| $$|_  $$\n| $$      | $$  | $$| $$  | $$| $$  | $$  | $$  | $$\\  $$$| $$  \\ $$\n| $$$$$$$$|  $$$$$$/| $$  | $$| $$$$$$$/ /$$$$$$| $$ \\  $$|  $$$$$$//$$ /$$ /$$\n|________/ \\______/ |__/  |__/|_______/ |______/|__/  \\__/ \\______/|__/|__/|__/\n");
-	printf("\t\t\t\t\t[");
+	printf("\n\n\n\n\t\t\t /$$        /$$$$$$   /$$$$$$  /$$$$$$$  /$$$$$$ /$$   /$$  /$$$$$$\n\t\t\t| $$       /$$__  $$ /$$__  $$| $$__  $$|_  $$_/| $$$ | $$ /$$__  $$\n\t\t\t| $$      | $$  \\ $$| $$  \\ $$| $$  \\ $$  | $$  | $$$$| $$| $$  \\__/\n\t\t\t| $$      | $$  | $$| $$$$$$$$| $$  | $$  | $$  | $$ $$ $$| $$ /$$$$\n\t\t\t| $$      | $$  | $$| $$__  $$| $$  | $$  | $$  | $$  $$$$| $$|_  $$\n\t\t\t| $$      | $$  | $$| $$  | $$| $$  | $$  | $$  | $$\\  $$$| $$  \\ $$\n\t\t\t| $$$$$$$$|  $$$$$$/| $$  | $$| $$$$$$$/ /$$$$$$| $$ \\  $$|  $$$$$$//$$ /$$ /$$\n\t\t\t:|________/ \\______/ |__/  |__/|_______/ |______/|__/  \\__/ \\______/|__/|__/|__/\n");
+	printf("\t\t\t[");
 	
 	for(int i = 0;i < 26; i++){	
 		printf("%c", a);
 	}
 	printf("]");
 	printf("\r");
-	printf("\t\t\t\t\t");
+	printf("\t\t\t");
 
 	for(int i=0;i < 26; i++){
 		if(i==0){
