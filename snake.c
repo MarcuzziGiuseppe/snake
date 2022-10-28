@@ -55,7 +55,7 @@ char getch(void) {
 #define larghezzaCampo 25
 #define ampiezzaMinimaSpazioPerPassare 1
 #define ampiezzaMassimaSpazioPerPassare 2
-#define distanzaMinimaTraColonne 4 // non minore di 2
+#define distanzaMinimaTraColonne 3 // non minore di 2
 #define distanzaMassimaTraColonne 6
 #define lunghezzaMassimaStringa 100
 
@@ -95,24 +95,23 @@ int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testa
 // gestione dei file
 bool controlloDeiFile(char lingua[]);
 void stampaAVideoIlTesto(char paragrafo[], int linguaTesto);
+void stampaLoading(char paragrafo[]);
 
 int main(int argc, char const *argv[]) {
     srand(time(NULL));
 
     bool esciDalGioco = false;
     bool sceltaErrata = false;
-
-    stampaAVideoIlTesto("introduzione", linguaTesto);
     do {
         punti = 0;
-        
+        stampaAVideoIlTesto("introduzione", linguaTesto);
         stampaAVideoIlTesto("menu", linguaTesto);
         esciDalGioco=false;
         sceltaErrata=false;
         char sceltaPlayer;
         sceltaPlayer=getch();
         switch (sceltaPlayer) {
-        case '1':
+        case '1':{
             // Giocare
             // le parentesi grafe servono per evitare l'errore jump-to-case-label-in-switch-statement 
             // dovuto alla inizializzazione di variabili all'interno di un case dello switch ma che non vengono inizializzate nei case successivi
@@ -133,21 +132,23 @@ int main(int argc, char const *argv[]) {
                 do {
                     int risultatoSpostamento = spostamento(campo, recevimentoMovimentoSpostamento(), &testaSerpernte);
                     if (risultatoSpostamento==-1) {
-                        stampaAVideoIlTesto("direzioneNonConsentita", linguaTesto);
+			            stampaAVideoIlTesto("direzioneNonConsentita", linguaTesto);
                     } else {
                         if(risultatoSpostamento==-2){
                             break;
                         }
                     }
+		            clearScreen();
                     if (testaSerpernte.posizioneX==larghezzaCampo-1) {
-                        stampaAVideoIlTesto("vittoriaGioco", linguaTesto);
-                        arrivatoAllaFine=true;
+			            stampaAVideoIlTesto("vittoriaGioco", linguaTesto);
+                        printf("Score ==>%d\n", (punti+(numero_monete*3)));
+			            arrivatoAllaFine=true;
                     }
-                    
                     stampaCampo(campo, punti, testaSerpernte);
                 } while (arrivatoAllaFine==false);
                 fermaStampa();
-            break;
+	    }
+	    break;
         case '2':
             // Manuale
             clearScreen();
@@ -166,7 +167,7 @@ int main(int argc, char const *argv[]) {
             stampaAVideoIlTesto("partecipanti",linguaTesto);
             fermaStampa();
             break;
-        case '5':
+        case '5':{
             // Partecipanti
             bool linguaSelezionataCorrettamente = true;
             do {
@@ -188,7 +189,8 @@ int main(int argc, char const *argv[]) {
                 }
             } while (linguaSelezionataCorrettamente!=true);
             fermaStampa(); // solo temporanea finchè non metto che imposta la lingua
-            break;
+	    }
+	    break;
         case '0':
             // esce dal programma
             esciDalGioco=true;
@@ -280,15 +282,19 @@ void stampaCampo(char (*matrix)[larghezzaCampo], int punteggio, posizione testaS
         for (size_t j = 0; j < larghezzaCampo; j++) {
             printf("%c", matrix[i][j]);
         }
-        if (i==0) {
-            printf("  Score: %d", punteggio);
-        }
-        printf("\n");
+	printf("\n");
     }
-
     // questa parte serve unicamnete per rendere piu' carina la separazione tra le 2 stampe
     for (size_t i = 0; i < larghezzaCampo; i++) {
-        printf("-");
+        
+	if(i==2){
+	    printf("|%d|", punti);
+	} else if(i==7){
+	    printf("|%d|", numero_monete);
+	} else {
+            printf(" ");
+	}
+
     }
     printf("\n");
 }
@@ -298,19 +304,17 @@ char recevimentoMovimentoSpostamento() {
     char spostamento;
     do {
         sceltaErrata=false;
-        stampaAVideoIlTesto("direzione", linguaTesto);
         spostamento = _getch();
         //scanf("%c", &spostamento);
         if (spostamento!='w' && spostamento != 's' && spostamento != 'a' && spostamento!='d' && spostamento!='q') {
             sceltaErrata=true;
-            stampaAVideoIlTesto("direzioneSbagliata", linguaTesto);
         }
     } while (sceltaErrata==true);
     // printf(" Direzione scelta: %c\n", spostamento);
     return spostamento;
 }
 
-int controllaPunteggio(int coordinatax, int coordinatay, char (*matrix)[larghezzaCampo]){
+int controllaPunteggio(int coordinatay, int coordinatax, char (*matrix)[larghezzaCampo]){
 	if(matrix[coordinatay][coordinatax] == '$'){
 		numero_monete++;
 	} else if(matrix[coordinatay][coordinatax] == '!'){
@@ -466,9 +470,9 @@ void loading(){
 	char a = ' ', b = '#';
 	printf("\n\n\n\n");
     char c[10];
-    sprintf(c, "%ld", randomNumber(4, 1));
+    sprintf(c, "%d", randomNumber(4, 1));
     stampaLoading(c);
-    printf("\t\t\t[");
+    printf("\n\n\t\t\t[");
 	
 	for(int i = 0;i < 26; i++){	
 		printf("%c", a);
