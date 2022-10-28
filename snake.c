@@ -20,8 +20,10 @@
 // questa roba dovrebbe piacerli
 #ifdef _WIN32
     #include <conio.h>
+    #include <windows.h>
 #elif __linux__
-#include <termios.h>
+    #include <unistd.h>
+    #include <termios.h>
 static struct termios old, new;
 void initTermios(int echo) {
     tcgetattr(0, &old); //grab old terminal i/o settings
@@ -81,6 +83,8 @@ void loading();
 // int setOrGetPunteggio(int serOrGet); //0 = set, 1 = get
 
 // gestione del campo
+int controllaPunteggio(int coordinatay, int coordinatax, char (*matrix)[larghezzaCampo]);
+void generaElemento(char elemento, int numeroMassimo, char (*matrix)[larghezzaCampo]);
 posizione creazioneCampo(char (*matrix)[larghezzaCampo], posizione testaSerpente);
 void stampaCampo(char (*matrix)[larghezzaCampo], int punteggio, posizione testaSerpente);
 
@@ -104,11 +108,10 @@ int main(int argc, char const *argv[]) {
     testaSerpernte.posizioneY=0;
     testaSerpernte.simboloCheIndicaLaTesta='?';
 
-    int punteggio=0;
-
     stampaAVideoIlTesto("introduzione", linguaTesto);
     do {
-        stampaAVideoIlTesto("menu", linguaTesto);
+        punti = 0;
+	stampaAVideoIlTesto("menu", linguaTesto);
         esciDalGioco=false;
         sceltaErrata=false;
         char sceltaPlayer;
@@ -120,12 +123,9 @@ int main(int argc, char const *argv[]) {
             // dovuto alla inizializzazione di variabili all'interno di un case dello switch ma che non vengono inizializzate nei case successivi
                 clearScreen();
                 char campo[altezzaCampo][larghezzaCampo];
-                
-                punteggio = randomNumber(100, 1); // attualmente random giusto per test
-
                 testaSerpernte = creazioneCampo(campo, testaSerpernte);
-                loading();
-                stampaCampo(campo, punteggio, testaSerpernte);
+		loading();
+                stampaCampo(campo, punti, testaSerpernte);
 
                 bool arrivatoAllaFine=false;
                 do {
@@ -138,7 +138,7 @@ int main(int argc, char const *argv[]) {
                             arrivatoAllaFine=true;
                         }
                     }
-                    stampaCampo(campo, punteggio, testaSerpernte);
+                    stampaCampo(campo, punti, testaSerpernte);
                 } while (arrivatoAllaFine==false);
                 fermaStampa();
             break;
@@ -214,6 +214,21 @@ void clearScreen() {
     system("@cls||clear");
 }
 
+void generaElemento(char elemento, int numeroMassimo, char (*matrix)[larghezzaCampo]){
+	int elementi_totali = randomNumber(numeroMassimo,1);	
+
+	for(int z=0; z < elementi_totali; z++){
+		int elementox = randomNumber(larghezzaCampo-1,1);
+		int elementoy = randomNumber(altezzaCampo-1,1);
+		while(matrix[elementoy][elementox] == '#'){
+			elementoy = randomNumber(larghezzaCampo-1,1);
+			elementox = randomNumber(altezzaCampo-1,1);
+		}
+		matrix[elementoy][elementox] = elemento;
+	}
+}
+
+
 posizione creazioneCampo(char (*matrix)[larghezzaCampo], posizione testaSerpente) {
     for (size_t i = 0; i < altezzaCampo; i++) {
         for (size_t j = 0; j < larghezzaCampo; j++) {
@@ -247,6 +262,8 @@ posizione creazioneCampo(char (*matrix)[larghezzaCampo], posizione testaSerpente
             }
         }
     }
+    generaElemento('$',7,matrix);
+    generaElemento('!',2,matrix);
     return testaSerpente;
 }
 
@@ -287,6 +304,16 @@ char recevimentoMovimentoSpostamento() {
     return spostamento;
 }
 
+int controllaPunteggio(int coordinatax, int coordinatay, char (*matrix)[larghezzaCampo]){
+	if(matrix[coordinatay][coordinatax] == '!'){
+		numero_monete++;
+	} else if(matrix[coordinatay][coordinatax] == '!'){
+		numero_monete = numero_monete/2;
+	} else {
+		punti--;
+	}
+}
+
 int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testaSerpente) {
 
     int posizioneXOriginale = testaSerpente->posizioneX;
@@ -298,28 +325,32 @@ int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testa
     case 'w':
         //alto
         if (matrix[testaSerpente->posizioneY-1][testaSerpente->posizioneX]!='#') {
-            testaSerpente->posizioneY-=1;
+            controllaPunteggio(testaSerpente->posizioneY-1, testaSerpente->posizioneX, matrix);
+	    testaSerpente->posizioneY-=1;
             spostamenteoRiuscito=true;
         }
         break;
     case 's':
         //basso
         if (matrix[testaSerpente->posizioneY+1][testaSerpente->posizioneX]!='#') {
-            testaSerpente->posizioneY+=1;
+            controllaPunteggio(testaSerpente->posizioneY+1, testaSerpente->posizioneX, matrix);
+	    testaSerpente->posizioneY+=1;
             spostamenteoRiuscito=true;
         }
         break;
     case 'a':
         //sinistra
         if (matrix[testaSerpente->posizioneY][testaSerpente->posizioneX-1]!='#' && testaSerpente->posizioneX-1>0) {
-            testaSerpente->posizioneX-=1;
+            controllaPunteggio(testaSerpente->posizioneY, testaSerpente->posizioneX-1, matrix); 
+	    testaSerpente->posizioneX-=1;
             spostamenteoRiuscito=true;
         }
         break;
     case 'd':
         //destra
         if (matrix[testaSerpente->posizioneY][testaSerpente->posizioneX+1]!='#') {
-            testaSerpente->posizioneX= testaSerpente->posizioneX+1;
+            controllaPunteggio(testaSerpente->posizioneY, testaSerpente->posizioneX+1, matrix);
+	    testaSerpente->posizioneX= testaSerpente->posizioneX+1;
             spostamenteoRiuscito=true;
         }
         break;
@@ -387,21 +418,26 @@ void stampaAVideoIlTesto(char paragrafo[], int linguaTesto){
 }
 
 void loading(){
-	char bar[27];
-	bar[0] = '[';
-	bar[26] = ']';
-	for(int i = 1; i < 26; i++){
-		Sleep(randomNumber(500, 5));
-		bar[i] = '#';
-        clearScreen();
-		printf("loading...\n");
-		for(int i = 0; i < 27; i++){
-			printf("%c", bar[i]);
-		}
+	char a = ' ', b = '#';
+	printf("\n\n\n\n");
+	printf("\n\n\n\n\t\t\t\t\tLoading...\n\n");
+	printf("\t\t\t\t\t[");
+	
+	for(int i = 0;i < 26; i++){	
+		printf("%c", a);
 	}
-	printf("\n");
-	printf("Loaded!!\n");
-    fermaStampa();
+	printf("]");
+	printf("\r");
+	printf("\t\t\t\t\t");
+
+	for(int i=0;i < 26; i++){
+		if(i==0){
+			printf("[");
+		}
+		printf("%c", b);
+		fflush(stdout);
+		Sleep(i==24 ? randomNumber(300,100)*10 : randomNumber(20,10)*10);
+	}
 
 	clearScreen();
 }
