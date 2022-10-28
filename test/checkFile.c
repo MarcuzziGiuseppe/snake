@@ -49,14 +49,10 @@ int main(int argc, char const *argv[]) {
     if (controlloDeiFile("italiano") == true) {
         printf("File esiste\n");
     }
-*/  char lingua[] = "inglese";
+*/  char lingua[] = "italiano";
     //stampaAVideoIlTesto("menu", linguaDefault);
-    
-    printf("la lingua di default prima era: %s\n", linguaDefault);
-    #undef linguaDefault
-    #define linguaDefault "inglese"
-    printf("la lingua di default ora e': %s\n", linguaDefault);
-    fermaStampa();
+    printf("la lingua di default ora e': %s\n", lingua);
+    stampaAVideoIlTesto("menu", lingua);
 
     return 0;
 }
@@ -104,7 +100,7 @@ void stampaAVideoIlTesto(char paragrafo[], char lingua[]){
                 do {
                     fgets(stringaDaStampare, sizeof(stringaDaStampare), fin);
                     if ((strcmp(stringaDaStampare, tagIniziale)!=0) && (strcmp(stringaDaStampare, tagFinale)!=0)){
-                        printf("%s", stringaDaStampare);
+                        fputs(stringaDaStampare, stdout);
                     }
                 } while (strcmp(stringaDaStampare, tagFinale)!=0);
             }

@@ -101,17 +101,12 @@ int main(int argc, char const *argv[]) {
 
     bool esciDalGioco = false;
     bool sceltaErrata = false;
-    
-    // "costruzione" della struct (tipo il constractor nelle classsi)
-    posizione testaSerpernte;
-    testaSerpernte.posizioneX=0;
-    testaSerpernte.posizioneY=0;
-    testaSerpernte.simboloCheIndicaLaTesta='?';
 
     stampaAVideoIlTesto("introduzione", linguaTesto);
     do {
         punti = 0;
-	stampaAVideoIlTesto("menu", linguaTesto);
+        
+        stampaAVideoIlTesto("menu", linguaTesto);
         esciDalGioco=false;
         sceltaErrata=false;
         char sceltaPlayer;
@@ -121,10 +116,17 @@ int main(int argc, char const *argv[]) {
             // Giocare
             // le parentesi grafe servono per evitare l'errore jump-to-case-label-in-switch-statement 
             // dovuto alla inizializzazione di variabili all'interno di un case dello switch ma che non vengono inizializzate nei case successivi
+            
+                // "costruzione" della struct (tipo il constractor nelle classsi)
+                posizione testaSerpernte;
+                testaSerpernte.posizioneX=0;
+                testaSerpernte.posizioneY=0;
+                testaSerpernte.simboloCheIndicaLaTesta='?';
+
                 clearScreen();
                 char campo[altezzaCampo][larghezzaCampo];
                 testaSerpernte = creazioneCampo(campo, testaSerpernte);
-		loading();
+                loading();
                 stampaCampo(campo, punti, testaSerpernte);
 
                 bool arrivatoAllaFine=false;
@@ -305,7 +307,7 @@ char recevimentoMovimentoSpostamento() {
 }
 
 int controllaPunteggio(int coordinatax, int coordinatay, char (*matrix)[larghezzaCampo]){
-	if(matrix[coordinatay][coordinatax] == '!'){
+	if(matrix[coordinatay][coordinatax] == '$'){
 		numero_monete++;
 	} else if(matrix[coordinatay][coordinatax] == '!'){
 		numero_monete = numero_monete/2;
@@ -326,7 +328,7 @@ int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testa
         //alto
         if (matrix[testaSerpente->posizioneY-1][testaSerpente->posizioneX]!='#') {
             controllaPunteggio(testaSerpente->posizioneY-1, testaSerpente->posizioneX, matrix);
-	    testaSerpente->posizioneY-=1;
+            testaSerpente->posizioneY-=1;
             spostamenteoRiuscito=true;
         }
         break;
@@ -334,7 +336,7 @@ int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testa
         //basso
         if (matrix[testaSerpente->posizioneY+1][testaSerpente->posizioneX]!='#') {
             controllaPunteggio(testaSerpente->posizioneY+1, testaSerpente->posizioneX, matrix);
-	    testaSerpente->posizioneY+=1;
+            testaSerpente->posizioneY+=1;
             spostamenteoRiuscito=true;
         }
         break;
@@ -342,7 +344,7 @@ int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testa
         //sinistra
         if (matrix[testaSerpente->posizioneY][testaSerpente->posizioneX-1]!='#' && testaSerpente->posizioneX-1>0) {
             controllaPunteggio(testaSerpente->posizioneY, testaSerpente->posizioneX-1, matrix); 
-	    testaSerpente->posizioneX-=1;
+            testaSerpente->posizioneX-=1;
             spostamenteoRiuscito=true;
         }
         break;
@@ -350,7 +352,7 @@ int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testa
         //destra
         if (matrix[testaSerpente->posizioneY][testaSerpente->posizioneX+1]!='#') {
             controllaPunteggio(testaSerpente->posizioneY, testaSerpente->posizioneX+1, matrix);
-	    testaSerpente->posizioneX= testaSerpente->posizioneX+1;
+            testaSerpente->posizioneX= testaSerpente->posizioneX+1;
             spostamenteoRiuscito=true;
         }
         break;

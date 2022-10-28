@@ -7,7 +7,7 @@ Ciao, benvenuto in snake
 <menu>
 Menu' di gioco:
 --> 1) Giocare = 1
---> 2) Manuale = 2
+--> 2) Regole = 2
 --> 3) IA = 3
 --> 4) Partecipanti = 4
 --> 5) Lingua = 5

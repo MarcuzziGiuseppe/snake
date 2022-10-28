@@ -5,9 +5,9 @@ Press any key to continue
 Hi, welcome in snake
 </introduzione>
 <menu>
-Game menu':
+Game menu:
 --> 1) Play = 1
---> 2) Manual = 2
+--> 2) Rules = 2
 --> 3) AI = 3
 --> 4) Creators = 4
 --> 5) Language = 5
@@ -30,7 +30,7 @@ Scelta errata
 
 </sceltaErrata>
 <direzione>
-Dimmi dove muovermi: w=su s=giu' d=destra a=sinistra
+Tell me where you want to go: w=up s=down d=right a=left
 </direzione>
 <direzioneSbagliata>
 Questa non e' una direzione consentita
