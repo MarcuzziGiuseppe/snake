@@ -2,18 +2,7 @@
 Press any key to continue
 </fermaStampa>
 <introduzione>
-.__    .__         .__                                                                          
-|  |__ |__| ______ |  | _____  ___.__. ___________                                              
-|  |  \|  | \____ \|  | \__  \<   |  |/ __ \_  __ \                                             
-|   Y  \  | |  |_> >  |__/ __ \\___  \  ___/|  | \/                                             
-|___|  /__| |   __/|____(____  / ____|\___  >__| /\                                             
-     \/     |__|             \/\/         \/     )/                                             
-.__          __ /\               .__                         .__  __  .__                       
-|  |   _____/  |)/ ______ ______ |  | _____  ___.__. __  _  _|__|/  |_|  |__     _____   ____   
-|  | _/ __ \   __\/  ___/ \____ \|  | \__  \<   |  | \ \/ \/ /  \   __\  |  \   /     \_/ __ \  
-|  |_\  ___/|  |  \___ \  |  |_> >  |__/ __ \\___  |  \     /|  ||  | |   Y  \ |  Y Y  \  ___/  
-|____/\___  >__| /____  > |   __/|____(____  / ____|   \/\_/ |__||__| |___|  / |__|_|  /\___  > 
-          \/          \/  |__|             \/\/                            \/        \/     \/  
+Hi, welcome in snake
 </introduzione>
 <menu>
 Game menu':
@@ -26,35 +15,34 @@ Game menu':
 Where you are ready press the corrisponding number
 </menu>
 <regole>
-Manuale
+In this game to let move Snake you have to press one of this 4 keys:
+--> 1) w = Go up 
+--> 2) s = Go down
+--> 3) a = Go left
+--> 4) d = Go right
+When you're playing press 'q' to return to game menu
 </regole>
 <IA>
 IA
 </IA>
 <partecipanti>
-Partecipanti:
+Editors:
 Marcuzzi Giuseppe 894698
 Campagnolo Alberto 897569
 </partecipanti>
 <sceltaErrata>
-Scelta errata
+Wrong chose
 
 </sceltaErrata>
-<direzione>
-Dimmi dove muovermi: w=su s=giu' d=destra a=sinistra
-</direzione>
-<direzioneSbagliata>
-Questa non e' una direzione consentita
-</direzioneSbagliata>
 <direzioneNonConsentita>
-Direzione non Consentita perche' andresti contro il muro o andresti fuori dalla mappa
+Direction not allowed cause you would hit the wall or go off the map
 </direzioneNonConsentita>
 <vittoriaGioco>
-Sei arrivato alla fine del percorso
+Congratulation, you arrived at the end of the pen is on the table (percorso in Inglese)
 Complimenti hai vinto
 </vittoriaGioco>
 <lingue>
-Scegli la lingua del gioco
---> 1) Italiano = 1
---> 2) Inglese = 2
+Chose the language
+--> 1) Italian = 1
+--> 2) english = 2
 </lingue>
