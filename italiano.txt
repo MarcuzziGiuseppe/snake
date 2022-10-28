@@ -2,12 +2,12 @@
 Premi un tasto per continuare
 </fermaStampa>
 <introduzione>
-Ciao, ben venuto in snake
+Ciao, benvenuto in snake
 </introduzione>
 <menu>
 Menu' di gioco:
 --> 1) Giocare = 1
---> 2) Manuale = 2
+--> 2) Regole = 2
 --> 3) IA = 3
 --> 4) Partecipanti = 4
 --> 5) Lingua = 5
