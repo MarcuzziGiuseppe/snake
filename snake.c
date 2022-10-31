@@ -126,23 +126,22 @@ int main(int argc, char const *argv[]) {
                 do {
                     int risultatoSpostamento = spostamento(campo, recevimentoMovimentoSpostamento(), &testaSerpernte);
                     if (risultatoSpostamento==-1) {
-			            stampaAVideoIlTesto("direzioneNonConsentita", linguaTesto);
+						stampaAVideoIlTesto("direzioneNonConsentita", linguaTesto);
                     } else {
                         if(risultatoSpostamento==-2){
                             break;
                         }
                     }
-		            clearScreen();
+					clearScreen();
                     if (testaSerpernte.posizioneX==larghezzaCampo-1) {
-			            stampaAVideoIlTesto("vittoriaGioco", linguaTesto);
+						stampaAVideoIlTesto("vittoriaGioco", linguaTesto);
                         printf("Score ==>%d\n", (punti+(numero_monete*3)));
-			            arrivatoAllaFine=true;
+						arrivatoAllaFine=true;
                     }
                     stampaCampo(campo, punti, testaSerpernte);
                 } while (arrivatoAllaFine==false);
                 fermaStampa();
-	    }
-	    break;
+		} break;
         case '2':
             // Manuale
             clearScreen();
@@ -183,8 +182,7 @@ int main(int argc, char const *argv[]) {
                 }
             } while (linguaSelezionataCorrettamente!=true);
             fermaStampa(); // solo temporanea finchè non metto che imposta la lingua
-	    }
-	    break;
+		} break;
         case '0':
             // esce dal programma
             esciDalGioco=true;
@@ -204,7 +202,7 @@ int main(int argc, char const *argv[]) {
 void fermaStampa() {
     // getchar mi peremette di non dover premere invio dopo aver scritto ma ovviamnete prende solo il primo carattere
     stampaAVideoIlTesto("fermaStampa",linguaTesto);
-    char fermaStampa = getchar();
+    char fermaStampa = getch();
 }
 
 int randomNumber(int max, int min){	
@@ -282,9 +280,9 @@ void stampaCampo(char (*matrix)[larghezzaCampo], int punteggio, posizione testaS
     for (size_t i = 0; i < larghezzaCampo; i++) {
         
 	if(i==2){
-	    printf("|%d|", punti);
+		printf("|%d|", punti);
 	} else if(i==7){
-	    printf("|%d|", numero_monete);
+		printf("|%d|", numero_monete);
 	} else {
             printf(" ");
 	}
