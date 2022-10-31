@@ -56,9 +56,6 @@ char getch(void) {
 #define distanzaMassimaTraColonne 6
 #define lunghezzaMassimaStringa 100
 
-// source di #undef https://stackoverflow.com/questions/9274500/redefining-or-changing-macro-value
-//#define linguaScelta "italiano"
-
 // variabili globali
 int numero_monete = 0;
 int punti = 0;
