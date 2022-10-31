@@ -5,7 +5,6 @@
     --> Concludere il menù
     --> Distanza Colonne ed ampiezza di esse fissa o meno (bho non se se lo faremo, non  trovo molta utilità)
     // to do molto improbabili da fare
-    --> Una specie di caricamento (LOADING... magari scritto pure in modo carino)
     --> aggiungere varie difficoltà (con i muri che si spostano)
     --> altro
 */
@@ -95,6 +94,7 @@ int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testa
 // gestione dei file
 bool controlloDeiFile(char lingua[]);
 void stampaAVideoIlTesto(char paragrafo[], int linguaTesto);
+void stampaLoading(char paragrafo[]);
 
 int main(int argc, char const *argv[]) {
     srand(time(NULL));
@@ -280,9 +280,11 @@ bool controlloDeiFile(char lingua[]){
     strcat(stringaTemp, ".txt");
     FILE *fin = fopen(stringaTemp, "r");
     if (fin!=NULL) {
+        // file trovato
         return true;
         fclose(fin);
     }
+    // file non trovato
     return false;
 }
 
@@ -332,7 +334,7 @@ void stampaLoading(char paragrafo[]){
     if (controlloDeiFile(lingua) == false){
         printf("Error! opening file, file not in the same folder of the program");
         fermaStampa();
-        // Programma esce se non esite il file nella stessa cartella del programma-*+
+        // Programma esce se non esite il file nella stessa cartella del programma
         exit(1);
     } else {
         char stringaTemp[100];
@@ -364,26 +366,39 @@ void stampaLoading(char paragrafo[]){
 void loading(){
 	char a = ' ', b = '#';
 	printf("\n\n\n\n");
-    char c[10];
-    sprintf(c, "%ld", randomNumber(4, 1));
-    stampaLoading(c);
-    printf("\t\t\t[");
-	
-	for(int i = 0;i < 26; i++){	
-		printf("%c", a);
-	}
-	printf("]");
-	printf("\r");
-	printf("\t\t\t");
+    if (controlloDeiFile("loadings") == false){
+        printf("Error! opening file, file not in the same folder of the program");
+        fermaStampa();
+        // Programma esce se non esite il file nella stessa cartella del programma
+        exit(1);
+    } else {
+        // leggo la prima riga del file loadings.txt per sapere quanti loading ci sono nel file
+        int numeroLoadings=1;
+        FILE *fin = fopen("loadings.txt", "r");
+        char numeroDiLoadingsLetti[10]="5"; 
+        fgets(numeroDiLoadingsLetti, sizeof(numeroDiLoadingsLetti), fin);
+        numeroLoadings=atoi(numeroDiLoadingsLetti);
+        fclose(fin);
 
-	for(int i=0;i < 26; i++){
-		if(i==0){
-			printf("[");
-		}
-		printf("%c", b);
-		fflush(stdout);
-		Sleep(i==24 ? randomNumber(300,100)*10 : randomNumber(20,10)*10);
-	}
+        char c[10];
+        sprintf(c, "%ld", randomNumber(numeroLoadings, 1));
+        stampaLoading(c);
+        printf("\t\t\t[");
+        
+        for(int i = 0;i < 26; i++){	
+            printf("%c", a);
+        }
+        printf("]");
+        printf("\r");
+        printf("\t\t\t");
 
-	clearScreen();
+        for(int i=0;i < 26; i++){
+            if(i==0){
+                printf("[");
+            }
+            printf("%c", b);
+            fflush(stdout);
+            Sleep(i==24 ? randomNumber(300,100)*10 : randomNumber(20,10)*10);
+        }
+    }
 }
