@@ -18,34 +18,39 @@
 #ifdef _WIN32
     #include <conio.h>
     #include <windows.h>
+    char fineTag[] = ">\n";
 #elif __linux__
     #include <unistd.h>
     #include <termios.h>
-static struct termios old, new;
-void initTermios(int echo) {
-    tcgetattr(0, &old); //grab old terminal i/o settings
-    new = old; //make new settings same as old settings
-    new.c_lflag &= ~ICANON; //disable buffered i/o
-    new.c_lflag &= echo ? ECHO : ~ECHO; //set echo mode
-    tcsetattr(0, TCSANOW, &new); //apply terminal io settings
-}
+    static struct termios old, new;
+    void initTermios(int echo) {
+        tcgetattr(0, &old); //grab old terminal i/o settings
+        new = old; //make new settings same as old settings
+        new.c_lflag &= ~ICANON; //disable buffered i/o
+        new.c_lflag &= echo ? ECHO : ~ECHO; //set echo mode
+        tcsetattr(0, TCSANOW, &new); //apply terminal io settings
+    }
 
-/* Restore old terminal i/o settings */
-void resetTermios(void) {
-    tcsetattr(0, TCSANOW, &old);
-}
+    /* Restore old terminal i/o settings */
+    void resetTermios(void) {
+        tcsetattr(0, TCSANOW, &old);
+    }
 
-/* Read 1 character - echo defines echo mode */
-char getch_(int echo) {
-    char ch;
-    initTermios(echo);
-    ch = getchar();
-    resetTermios();
-    return ch;
-}
-char getch(void) {
-    return getch_(0);
-}
+    /* Read 1 character - echo defines echo mode */
+    char getch_(int echo) {
+        char ch;
+        initTermios(echo);
+        ch = getchar();
+        resetTermios();
+        return ch;
+    }
+    char getch(void) {
+        return getch_(0);
+    }
+    void Sleep(int tempo) {
+        sleep(tempo/1000);
+    }
+    char fineTag[] = ">\r\n";
 #endif
 
 #define altezzaCampo 10
@@ -296,7 +301,7 @@ char recevimentoMovimentoSpostamento() {
     char spostamento;
     do {
         sceltaErrata=false;
-        spostamento = _getch();
+        spostamento = getch();
         //scanf("%c", &spostamento);
         if (spostamento!='w' && spostamento != 's' && spostamento != 'a' && spostamento!='d' && spostamento!='q') {
             sceltaErrata=true;
@@ -403,9 +408,9 @@ void stampaAVideoIlTesto(char paragrafo[], int linguaTesto){
 
         char stringaDaStampare[100]="bho"; 
         char tagIniziale[100]="<";
-        strcat(strcat(tagIniziale, paragrafo), ">\n");
+        strcat(strcat(tagIniziale, paragrafo), fineTag);
         char tagFinale[100]= "</";
-        strcat(strcat(tagFinale, paragrafo), ">\n");
+        strcat(strcat(tagFinale, paragrafo), fineTag);
         do {
             fgets(stringaDaStampare, sizeof(stringaDaStampare), fin);
             if (strcmp(stringaDaStampare,tagIniziale)==0) {
@@ -439,9 +444,9 @@ void stampaLoading(char paragrafo[]){
 
         char stringaDaStampare[300]="bho"; 
         char tagIniziale[100]="<";
-        strcat(strcat(tagIniziale, paragrafo), ">\n");
+        strcat(strcat(tagIniziale, paragrafo), fineTag);
         char tagFinale[100]= "</";
-        strcat(strcat(tagFinale, paragrafo), ">\n");
+        strcat(strcat(tagFinale, paragrafo), fineTag);
         do {
             fgets(stringaDaStampare, sizeof(stringaDaStampare), fin);
             if (strcmp(stringaDaStampare,tagIniziale)==0) {
