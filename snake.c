@@ -88,7 +88,7 @@ void stampaCampo(char (*matrix)[larghezzaCampo], int punteggio, posizione testaS
 
 // gestione movimento
 char recevimentoMovimentoSpostamento();
-int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testaSerpente);
+int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testaSerpente, bool isIA);
 
 // gestione dei file
 bool controlloDeiFile(char lingua[]);
@@ -96,8 +96,21 @@ void stampaAVideoIlTesto(char paragrafo[], int linguaTesto);
 void stampaLoading(char paragrafo[]);
 void loading();
 
+// IA
+void algoritmoIA(char (*matrix)[larghezzaCampo], posizione testaSerpente);
+
 int main(int argc, char const *argv[]) {
     srand(time(NULL));
+
+    // "costruzione" della struct (tipo il constractor nelle classsi)
+    posizione testaSerpernte;
+    testaSerpernte.posizioneX=0;
+    testaSerpernte.posizioneY=0;
+    testaSerpernte.simboloCheIndicaLaTesta='?';
+
+    char campo[altezzaCampo][larghezzaCampo];
+    bool arrivatoAllaFine=false; // indica se sono arrivato alla fine del labirinto
+    testaSerpernte = creazioneCampo(campo, testaSerpernte);
 
     bool esciDalGioco = false;
     bool sceltaErrata = false;
@@ -114,38 +127,25 @@ int main(int argc, char const *argv[]) {
             // Giocare
             // le parentesi grafe servono per evitare l'errore jump-to-case-label-in-switch-statement 
             // dovuto alla inizializzazione di variabili all'interno di un case dello switch ma che non vengono inizializzate nei case successivi
-            
-                // "costruzione" della struct (tipo il constractor nelle classsi)
-                posizione testaSerpernte;
-                testaSerpernte.posizioneX=0;
-                testaSerpernte.posizioneY=0;
-                testaSerpernte.simboloCheIndicaLaTesta='?';
 
-                clearScreen();
-                char campo[altezzaCampo][larghezzaCampo];
-                testaSerpernte = creazioneCampo(campo, testaSerpernte);
-                loading();
+            clearScreen();
+            loading();
+            stampaCampo(campo, punti, testaSerpernte);
+
+            do {
+                int risultatoSpostamento = spostamento(campo, recevimentoMovimentoSpostamento(), &testaSerpernte, false);
+                if(risultatoSpostamento==-2){
+                    break;
+                }
+				clearScreen();
+                if (testaSerpernte.posizioneX==larghezzaCampo-1) {
+					stampaAVideoIlTesto("vittoriaGioco", linguaTesto);
+                    printf("Score ==>%d\n", (punti+(numero_monete*3)));
+					arrivatoAllaFine=true;
+                }
                 stampaCampo(campo, punti, testaSerpernte);
-
-                bool arrivatoAllaFine=false;
-                do {
-                    int risultatoSpostamento = spostamento(campo, recevimentoMovimentoSpostamento(), &testaSerpernte);
-                    if (risultatoSpostamento==-1) {
-						stampaAVideoIlTesto("direzioneNonConsentita", linguaTesto);
-                    } else {
-                        if(risultatoSpostamento==-2){
-                            break;
-                        }
-                    }
-					clearScreen();
-                    if (testaSerpernte.posizioneX==larghezzaCampo-1) {
-						stampaAVideoIlTesto("vittoriaGioco", linguaTesto);
-                        printf("Score ==>%d\n", (punti+(numero_monete*3)));
-						arrivatoAllaFine=true;
-                    }
-                    stampaCampo(campo, punti, testaSerpernte);
-                } while (arrivatoAllaFine==false);
-                fermaStampa();
+            } while (arrivatoAllaFine==false);
+            fermaStampa();
 		} break;
         case '2':
             // Manuale
@@ -158,6 +158,7 @@ int main(int argc, char const *argv[]) {
             clearScreen();
             stampaAVideoIlTesto("IA", linguaTesto);
             fermaStampa();
+            algoritmoIA(campo, testaSerpernte);
             break;
         case '4':
             // Partecipanti
@@ -283,14 +284,13 @@ void stampaCampo(char (*matrix)[larghezzaCampo], int punteggio, posizione testaS
     }
     // questa parte serve unicamnete per rendere piu' carina la separazione tra le 2 stampe
     for (size_t i = 0; i < larghezzaCampo; i++) {
-        
-	if(i==2){
-		printf("|%d|", punti);
-	} else if(i==7){
-		printf("|%d|", numero_monete);
-	} else {
-            printf(" ");
-	}
+        if(i==2){
+            printf("|%d|", punti);
+        } else if(i==7){
+            printf("|%d|", numero_monete);
+        } else {
+                printf(" ");
+        }
 
     }
     printf("\n");
@@ -321,7 +321,7 @@ int controllaPunteggio(int coordinatay, int coordinatax, char (*matrix)[larghezz
 	}
 }
 
-int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testaSerpente) {
+int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testaSerpente, bool isIA) {
 
     int posizioneXOriginale = testaSerpente->posizioneX;
     int posizioneYOriginale = testaSerpente->posizioneY;
@@ -369,7 +369,11 @@ int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testa
     }
 
     if (spostamenteoRiuscito==true) {
-        matrix[posizioneYOriginale][posizioneXOriginale]=' ';
+        if (isIA==true) {
+            matrix[posizioneYOriginale][posizioneXOriginale]='.';
+        } else {
+            matrix[posizioneYOriginale][posizioneXOriginale]=' ';
+        }
         return 0;
     }
     
@@ -503,4 +507,54 @@ void loading(){
     }
 
     clearScreen();
+}
+
+void algoritmoIA(char (*campo)[larghezzaCampo], posizione testaSerpente) {
+
+    clearScreen();
+    loading();
+    stampaCampo(campo, punti, testaSerpente);
+
+    bool arrivatoAllaFine = false;
+    bool spazioLiberoSotto = false;
+
+    char direzione = 'd';
+    char mosseFatte[larghezzaCampo*altezzaCampo];
+
+    do {
+        if (mosseFatte[0]=='\004') {
+            mosseFatte[0] = direzione;
+        } else {
+            strncat(mosseFatte, &direzione, 1);
+        }
+        spazioLiberoSotto = false;
+        int risultatoSpostamento = spostamento(campo, direzione, &testaSerpente, true);
+        if (risultatoSpostamento==-1) {
+            for (int i = testaSerpente.posizioneY+1; i < altezzaCampo-1; i++) {
+                if (campo[i][testaSerpente.posizioneX+1]==' ') {
+                    spazioLiberoSotto = true;
+                }
+            }
+            if (spazioLiberoSotto==true) {
+                direzione='s';
+            } else {
+                direzione = 'w';
+            }
+        } else {
+            clearScreen();
+            if (testaSerpente.posizioneX==larghezzaCampo-1) {
+                stampaAVideoIlTesto("vittoriaGioco", linguaTesto);
+                printf("Score ==>%d\n", (punti+(numero_monete*3)));
+                arrivatoAllaFine=true;
+            }
+            stampaCampo(campo, punti, testaSerpente);
+            if (direzione!='d' && campo[testaSerpente.posizioneY][testaSerpente.posizioneX+1]==' ') {
+                direzione ='d';
+            }
+        }
+    } while (arrivatoAllaFine==false);
+    printf("Mosse eseguite: %s\n", mosseFatte);
+    fermaStampa();
+
+    return;
 }
