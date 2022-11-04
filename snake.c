@@ -3,6 +3,7 @@
     TO DO
     --> Documentazione
     --> algoritmo IA (tengo la mano sul muro di dx) (Alberto (+ Giuseppe?))
+    --> controllare meglio il clear screen su linux a volte è un po' buggato
     // to do molto improbabili da fare
     --> altro
 */
@@ -48,7 +49,7 @@
         return getch_(0);
     }
     void Sleep(int tempo) {
-        sleep(tempo/1000);
+        sleep(tempo/700); // controllare meglio il valore per cui dividere (non so non mi paice molto il tempo di attesa)
     }
     #define fineTag ">\r\n"
 #endif
@@ -97,7 +98,7 @@ void stampaLoading(char paragrafo[]);
 void loading();
 
 // IA
-void algoritmoIA(char (*matrix)[larghezzaCampo], posizione testaSerpente);
+void algoritmoIA(char (*campo)[larghezzaCampo], posizione testaSerpente, char direzione, char *mosseFatte, int posizioneArrayMosseFatte);
 
 int main(int argc, char const *argv[]) {
     srand(time(NULL));
@@ -110,7 +111,6 @@ int main(int argc, char const *argv[]) {
 
     char campo[altezzaCampo][larghezzaCampo];
     bool arrivatoAllaFine=false; // indica se sono arrivato alla fine del labirinto
-    testaSerpernte = creazioneCampo(campo, testaSerpernte);
 
     bool esciDalGioco = false;
     bool sceltaErrata = false;
@@ -127,7 +127,7 @@ int main(int argc, char const *argv[]) {
             // Giocare
             // le parentesi grafe servono per evitare l'errore jump-to-case-label-in-switch-statement 
             // dovuto alla inizializzazione di variabili all'interno di un case dello switch ma che non vengono inizializzate nei case successivi
-
+            testaSerpernte = creazioneCampo(campo, testaSerpernte);
             clearScreen();
             loading();
             stampaCampo(campo, punti, testaSerpernte);
@@ -158,7 +158,15 @@ int main(int argc, char const *argv[]) {
             clearScreen();
             stampaAVideoIlTesto("IA", linguaTesto);
             fermaStampa();
-            algoritmoIA(campo, testaSerpernte);
+            testaSerpernte = creazioneCampo(campo, testaSerpernte);
+            clearScreen();
+            loading();
+            stampaCampo(campo, punti, testaSerpernte);
+            char direzioneIniziale = 'd';
+            char mosseFatte[larghezzaCampo*altezzaCampo];
+            algoritmoIA(campo, testaSerpernte, direzioneIniziale, mosseFatte, 0);
+            printf("Mosse eseguite: %s\n", mosseFatte);
+            fermaStampa();
             break;
         case '4':
             // Partecipanti
@@ -509,52 +517,41 @@ void loading(){
     clearScreen();
 }
 
-void algoritmoIA(char (*campo)[larghezzaCampo], posizione testaSerpente) {
-
-    clearScreen();
-    loading();
-    stampaCampo(campo, punti, testaSerpente);
+void algoritmoIA(char (*campo)[larghezzaCampo], posizione testaSerpente, char direzione, char *mosseFatte, int posizioneArrayMosseFatte) {
 
     bool arrivatoAllaFine = false;
     bool spazioLiberoSotto = false;
 
-    char direzione = 'd';
-    char mosseFatte[larghezzaCampo*altezzaCampo];
-
-    do {
-        if (mosseFatte[0]=='\004') {
-            mosseFatte[0] = direzione;
-        } else {
-            strncat(mosseFatte, &direzione, 1);
-        }
-        spazioLiberoSotto = false;
-        int risultatoSpostamento = spostamento(campo, direzione, &testaSerpente, true);
-        if (risultatoSpostamento==-1) {
-            for (int i = testaSerpente.posizioneY+1; i < altezzaCampo-1; i++) {
-                if (campo[i][testaSerpente.posizioneX+1]==' ') {
-                    spazioLiberoSotto = true;
-                }
-            }
-            if (spazioLiberoSotto==true) {
-                direzione='s';
-            } else {
-                direzione = 'w';
-            }
-        } else {
-            clearScreen();
-            if (testaSerpente.posizioneX==larghezzaCampo-1) {
-                stampaAVideoIlTesto("vittoriaGioco", linguaTesto);
-                printf("Score ==>%d\n", (punti+(numero_monete*3)));
-                arrivatoAllaFine=true;
-            }
-            stampaCampo(campo, punti, testaSerpente);
-            if (direzione!='d' && campo[testaSerpente.posizioneY][testaSerpente.posizioneX+1]==' ') {
-                direzione ='d';
+    mosseFatte[posizioneArrayMosseFatte] = direzione;
+    spazioLiberoSotto = false;
+    int risultatoSpostamento = spostamento(campo, direzione, &testaSerpente, true);
+    if (risultatoSpostamento==-1) {
+        for (int i = testaSerpente.posizioneY+1; i < altezzaCampo-1; i++) {
+            if (campo[i][testaSerpente.posizioneX+1]==' ' || campo[i][testaSerpente.posizioneX+1]=='$' || campo[i][testaSerpente.posizioneX+1]=='!') {
+                spazioLiberoSotto = true;
             }
         }
-    } while (arrivatoAllaFine==false);
-    printf("Mosse eseguite: %s\n", mosseFatte);
-    fermaStampa();
+        if (spazioLiberoSotto==true) {
+            direzione='s';
+        } else {
+            direzione = 'w';
+        }
+    } else {
+        clearScreen();
+        if (testaSerpente.posizioneX==larghezzaCampo-1) {
+            stampaAVideoIlTesto("vittoriaGioco", linguaTesto);
+            printf("Score ==>%d\n", (punti+(numero_monete*3)));
+            arrivatoAllaFine=true;
+        }
+        stampaCampo(campo, punti, testaSerpente);
+        if (direzione!='d' && campo[testaSerpente.posizioneY][testaSerpente.posizioneX+1]==' ' || campo[testaSerpente.posizioneY][testaSerpente.posizioneX+1]=='$' || campo[testaSerpente.posizioneY][testaSerpente.posizioneX+1]=='!') {
+            direzione ='d';
+        }
+    }
+    if (arrivatoAllaFine==false) {
+        posizioneArrayMosseFatte++;
+        algoritmoIA(campo, testaSerpente, direzione, mosseFatte, posizioneArrayMosseFatte);
+    }
 
-    return;
+    return ;
 }

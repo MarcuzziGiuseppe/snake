@@ -50,7 +50,7 @@ Direction not allowed cause you would hit the wall or go off the map
 </direzioneNonConsentita>
 <vittoriaGioco>
 Congratulation, you arrived at the end of the pen is on the table (percorso in Inglese)
-Complimenti hai vinto
+Congratulation you win
 </vittoriaGioco>
 <lingue>
 Chose the language
