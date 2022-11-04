@@ -18,7 +18,7 @@
 #ifdef _WIN32
     #include <conio.h>
     #include <windows.h>
-    char fineTag[] = ">\n";
+    #define fineTag ">\n"
 #elif __linux__
     #include <unistd.h>
     #include <termios.h>
@@ -50,7 +50,7 @@
     void Sleep(int tempo) {
         sleep(tempo/1000);
     }
-    char fineTag[] = ">\r\n";
+    #define fineTag ">\r\n"
 #endif
 
 #define altezzaCampo 10
