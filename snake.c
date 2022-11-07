@@ -2,7 +2,7 @@
     Campagnolo Alberto
     TO DO
     --> Documentazione
-    --> algoritmo IA (tengo la mano sul muro di dx) (Alberto (+ Giuseppe?))
+    --> algoritmo IA (path finding) (Alberto (+ Giuseppe?))
     // to do molto improbabili da fare
     --> altro
 */
@@ -11,10 +11,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <string.h>
-// a linux conio.h non piace. Per cosa lo usiamo conio?? conio la usiamo per getch
-// possibile soluzione: https://www.includehelp.com/c-programs/gotoxy-clrscr-getch-getche-for-gcc-linux.aspx
 // switch based on os system: https://stackoverflow.com/questions/6649936/c-compiling-on-windows-and-linux-ifdef-switch
-// questa roba dovrebbe piacerli
 #ifdef _WIN32
     #include <conio.h>
     #include <windows.h>
@@ -95,7 +92,7 @@ void stampaLoading(char paragrafo[]);
 void loading();
 
 // IA
-void algoritmoIA(char (*campo)[larghezzaCampo], posizione testaSerpente, char direzione, char *mosseFatte, int posizioneArrayMosseFatte, char algoritmoScelto);
+int algoritmoIA(char (*campo)[larghezzaCampo], posizione testaSerpente, char direzione, char *mosseFatte, int posizioneArrayMosseFatte, char algoritmoScelto);
 void goToPointAndGetIt(char (*campo)[larghezzaCampo], posizione *testaSerpente, char direzione, char *mosseFatte, int posizioneArrayMosseFatte);
 
 
@@ -104,9 +101,6 @@ int main(int argc, char const *argv[]) {
 
     // "costruzione" della struct (tipo il constractor nelle classsi)
     posizione testaSerpernte;
-    testaSerpernte.posizioneX=0;
-    testaSerpernte.posizioneY=0;
-    testaSerpernte.simboloCheIndicaLaTesta='?';
 
     char campo[altezzaCampo][larghezzaCampo];
     bool arrivatoAllaFine=false; // indica se sono arrivato alla fine del labirinto
@@ -114,6 +108,9 @@ int main(int argc, char const *argv[]) {
     bool esciDalGioco = false;
     bool sceltaErrata = false;
     do {
+        testaSerpernte.posizioneX=0;
+        testaSerpernte.posizioneY=0;
+        testaSerpernte.simboloCheIndicaLaTesta='?';
         punti = 0;
         stampaAVideoIlTesto("introduzione", linguaTesto);
         stampaAVideoIlTesto("menu", linguaTesto);
@@ -132,6 +129,7 @@ int main(int argc, char const *argv[]) {
             stampaCampo(campo, punti, testaSerpernte);
 
             do {
+                arrivatoAllaFine=false;
                 int risultatoSpostamento = spostamento(campo, recevimentoMovimentoSpostamento(), &testaSerpernte, false);
                 if(risultatoSpostamento==-2){
                     break;
@@ -152,7 +150,7 @@ int main(int argc, char const *argv[]) {
             stampaAVideoIlTesto("regole", linguaTesto);
             fermaStampa();
             break;
-        case '3':
+        case '3': {
             // IA
             clearScreen();
             stampaAVideoIlTesto("IA", linguaTesto);
@@ -165,10 +163,15 @@ int main(int argc, char const *argv[]) {
             // fermaStampa(); // temporaneo
             char direzioneIniziale = 'd';
             char mosseFatte[larghezzaCampo*altezzaCampo];
-            algoritmoIA(campo, testaSerpernte, direzioneIniziale, mosseFatte, 0, algoritmoScelto);
-            printf("Mosse eseguite: %s\n", mosseFatte);
+            int numeroDiMosse = algoritmoIA(campo, testaSerpernte, direzioneIniziale, mosseFatte, 0, algoritmoScelto) +1;
+            // dovuto stampare in questo modo altrimenti a molte stampava caratteri non desiderati
+            printf("Moves: ");
+            for (int i = 0; i < numeroDiMosse; i++) {
+                printf("%c", mosseFatte[i]);
+            }
+            printf("\n");
             fermaStampa();
-            break;
+            } break;
         case '4':
             // Partecipanti
             clearScreen();
@@ -176,7 +179,7 @@ int main(int argc, char const *argv[]) {
             fermaStampa();
             break;
         case '5':{
-            // Partecipanti
+            // Lingua
             bool linguaSelezionataCorrettamente = true;
             do {
                 linguaSelezionataCorrettamente = true;
@@ -197,7 +200,7 @@ int main(int argc, char const *argv[]) {
                     break;
                 }
             } while (linguaSelezionataCorrettamente!=true);
-            fermaStampa(); // solo temporanea finchè non metto che imposta la lingua
+            fermaStampa();
 		} break;
         case '0':
             // esce dal programma
@@ -216,13 +219,12 @@ int main(int argc, char const *argv[]) {
 }
 
 void fermaStampa() {
-    // getchar mi peremette di non dover premere invio dopo aver scritto ma ovviamnete prende solo il primo carattere
+    // getch mi peremette di non dover premere invio dopo aver scritto ma ovviamnete prende solo il primo carattere
     stampaAVideoIlTesto("fermaStampa",linguaTesto);
     char fermaStampa = getch();
 }
 
 int randomNumber(int max, int min){	
-
 	return rand() % (max - min + 1 ) + min;
 }
 
@@ -243,7 +245,6 @@ void generaElemento(char elemento, int numeroMassimo, char (*matrix)[larghezzaCa
 		matrix[elementoy][elementox] = elemento;
 	}
 }
-
 
 posizione creazioneCampo(char (*matrix)[larghezzaCampo], posizione testaSerpente) {
     for (size_t i = 0; i < altezzaCampo; i++) {
@@ -270,7 +271,7 @@ posizione creazioneCampo(char (*matrix)[larghezzaCampo], posizione testaSerpente
             matrix[j][i]='#';
         }
         int grandezzaSpazioPerPassare = randomNumber(ampiezzaMassimaSpazioPerPassare, ampiezzaMinimaSpazioPerPassare);
-	int puntoPerLoSpazio = randomNumber(altezzaCampo-ampiezzaMassimaSpazioPerPassare, 1); // punto in cui creare lo spazio
+	    int puntoPerLoSpazio = randomNumber(altezzaCampo-ampiezzaMassimaSpazioPerPassare, 1); // punto in cui creare lo spazio
         for (size_t j = 0; j < grandezzaSpazioPerPassare; j++) {
             if (puntoPerLoSpazio<altezzaCampo-1) {
                 matrix[puntoPerLoSpazio][i]=' ';
@@ -301,7 +302,6 @@ void stampaCampo(char (*matrix)[larghezzaCampo], int punteggio, posizione testaS
         } else {
                 printf(" ");
         }
-
     }
     printf("\n");
 }
@@ -312,12 +312,10 @@ char recevimentoMovimentoSpostamento() {
     do {
         sceltaErrata=false;
         spostamento = getch();
-        //scanf("%c", &spostamento);
         if (spostamento!='w' && spostamento != 's' && spostamento != 'a' && spostamento!='d' && spostamento!='q') {
             sceltaErrata=true;
         }
     } while (sceltaErrata==true);
-    // printf(" Direzione scelta: %c\n", spostamento);
     return spostamento;
 }
 
@@ -515,11 +513,10 @@ void loading(){
             Sleep(i==24 ? randomNumber(300,100)*10 : randomNumber(20,10)*10);
         }
     }
-
     clearScreen();
 }
 
-void algoritmoIA(char (*campo)[larghezzaCampo], posizione testaSerpente, char direzione, char *mosseFatte, int posizioneArrayMosseFatte, char algortmoScelto) {
+int algoritmoIA(char (*campo)[larghezzaCampo], posizione testaSerpente, char direzione, char *mosseFatte, int posizioneArrayMosseFatte, char algortmoScelto) {
 
     bool arrivatoAllaFine = false;
     bool spazioLiberoSotto = false;
@@ -557,9 +554,9 @@ void algoritmoIA(char (*campo)[larghezzaCampo], posizione testaSerpente, char di
     if (arrivatoAllaFine==false) {
         posizioneArrayMosseFatte++;
         // fermaStampa(); // temporanea
-        algoritmoIA(campo, testaSerpente, direzione, mosseFatte, posizioneArrayMosseFatte, algortmoScelto);
+        posizioneArrayMosseFatte = algoritmoIA(campo, testaSerpente, direzione, mosseFatte, posizioneArrayMosseFatte, algortmoScelto);
     }
-    return ;
+    return posizioneArrayMosseFatte;
 }
 
 void goToPointAndGetIt(char (*campo)[larghezzaCampo], posizione *testaSerpente, char direzione, char *mosseFatte, int posizioneArrayMosseFatte) {
