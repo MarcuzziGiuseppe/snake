@@ -23,7 +23,7 @@ Game menu':
 --> 4) Creators = 4
 --> 5) Language = 5
 --> 0) Exit form the program = 0
-Where you are ready press the corrisponding number
+When you are ready press the corrisponding number
 </menu>
 <regole>
 In this game to let move Snake you have to press one of this 4 keys:
@@ -34,7 +34,9 @@ In this game to let move Snake you have to press one of this 4 keys:
 When you're playing press 'q' to return to game menu
 </regole>
 <IA>
-IA
+Choose your desired AI algorith:
+--> 1) algorithm that is trying to make as few moves as possible but it doesn't disretake count of the coins
+--> 2) algorithm that goes for all the coins but doesn't take count of the number of moves
 </IA>
 <partecipanti>
 Editors:
@@ -49,11 +51,11 @@ Wrong chose
 Direction not allowed cause you would hit the wall or go off the map
 </direzioneNonConsentita>
 <vittoriaGioco>
-Congratulation, you arrived at the end of the pen is on the table (percorso in Inglese)
+Congratulation, you arrived at the end of the labirinth
 Congratulation you win
 </vittoriaGioco>
 <lingue>
 Chose the language
 --> 1) Italian = 1
---> 2) english = 2
+--> 2) English = 2
 </lingue>

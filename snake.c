@@ -1,9 +1,8 @@
-/* Marcuzzi Giuseppe 21/10/2022 - 26/10/2022
+/* Marcuzzi Giuseppe 21/10/2022 - 07/11/2022
     Campagnolo Alberto
     TO DO
     --> Documentazione
     --> algoritmo IA (tengo la mano sul muro di dx) (Alberto (+ Giuseppe?))
-    --> controllare meglio il clear screen su linux a volte è un po' buggato
     // to do molto improbabili da fare
     --> altro
 */
@@ -20,7 +19,7 @@
     #include <conio.h>
     #include <windows.h>
     #define fineTag ">\n"
-#elif __linux__
+#else
     #include <unistd.h>
     #include <termios.h>
     static struct termios old, new;
@@ -79,8 +78,6 @@ void fermaStampa(); // non fa altro che impedire che le stampe successive vengan
 int randomNumber(int max, int min);
 void clearScreen();
 
-// int setOrGetPunteggio(int serOrGet); //0 = set, 1 = get
-
 // gestione del campo
 int controllaPunteggio(int coordinatay, int coordinatax, char (*matrix)[larghezzaCampo]);
 void generaElemento(char elemento, int numeroMassimo, char (*matrix)[larghezzaCampo]);
@@ -98,7 +95,9 @@ void stampaLoading(char paragrafo[]);
 void loading();
 
 // IA
-void algoritmoIA(char (*campo)[larghezzaCampo], posizione testaSerpente, char direzione, char *mosseFatte, int posizioneArrayMosseFatte);
+void algoritmoIA(char (*campo)[larghezzaCampo], posizione testaSerpente, char direzione, char *mosseFatte, int posizioneArrayMosseFatte, char algoritmoScelto);
+void goToPointAndGetIt(char (*campo)[larghezzaCampo], posizione *testaSerpente, char direzione, char *mosseFatte, int posizioneArrayMosseFatte);
+
 
 int main(int argc, char const *argv[]) {
     srand(time(NULL));
@@ -157,14 +156,16 @@ int main(int argc, char const *argv[]) {
             // IA
             clearScreen();
             stampaAVideoIlTesto("IA", linguaTesto);
-            fermaStampa();
+            char algoritmoScelto = getch(); 
+            // fermaStampa();
             testaSerpernte = creazioneCampo(campo, testaSerpernte);
             clearScreen();
             loading();
             stampaCampo(campo, punti, testaSerpernte);
+            // fermaStampa(); // temporaneo
             char direzioneIniziale = 'd';
             char mosseFatte[larghezzaCampo*altezzaCampo];
-            algoritmoIA(campo, testaSerpernte, direzioneIniziale, mosseFatte, 0);
+            algoritmoIA(campo, testaSerpernte, direzioneIniziale, mosseFatte, 0, algoritmoScelto);
             printf("Mosse eseguite: %s\n", mosseFatte);
             fermaStampa();
             break;
@@ -178,6 +179,7 @@ int main(int argc, char const *argv[]) {
             // Partecipanti
             bool linguaSelezionataCorrettamente = true;
             do {
+                linguaSelezionataCorrettamente = true;
                 clearScreen();
                 stampaAVideoIlTesto("lingue",linguaTesto);
                 sceltaPlayer = getch();
@@ -517,10 +519,14 @@ void loading(){
     clearScreen();
 }
 
-void algoritmoIA(char (*campo)[larghezzaCampo], posizione testaSerpente, char direzione, char *mosseFatte, int posizioneArrayMosseFatte) {
+void algoritmoIA(char (*campo)[larghezzaCampo], posizione testaSerpente, char direzione, char *mosseFatte, int posizioneArrayMosseFatte, char algortmoScelto) {
 
     bool arrivatoAllaFine = false;
     bool spazioLiberoSotto = false;
+
+    if (posizioneArrayMosseFatte!=0 && direzione=='d' && algortmoScelto=='2') {
+        goToPointAndGetIt(campo, &testaSerpente, direzione, mosseFatte, posizioneArrayMosseFatte);
+    }
 
     mosseFatte[posizioneArrayMosseFatte] = direzione;
     spazioLiberoSotto = false;
@@ -550,8 +556,51 @@ void algoritmoIA(char (*campo)[larghezzaCampo], posizione testaSerpente, char di
     }
     if (arrivatoAllaFine==false) {
         posizioneArrayMosseFatte++;
-        algoritmoIA(campo, testaSerpente, direzione, mosseFatte, posizioneArrayMosseFatte);
+        // fermaStampa(); // temporanea
+        algoritmoIA(campo, testaSerpente, direzione, mosseFatte, posizioneArrayMosseFatte, algortmoScelto);
+    }
+    return ;
+}
+
+void goToPointAndGetIt(char (*campo)[larghezzaCampo], posizione *testaSerpente, char direzione, char *mosseFatte, int posizioneArrayMosseFatte) {
+    int numeroMoneteTrovate=0;
+
+    for (int i = testaSerpente->posizioneY+1; i < altezzaCampo; i++) {
+        // guarado se sotto c' e' almeno una moneta
+        if (campo[i][testaSerpente->posizioneX]=='$') {
+            numeroMoneteTrovate++;
+        }
+    }
+    if (numeroMoneteTrovate!=0) {
+        // vado a prendermi i punti
+        direzione='s';
+        int numeroMoneteAttuali = 0;
+        for (int i = testaSerpente->posizioneY; numeroMoneteAttuali < numeroMoneteTrovate; i++) {
+            if (campo[i+1][testaSerpente->posizioneX]=='$') {
+                numeroMoneteAttuali++;
+            }
+            spostamento(campo, direzione, testaSerpente, true);
+        }
     }
 
+    // ora vado a vedere se sopra ho delle monete
+    numeroMoneteTrovate=0;
+    for (int i = testaSerpente->posizioneY-1; i > 0; i--) {
+        // guarado se sotto c' e' almeno una moneta
+        if (campo[i][testaSerpente->posizioneX]=='$') {
+            numeroMoneteTrovate++;
+        }
+    }
+    if (numeroMoneteTrovate!=0) {
+        // vado a prendermi i punti
+        direzione='w';
+        int numeroMoneteAttuali = 0;
+        for (int i = testaSerpente->posizioneY-1; numeroMoneteAttuali < numeroMoneteTrovate; i--) {
+            if (campo[i][testaSerpente->posizioneX]=='$') {
+                numeroMoneteAttuali++;
+            }
+            spostamento(campo, direzione, testaSerpente, true);
+        }
+    }
     return ;
 }

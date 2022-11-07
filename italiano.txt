@@ -34,7 +34,9 @@ In questo gioco Snake per far muovere Snake bisonga premere uno dei seguanti 4 t
 Mentre stai giocando premi il tasto 'q' per tornare al menu' di gioco
 </regole>
 <IA>
-IA
+Scegli l'agoritmo di IA che preferisci:
+--> 1) algoritrmo che cerca di fare meno mosse possibili ma che non tiene conto delle monete
+--> 2) algoritrmo che va a prendere tutte le monete ma non tiene conto del numero di mosse
 </IA>
 <partecipanti>
 Editors:
