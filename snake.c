@@ -119,7 +119,7 @@ int main(int argc, char const *argv[]) {
         char sceltaPlayer;
         sceltaPlayer=getch();
         switch (sceltaPlayer) {
-        case '1':{
+        case '1': {
             // Giocare
             // le parentesi grafe servono per evitare l'errore jump-to-case-label-in-switch-statement 
             // dovuto alla inizializzazione di variabili all'interno di un case dello switch ma che non vengono inizializzate nei case successivi
