@@ -1,9 +1,10 @@
-/* Marcuzzi Giuseppe 21/10/2022 - 07/11/2022
-    Campagnolo Alberto
+/*  Marcuzzi Giuseppe  894698
+    Campagnolo Alberto 897569
+    21/10/2022 - 17/11/2022
     TO DO
     --> Documentazione
-    --> algoritmo IA (path finding) (Alberto (+ Giuseppe?))
-    --> finire il guarda replay chiedendo se versione manuale o automatica
+    --> algoritmo IA (path finding) (Alberto)
+    --> finire il guarda replay chiedendo se versione manuale o automatica (fatto credo, valutare l'opzione sotto)
         --> salvarsi il campo prima che lui giochi e la posizione della testa (creare due nuovi campi all'interno delle struct?)
     // to do molto improbabili da fare
     --> altro
@@ -72,6 +73,11 @@ typedef struct {
     char simboloCheIndicaLaTesta;
 } posizione;
 
+typedef struct {
+    char campo[altezzaCampo][larghezzaCampo];
+} matriceCampo;
+
+
 // funzioni "strane"
 void fermaStampa(); // non fa altro che impedire che le stampe successive vengano eseguite
 int randomNumber(int max, int min);
@@ -92,7 +98,8 @@ bool controlloDeiFile(char nomeFile[]);
 void stampaAVideoIlTesto(char paragrafo[], int linguaTesto);
 void stampaLoading(char paragrafo[]);
 void loading();
-void saveReplay(char (*field)[larghezzaCampo], char *movesMaked, int numberOfMoves);
+void setField(matriceCampo *fieldStruct, char (*field)[larghezzaCampo]);
+void saveReplay(char (*field)[larghezzaCampo], char *movesMaked, int numberOfMoves, matriceCampo *fieldStruct);
 int nextNumberOfReplay();
 void watchReplay();
 
@@ -106,6 +113,7 @@ int main(int argc, char const *argv[]) {
 
     // "costruzione" della struct (tipo il constractor nelle classsi)
     posizione testaSerpernte;
+    matriceCampo field; 
 
     char campo[altezzaCampo][larghezzaCampo];
     bool arrivatoAllaFine=false; // indica se sono arrivato alla fine del labirinto
@@ -117,6 +125,7 @@ int main(int argc, char const *argv[]) {
         testaSerpernte.posizioneY=0;
         testaSerpernte.simboloCheIndicaLaTesta='?';
         punti = 0;
+        numero_monete = 0;
         stampaAVideoIlTesto("introduzione", linguaTesto);
         stampaAVideoIlTesto("menu", linguaTesto);
         esciDalGioco=false;
@@ -129,6 +138,7 @@ int main(int argc, char const *argv[]) {
             // le parentesi grafe servono per evitare l'errore jump-to-case-label-in-switch-statement 
             // dovuto alla inizializzazione di variabili all'interno di un case dello switch ma che non vengono inizializzate nei case successivi
             testaSerpernte = creazioneCampo(campo, testaSerpernte);
+            setField(&field, campo);
             clearScreen();
             loading();
             stampaCampo(campo, punti, testaSerpernte);
@@ -149,9 +159,9 @@ int main(int argc, char const *argv[]) {
 				clearScreen();
                 if (testaSerpernte.posizioneX==larghezzaCampo-1) {
 					stampaAVideoIlTesto("vittoriaGioco", linguaTesto);
-                    printf("Score ==>%d\n", (punti+(numero_monete*3)));
+                    printf("Score ==>%d\n", (punti+(numero_monete*10)));
 					arrivatoAllaFine=true;
-                    saveReplay(campo, direzioni, numeroDiDirezioniFatte);
+                    saveReplay(campo, direzioni, numeroDiDirezioniFatte, &field);
                 }
                 stampaCampo(campo, punti, testaSerpernte);
             } while (arrivatoAllaFine==false);
@@ -170,6 +180,7 @@ int main(int argc, char const *argv[]) {
             char algoritmoScelto = getch(); 
             // fermaStampa();
             testaSerpernte = creazioneCampo(campo, testaSerpernte);
+            setField(&field, campo);
             clearScreen();
             loading();
             stampaCampo(campo, punti, testaSerpernte);
@@ -181,7 +192,7 @@ int main(int argc, char const *argv[]) {
             for (int i = 0; i < numeroDiMosse; i++) {
                 printf("%c", mosseFatte[i]);
             }
-            saveReplay(campo, mosseFatte, numeroDiMosse);
+            saveReplay(campo, mosseFatte, numeroDiMosse, &field);
             printf("\n");
             fermaStampa();
             } break;
@@ -568,7 +579,7 @@ int algoritmoIA(char (*campo)[larghezzaCampo], posizione testaSerpente, char dir
         clearScreen();
         if (testaSerpente.posizioneX==larghezzaCampo-1) {
             stampaAVideoIlTesto("vittoriaGioco", linguaTesto);
-            printf("Score ==>%d\n", (punti+(numero_monete*3)));
+            printf("Score ==>%d\n", (punti+(numero_monete*10)));
             arrivatoAllaFine=true;
         }
         stampaCampo(campo, punti, testaSerpente);
@@ -631,7 +642,16 @@ int goToPointAndGetIt(char (*campo)[larghezzaCampo], posizione *testaSerpente, c
     return posizioneArrayMosseFatte;
 }
 
-void saveReplay(char (*field)[larghezzaCampo], char *movesMaked, int numberOfMoves) {
+void setField(matriceCampo *fieldStruct, char (*field)[larghezzaCampo]) {
+    for (size_t i = 0; i < altezzaCampo; i++) {
+        for (size_t k = 0; k < larghezzaCampo; k++) {
+            fieldStruct->campo[i][k]=field[i][k];
+        }
+    }
+    return;
+}
+
+void saveReplay(char (*field)[larghezzaCampo], char *movesMaked, int numberOfMoves, matriceCampo *fieldStruct) {
     // mi i replay nel file replays.txt
     if (controlloDeiFile("replays") == false) {
         clearScreen();
@@ -668,7 +688,7 @@ void saveReplay(char (*field)[larghezzaCampo], char *movesMaked, int numberOfMov
         fprintf(fout, tag1);
         for (size_t i = 0; i < altezzaCampo; i++) {
             for (size_t k = 0; k < larghezzaCampo; k++) {
-                fieldLine[k]=field[i][k];
+                fieldLine[k]=fieldStruct->campo[i][k];
             }
             fprintf(fout, fieldLine);
             fprintf(fout, "\n");
@@ -759,8 +779,7 @@ void watchReplay() {
             char initialTag[]="<";
             char fileNumberChar[2];
             char tag1[7];
-            char field[altezzaCampo][larghezzaCampo
-            ];
+            char field[altezzaCampo][larghezzaCampo];
             posizione testaSerpente;
             testaSerpente.posizioneX=0;
             testaSerpente.posizioneY=1;
@@ -796,13 +815,12 @@ void watchReplay() {
             
             // ricreo il labirinto 
             for (size_t i = 0; i < altezzaCampo; i++) {
-                if (field[i][0]=='.' || field[i][0]==' ') {
-                    field[i][0]=testaSerpente.simboloCheIndicaLaTesta;
+                if (field[i][0]=='?') {
                     testaSerpente.posizioneX=0;
                     testaSerpente.posizioneY=i;
                 }
                 for (size_t k = 1; k < larghezzaCampo; k++) {
-                    if (field[i][k]=='.' || field[i][k]==testaSerpente.simboloCheIndicaLaTesta) {
+                    if (field[i][k]=='.' || field[i][k]=='?') {
                         field[i][k]=' ';
                     }
                 }
@@ -828,10 +846,11 @@ void watchReplay() {
                 clearScreen();
                 stampaCampo(field, 0, testaSerpente);
                 spostamento(field, movesMaked[i], &testaSerpente, true);
-                if (chose=='1') {
+                if (chose=='1' && i<numberOfMoves) {
                     fermaStampa();
                 }
             }
+            printf("Score ==>%d\n", (punti+(numero_monete*10)));
         } else {
             if (numberReplaysAvailable==0) {
                 clearScreen();
