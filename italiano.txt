@@ -20,8 +20,9 @@ Menu' di gioco:
 --> 1) Giocare = 1
 --> 2) Regole = 2
 --> 3) IA = 3
---> 4) Partecipanti = 4
---> 5) Lingua = 5
+--> 4) Replay = 4
+--> 5) Partecipanti = 5
+--> 6) Lingua = 6
 --> 0) Esci dal programma = 0
 quando hai scelto premi il numero corrispondente
 </menu>
@@ -59,3 +60,19 @@ Scegli la lingua del gioco
 --> 1) Italiano = 1
 --> 2) Inglese = 2
 </lingue>
+<replay>
+Hai a diposizione:
+</replay>
+<replay2>
+replay,
+Premi il numero di quello che vuoi vedere e poi invio
+</replay2>
+<replay3>
+Mi dispiace ma non ci sono replay disponibili.
+Fai te una partita o fanne fare una all' IA.
+</replay3>
+<replay4>
+Scegli la modalita' di interazione che preferisci:
+--> 1) Premi un tasto qualsiasi per fare la mossa successiva
+--> 2) Visualizza in modo automatico
+</replay4>

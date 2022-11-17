@@ -59,3 +59,19 @@ Chose the language
 --> 1) Italian = 1
 --> 2) English = 2
 </lingue>
+<replay>
+You have:
+</replay>
+<replay2>
+replay ad available,
+Peess the corrisponding number and press enter
+</replay2>
+<replay3>
+Sorry but there is no available replay.
+Play the game by yourself or let the AI do it for you.
+</replay3>
+<replay4>
+Choose interaction mode:
+--> 1) Press any key for the next move
+--> 2) Enable automatic mode
+</replay4>
