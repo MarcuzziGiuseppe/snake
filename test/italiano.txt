@@ -1,0 +1,78 @@
+<fermaStampa>
+Premi un tasto per continuare
+</fermaStampa>
+<introduzione>
+       .__                       .__                                                                  
+  ____ |__|____    ____   ______ |  | _____  ___.__. ___________                                      
+_/ ___\|  \__  \  /  _ \  \____ \|  | \__  \<   |  |/ __ \_  __ \                                     
+\  \___|  |/ __ \(  <_> ) |  |_> >  |__/ __ \\___  \  ___/|  | \/                                     
+ \___  >__(____  /\____/  |   __/|____(____  / ____|\___  >__| /\                                     
+     \/        \/         |__|             \/\/         \/     )/                                     
+  _____                    .__                                               .__                      
+_/ ____\____    ____  ____ |__|____    _____   ____    __ __  ____      ____ |__| ____   ____  ____   
+\   __\\__  \ _/ ___\/ ___\|  \__  \  /     \ /  _ \  |  |  \/    \    / ___\|  |/  _ \_/ ___\/  _ \  
+ |  |   / __ \\  \__\  \___|  |/ __ \|  Y Y  (  <_> ) |  |  /   |  \  / /_/  >  (  <_> )  \__(  <_> ) 
+ |__|  (____  /\___  >___  >__(____  /__|_|  /\____/  |____/|___|  /  \___  /|__|\____/ \___  >____/  
+            \/     \/    \/        \/      \/                    \/  /_____/                \/        
+</introduzione>
+<menu>
+Menu' di gioco:
+--> 1) Giocare = 1
+--> 2) Regole = 2
+--> 3) IA = 3
+--> 4) Replay = 4
+--> 5) Partecipanti = 5
+--> 6) Lingua = 6
+--> 0) Esci dal programma = 0
+quando hai scelto premi il numero corrispondente
+</menu>
+<regole>
+In questo gioco Snake per far muovere Snake bisonga premere uno dei seguanti 4 tasti:
+--> 1) w = Vai in alto 
+--> 2) s = Vai in basso
+--> 3) a = Vai a sinistra
+--> 4) d = Via a destra
+Mentre stai giocando premi il tasto 'q' per tornare al menu' di gioco
+</regole>
+<IA>
+Scegli l'agoritmo di IA che preferisci:
+--> 1) algoritrmo che cerca di fare meno mosse possibili ma che non tiene conto delle monete
+--> 2) algoritrmo che va a prendere tutte le monete ma non tiene conto del numero di mosse
+</IA>
+<partecipanti>
+Editors:
+Marcuzzi Giuseppe 894698
+Campagnolo Alberto 897569
+</partecipanti>
+<sceltaErrata>
+Scelta errata
+
+</sceltaErrata>
+<direzioneNonConsentita>
+Direzione non Consentita perche' andresti contro il muro o andresti fuori dalla mappa
+</direzioneNonConsentita>
+<vittoriaGioco>
+Sei arrivato alla fine del percorso
+Complimenti hai vinto
+</vittoriaGioco>
+<lingue>
+Scegli la lingua del gioco
+--> 1) Italiano = 1
+--> 2) Inglese = 2
+</lingue>
+<replay>
+Hai a diposizione:
+</replay>
+<replay2>
+replay,
+Premi il numero di quello che vuoi vedere e poi invio
+</replay2>
+<replay3>
+Mi dispiace ma non ci sono replay disponibili.
+Fai te una partita o fanne fare una all' IA.
+</replay3>
+<replay4>
+Scegli la modalita' di interazione che preferisci:
+--> 1) Premi un tasto qualsiasi per fare la mossa successiva
+--> 2) Visualizza in modo automatico
+</replay4>

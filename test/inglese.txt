@@ -2,48 +2,77 @@
 Press any key to continue
 </fermaStampa>
 <introduzione>
-Hi, welcome in snake
+.__    .__         .__                                                                          
+|  |__ |__| ______ |  | _____  ___.__. ___________                                              
+|  |  \|  | \____ \|  | \__  \<   |  |/ __ \_  __ \                                             
+|   Y  \  | |  |_> >  |__/ __ \\___  \  ___/|  | \/                                             
+|___|  /__| |   __/|____(____  / ____|\___  >__| /\                                             
+     \/     |__|             \/\/         \/     )/                                             
+.__          __ /\               .__                         .__  __  .__                       
+|  |   _____/  |)/ ______ ______ |  | _____  ___.__. __  _  _|__|/  |_|  |__     _____   ____   
+|  | _/ __ \   __\/  ___/ \____ \|  | \__  \<   |  | \ \/ \/ /  \   __\  |  \   /     \_/ __ \  
+|  |_\  ___/|  |  \___ \  |  |_> >  |__/ __ \\___  |  \     /|  ||  | |   Y  \ |  Y Y  \  ___/  
+|____/\___  >__| /____  > |   __/|____(____  / ____|   \/\_/ |__||__| |___|  / |__|_|  /\___  > 
+          \/          \/  |__|             \/\/                            \/        \/     \/  
 </introduzione>
 <menu>
-Game menu:
+Game menu':
 --> 1) Play = 1
---> 2) Rules = 2
+--> 2) Manual = 2
 --> 3) AI = 3
---> 4) Creators = 4
---> 5) Language = 5
+--> 4) Replay = 4
+--> 5) Creators = 5
+--> 6) Language = 6
 --> 0) Exit form the program = 0
-Where you are ready press the corrisponding number
+When you are ready press the corrisponding number
 </menu>
 <regole>
-Manuale
+In this game to let move Snake you have to press one of this 4 keys:
+--> 1) w = Go up 
+--> 2) s = Go down
+--> 3) a = Go left
+--> 4) d = Go right
+When you're playing press 'q' to return to game menu
 </regole>
 <IA>
-IA
+Choose your desired AI algorith:
+--> 1) algorithm that is trying to make as few moves as possible but it doesn't disretake count of the coins
+--> 2) algorithm that goes for all the coins but doesn't take count of the number of moves
 </IA>
 <partecipanti>
-Partecipanti:
+Editors:
 Marcuzzi Giuseppe 894698
 Campagnolo Alberto 897569
 </partecipanti>
 <sceltaErrata>
-Scelta errata
+Wrong chose
 
 </sceltaErrata>
-<direzione>
-Tell me where you want to go: w=up s=down d=right a=left
-</direzione>
-<direzioneSbagliata>
-Questa non e' una direzione consentita
-</direzioneSbagliata>
 <direzioneNonConsentita>
-Direzione non Consentita perche' andresti contro il muro o andresti fuori dalla mappa
+Direction not allowed cause you would hit the wall or go off the map
 </direzioneNonConsentita>
 <vittoriaGioco>
-Sei arrivato alla fine del percorso
-Complimenti hai vinto
+Congratulation, you arrived at the end of the labirinth
+Congratulation you win
 </vittoriaGioco>
 <lingue>
-Scegli la lingua del gioco
---> 1) Italiano = 1
---> 2) Inglese = 2
+Chose the language
+--> 1) Italian = 1
+--> 2) English = 2
 </lingue>
+<replay>
+You have:
+</replay>
+<replay2>
+replay ad available,
+Peess the corrisponding number and press enter
+</replay2>
+<replay3>
+Sorry but there is no available replay.
+Play the game by yourself or let the AI do it for you.
+</replay3>
+<replay4>
+Choose interaction mode:
+--> 1) Press any key for the next move
+--> 2) Enable automatic mode
+</replay4>

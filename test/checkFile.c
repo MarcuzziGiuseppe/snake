@@ -4,8 +4,6 @@
     TO DO
     --> Documentazione
     --> algoritmo IA (path finding) (Alberto)
-    --> finire il guarda replay chiedendo se versione manuale o automatica (fatto credo, valutare l'opzione sotto)
-        --> salvarsi il campo prima che lui giochi e la posizione della testa (creare due nuovi campi all'interno delle struct?)
     // to do molto improbabili da fare
     --> altro
 */
@@ -100,7 +98,7 @@ void stampaLoading(char paragrafo[]);
 void loading();
 void setField(matriceCampo *fieldStruct, char (*field)[larghezzaCampo]);
 void saveReplay(char (*field)[larghezzaCampo], char *movesMaked, int numberOfMoves, matriceCampo *fieldStruct);
-int nextNumberOfReplay();
+int nextNumberOfTag(char *file);
 void watchReplay();
 
 // IA
@@ -520,12 +518,7 @@ void loading(){
         exit(1);
     } else {
         // leggo la prima riga del file loadings.txt per sapere quanti loading ci sono nel file
-        int numeroLoadings=1;
-        FILE *fin = fopen("loadings.txt", "r");
-        char numeroDiLoadingsLetti[10]="5"; 
-        fgets(numeroDiLoadingsLetti, sizeof(numeroDiLoadingsLetti), fin);
-        numeroLoadings=atoi(numeroDiLoadingsLetti);
-        fclose(fin);
+        int numeroLoadings=nextNumberOfTag("loadings.txt")-1;
 
         char c[10];
         sprintf(c, "%ld", randomNumber(numeroLoadings, 1));
@@ -661,7 +654,7 @@ void saveReplay(char (*field)[larghezzaCampo], char *movesMaked, int numberOfMov
         exit(1);
     } else {
         // mi salvo su un file il campo con i relativi movimenti
-        int nextNumber = nextNumberOfReplay();
+        int nextNumber = nextNumberOfTag("replays.txt");
         char initialTag[]="<";
         char secondTag[]="</";
         char fileNumberChar[2];
@@ -707,7 +700,7 @@ void saveReplay(char (*field)[larghezzaCampo], char *movesMaked, int numberOfMov
     return ;
 }
 
-int nextNumberOfReplay() {
+int nextNumberOfTag(char *file) {
     char fileString[100];
     char initialTag[]="<";
     char secondTag[]="</";
@@ -715,7 +708,7 @@ int nextNumberOfReplay() {
     char fileNumberChar[2];
     char tag1[7];
     char tag2[7];
-    FILE *fin = fopen("replays.txt", "r");
+    FILE *fin = fopen(file, "r");
     while (!feof(fin)) {
         // "pulisco" i tag
         for (size_t i = 0; i < sizeof(tag1); i++) {
@@ -766,8 +759,12 @@ void watchReplay() {
         exit(1);
     } else {
         // numero di replay disponibili
-        int numberReplaysAvailable = nextNumberOfReplay() -1;
-
+        int numberReplaysAvailable = nextNumberOfTag("replays.txt") -1;
+        if (numberReplaysAvailable==0) {
+            clearScreen();
+            stampaAVideoIlTesto("replay3", linguaTesto);
+            return;
+        }
         stampaAVideoIlTesto("replay", linguaTesto);
         printf("%d ", numberReplaysAvailable);
         stampaAVideoIlTesto("replay2", linguaTesto);
@@ -852,11 +849,6 @@ void watchReplay() {
             }
             printf("Score ==>%d\n", (punti+(numero_monete*10)));
         } else {
-            if (numberReplaysAvailable==0) {
-                clearScreen();
-                stampaAVideoIlTesto("replay3", linguaTesto);
-                return;
-            }
             clearScreen();
             stampaAVideoIlTesto("sceltaErrata", linguaTesto);
         }
