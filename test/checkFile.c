@@ -3,7 +3,7 @@
     21/10/2022 - 17/11/2022
     TO DO
     --> Documentazione
-    --> algoritmo IA (path finding) (Alberto)
+    --> algoritmo IA (path finding, DFS) (Alberto)
     // to do molto improbabili da fare
     --> altro
 */
@@ -63,6 +63,7 @@
 int numero_monete = 0;
 int punti = 0;
 int linguaTesto=0; // 0=Italiano 1=Inglese
+int numberOfDrill =0;
 
 // serve per salvarsi la posizione della testa
 typedef struct {
@@ -122,6 +123,7 @@ int main(int argc, char const *argv[]) {
         testaSerpernte.posizioneX=0;
         testaSerpernte.posizioneY=0;
         testaSerpernte.simboloCheIndicaLaTesta='?';
+        numberOfDrill=0;
         punti = 0;
         numero_monete = 0;
         stampaAVideoIlTesto("introduzione", linguaTesto);
@@ -311,6 +313,7 @@ posizione creazioneCampo(char (*matrix)[larghezzaCampo], posizione testaSerpente
     }
     generaElemento('$',7,matrix);
     generaElemento('!',2,matrix);
+    generaElemento('T',3,matrix);
     return testaSerpente;
 }
 
@@ -332,8 +335,10 @@ void stampaCampo(char (*matrix)[larghezzaCampo], int punteggio, posizione testaS
         } else {
                 printf(" ");
         }
-
     }
+
+    printf("\nTRAPANI: %d", numberOfDrill);
+
     printf("\n");
 }
 
@@ -357,9 +362,11 @@ int controllaPunteggio(int coordinatay, int coordinatax, char (*matrix)[larghezz
 		numero_monete++;
 	} else if(matrix[coordinatay][coordinatax] == '!'){
 		numero_monete = numero_monete/2;
-	} else {
-		punti--;
-	}
+	} else if (matrix[coordinatay][coordinatax] == 'T') {
+        numberOfDrill +=3;
+    } else {
+	    punti--;
+    }
 }
 
 int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testaSerpente, bool isIA) {
@@ -372,7 +379,10 @@ int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testa
     switch (direction) {
     case 'w':
         //alto
-        if (matrix[testaSerpente->posizioneY-1][testaSerpente->posizioneX]!='#') {
+        if ((matrix[testaSerpente->posizioneY-1][testaSerpente->posizioneX]!='#') || numberOfDrill>=1) {
+            if (numberOfDrill>=1 && matrix[testaSerpente->posizioneY-1][testaSerpente->posizioneX]=='#') {
+                numberOfDrill--;
+            }
             controllaPunteggio(testaSerpente->posizioneY-1, testaSerpente->posizioneX, matrix);
             testaSerpente->posizioneY-=1;
             spostamenteoRiuscito=true;
@@ -380,7 +390,10 @@ int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testa
         break;
     case 's':
         //basso
-        if (matrix[testaSerpente->posizioneY+1][testaSerpente->posizioneX]!='#') {
+        if ((matrix[testaSerpente->posizioneY+1][testaSerpente->posizioneX]!='#') || numberOfDrill>=1) {
+            if (numberOfDrill>=1 && matrix[testaSerpente->posizioneY+1][testaSerpente->posizioneX]=='#') {
+                numberOfDrill--;
+            }
             controllaPunteggio(testaSerpente->posizioneY+1, testaSerpente->posizioneX, matrix);
             testaSerpente->posizioneY+=1;
             spostamenteoRiuscito=true;
@@ -388,7 +401,10 @@ int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testa
         break;
     case 'a':
         //sinistra
-        if (matrix[testaSerpente->posizioneY][testaSerpente->posizioneX-1]!='#' && testaSerpente->posizioneX-1>0) {
+        if ((matrix[testaSerpente->posizioneY][testaSerpente->posizioneX-1]!='#' && testaSerpente->posizioneX-1>0) || numberOfDrill>=1) {
+            if (numberOfDrill>=1 && matrix[testaSerpente->posizioneY][testaSerpente->posizioneX-1]=='#') {
+                numberOfDrill--;
+            }
             controllaPunteggio(testaSerpente->posizioneY, testaSerpente->posizioneX-1, matrix); 
             testaSerpente->posizioneX-=1;
             spostamenteoRiuscito=true;
@@ -396,7 +412,10 @@ int spostamento(char (*matrix)[larghezzaCampo], char direction, posizione *testa
         break;
     case 'd':
         //destra
-        if (matrix[testaSerpente->posizioneY][testaSerpente->posizioneX+1]!='#') {
+        if ((matrix[testaSerpente->posizioneY][testaSerpente->posizioneX+1]!='#') || numberOfDrill>=1) {
+            if (numberOfDrill>=1 && matrix[testaSerpente->posizioneY][testaSerpente->posizioneX+1]=='#') {
+                numberOfDrill--;
+            }
             controllaPunteggio(testaSerpente->posizioneY, testaSerpente->posizioneX+1, matrix);
             testaSerpente->posizioneX= testaSerpente->posizioneX+1;
             spostamenteoRiuscito=true;
