@@ -527,37 +527,29 @@ void stampaLoading(char paragrafo[]){
 void loading(){
 	char a = ' ', b = '#';
 	printf("\n\n\n\n");
-    if (controlloDeiFile("loadings") == false){
-        printf("Error! opening file, file not in the same folder of the program");
-        fermaStampa();
-        // Programma esce se non esite il file nella stessa cartella del programma
-        exit(1);
-    } else {
-        // leggo la prima riga del file loadings.txt per sapere quanti loading ci sono nel file
-        int numeroLoadings=nextNumberOfTag("loadings.txt")-1;
+    // leggo la prima riga del file loadings.txt per sapere quanti loading ci sono nel file
+    int numeroLoadings=nextNumberOfTag("loadings.txt")-1;
 
-        char c[10];
-        sprintf(c, "%ld", randomNumber(numeroLoadings, 1));
-        stampaLoading(c);
-        printf("\n\t\t\t[");
-        
-        for(int i = 0;i < 26; i++){	
-            printf("%c", a);
-        }
-        printf("]");
-        printf("\r");
-        printf("\t\t\t");
-
-        for(int i=0;i < 26; i++){
-            if(i==0){
-                printf("[");
-            }
-            printf("%c", b);
-            fflush(stdout);
-            Sleep(i==24 ? randomNumber(300,100)*10 : randomNumber(20,10)*10);
-        }
+    char c[10];
+    sprintf(c, "%ld", randomNumber(numeroLoadings, 1));
+    stampaLoading(c);
+    printf("\n\t\t\t[");
+    
+    for(int i = 0;i < 26; i++){	
+        printf("%c", a);
     }
+    printf("]");
+    printf("\r");
+    printf("\t\t\t");
 
+    for(int i=0;i < 26; i++){
+        if(i==0){
+            printf("[");
+        }
+        printf("%c", b);
+        fflush(stdout);
+        Sleep(i==24 ? randomNumber(300,100)*10 : randomNumber(20,10)*10);
+    }
     clearScreen();
 }
 
@@ -608,7 +600,7 @@ int goToPointAndGetIt(char (*campo)[larghezzaCampo], posizione *testaSerpente, c
     int numeroMoneteTrovate=0;
 
     for (int i = testaSerpente->posizioneY+1; i < altezzaCampo; i++) {
-        // guarado se sotto c' e' almeno una moneta
+        // guarado se sotto c'e' almeno una moneta
         if (campo[i][testaSerpente->posizioneX]=='$') {
             numeroMoneteTrovate++;
         }
