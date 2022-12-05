@@ -4,7 +4,6 @@
     21/10/2022 - 02/12/2022
     TO DO
     --> Sistemare l'ia (problema trapano)
-    --> Sistemare il replay
     --> aggiungere la possibilità far mettere dall'utente un labirinto inerito da tastiera
     --> Documentazione
     --> algoritmo IA (path finding, DFS) (Campa)
@@ -89,8 +88,6 @@ typedef struct {
     char moves[300];
     int indiceMoves;
 } posizione;
-
-
 
 // funzioni "strane"
 void fermaStampa(); // non fa altro che impedire che le stampe successive vengano eseguite
@@ -768,6 +765,8 @@ void watchReplay() {
             parita.posizioneXSnake=0;
             parita.posizioneYSnake=1;
             parita.simboloSnakeTesta='?';
+            parita.simboloSnakeCorpo='0';
+
             // for fors inutile ma lo faccio per sicurezza (per "pulire" l'array)
             for (size_t i = 0; i < sizeof(tag1); i++) {
                 tag1[i]='\0';
@@ -827,12 +826,16 @@ void watchReplay() {
             parita.punti=0;
             parita.numero_monete=0;
             parita.numberOfDrill=0;
+            parita.numeroPezziCorpo=0;
+            int numeroMosse = parita.indiceMoves;
+            parita.indiceMoves=0;
             loading();
-            for (size_t i = 0; i < parita.indiceMoves+1; i++) {
+            for (size_t i = 0; i < numeroMosse+1; i++) {
                 clearScreen();
                 stampaCampo(&parita, true);
                 spostamento(parita.moves[i], &parita, true);
-                if (chose=='1' && i<parita.indiceMoves) {
+                parita.indiceMoves++;
+                if (chose=='1' && i<numeroMosse) {
                     fermaStampa();
                 }
             }
@@ -876,6 +879,7 @@ int algoritmoIA(posizione* dati, char direzione, char algortmoScelto, char direz
     } else {
         dati->moves[dati->indiceMoves] = direzione;
         direzione = direzioneIniziale;
+        dati->indiceMoves++;
     }
 
     /*
@@ -889,7 +893,6 @@ int algoritmoIA(posizione* dati, char direzione, char algortmoScelto, char direz
     }
     
     
-    dati->indiceMoves++;
     if (dati->posizioneXFine==dati->posizioneXSnake && dati->posizioneYFine==dati->posizioneYSnake) {
         stampaAVideoIlTesto("vittoriaGioco", false);
         printf("Score ==>%d\n", (dati->punti+(dati->numero_monete*10)));
@@ -925,6 +928,8 @@ void goToPointAndGetIt(posizione *campo) {
             campo->moves[campo->indiceMoves]=direzione;
             campo->indiceMoves++;
             spostamento(direzione, campo, true);
+            clearScreen();
+            stampaCampo(campo, true);
         }
     }
 
@@ -947,6 +952,8 @@ void goToPointAndGetIt(posizione *campo) {
             campo->moves[campo->indiceMoves]=direzione;
             campo->indiceMoves++;
             spostamento(direzione, campo, true);
+            clearScreen();
+            stampaCampo(campo, true);
         }
     }
 }
