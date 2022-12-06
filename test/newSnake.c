@@ -144,8 +144,8 @@ int main(int argc, char const *argv[]) {
 
         datiPartita.indiceMoves=0;
 
-        stampaAVideoIlTesto("introduzione", linguaTesto);
-        stampaAVideoIlTesto("menu", linguaTesto);
+        stampaAVideoIlTesto("introduzione", false);
+        stampaAVideoIlTesto("menu", false);
         esciDalGioco=false;
         sceltaErrata=false;
         char sceltaPlayer;
@@ -176,7 +176,7 @@ int main(int argc, char const *argv[]) {
                 }
                 clearScreen();
                 if ((datiPartita.posizioneXFine==datiPartita.posizioneXSnake) && (datiPartita.posizioneYFine==datiPartita.posizioneYSnake)) {
-					stampaAVideoIlTesto("vittoriaGioco", linguaTesto);
+					stampaAVideoIlTesto("vittoriaGioco", false);
                     printf("Score ==>%d\n", (datiPartita.punti+(datiPartita.numero_monete*10)));
 					arrivatoAllaFine=true;
                     saveReplay(datiPartita);
@@ -242,7 +242,7 @@ int main(int argc, char const *argv[]) {
             do {
                 linguaSelezionataCorrettamente = true;
                 clearScreen();
-                stampaAVideoIlTesto("lingue",linguaTesto);
+                stampaAVideoIlTesto("lingue",false);
                 sceltaPlayer = getch();
                 switch (sceltaPlayer) {
                 case '1':
@@ -267,7 +267,7 @@ int main(int argc, char const *argv[]) {
         default:
             sceltaErrata=true;
             clearScreen();
-            stampaAVideoIlTesto("sceltaErrata",linguaTesto);
+            stampaAVideoIlTesto("sceltaErrata",false);
             break;
         }
         clearScreen();
@@ -284,7 +284,7 @@ int main(int argc, char const *argv[]) {
 
 void fermaStampa() {
     // getchar mi peremette di non dover premere invio dopo aver scritto ma ovviamnete prende solo il primo carattere
-    stampaAVideoIlTesto("fermaStampa",linguaTesto);
+    stampaAVideoIlTesto("fermaStampa",false);
     char fermaStampa = getch();
 }
 
@@ -747,12 +747,12 @@ void watchReplay() {
         int numberReplaysAvailable = nextNumberOfTag("replays.txt") -1;
         if (numberReplaysAvailable==0) {
             clearScreen();
-            stampaAVideoIlTesto("replay3", linguaTesto);
+            stampaAVideoIlTesto("replay3", false);
             return;
         }
-        stampaAVideoIlTesto("replay", linguaTesto);
+        stampaAVideoIlTesto("replay", false);
         printf("%d ", numberReplaysAvailable);
-        stampaAVideoIlTesto("replay2", linguaTesto);
+        stampaAVideoIlTesto("replay2", false);
         int getNumber = 0;
         scanf("%d", &getNumber);
         if (getNumber>=1 && getNumber<=numberReplaysAvailable) {
@@ -813,11 +813,11 @@ void watchReplay() {
             char chose;
             do {
                 clearScreen();
-                stampaAVideoIlTesto("replay4", linguaTesto);
+                stampaAVideoIlTesto("replay4", false);
                 chose = getch();
                 if (chose != '1' && chose !='2') {
                     clearScreen();
-                    stampaAVideoIlTesto("sceltaErrata", linguaTesto);
+                    stampaAVideoIlTesto("sceltaErrata", false);
                     fermaStampa();
                 }
             } while (chose!='1' && chose!='2');
@@ -842,7 +842,7 @@ void watchReplay() {
             printf("Score ==>%d\n", (parita.punti +(parita.numero_monete*10)));
         } else {
             clearScreen();
-            stampaAVideoIlTesto("sceltaErrata", linguaTesto);
+            stampaAVideoIlTesto("sceltaErrata", false);
         }
     }
     return; 
