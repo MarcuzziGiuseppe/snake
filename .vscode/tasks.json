@@ -7,6 +7,8 @@
 			"command": "C:\\msys64\\mingw64\\bin\\gcc.exe",
 			"args": [
 				"-fdiagnostics-color=always",
+				"-std=c99",
+				"-Wall",
 				"-g",
 				"${file}",
 				"-o",

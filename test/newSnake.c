@@ -126,7 +126,6 @@ int main(int argc, char const *argv[]) {
 
     bool arrivatoAllaFine=false; // indica se sono arrivato alla fine del labirinto
     bool esciDalGioco = false;
-    bool sceltaErrata = false;
 
     do {
         // "costruzione" della struct (tipo il constractor nelle classi)
@@ -147,7 +146,6 @@ int main(int argc, char const *argv[]) {
         stampaAVideoIlTesto("introduzione", false);
         stampaAVideoIlTesto("menu", false);
         esciDalGioco=false;
-        sceltaErrata=false;
         char sceltaPlayer;
         sceltaPlayer=getch();
         switch (sceltaPlayer) {
@@ -265,7 +263,6 @@ int main(int argc, char const *argv[]) {
             esciDalGioco=true;
             break;
         default:
-            sceltaErrata=true;
             clearScreen();
             stampaAVideoIlTesto("sceltaErrata",false);
             break;
@@ -608,7 +605,7 @@ void loading(){
     int numeroLoadings=nextNumberOfTag("loadings.txt")-1;
 
     char c[10];
-    sprintf(c, "%ld", randomNumber(numeroLoadings, 1));
+    sprintf(c, "%d", randomNumber(numeroLoadings, 1));
     stampaAVideoIlTesto(c, true);
     printf("\n\t\t\t[");
     
