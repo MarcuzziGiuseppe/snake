@@ -3,8 +3,8 @@
     Faccin Leonardo 896837
     21/10/2022 - 02/12/2022
     TO DO
-    --> Sistemare l'ia (problema trapano)
-    --> aggiungere la possibilità far mettere dall'utente un labirinto inerito da tastiera
+    --> Mettere la cosa che si toglie il corpo fino a dove si è mangiato
+    --> aggiungere la possibilità far mettere dall'utente un labirinto inerito da tastiera (Fax)
     --> Documentazione
     --> algoritmo IA (path finding, DFS) (Campa)
     // to do molto improbabili da fare
@@ -117,6 +117,7 @@ void watchReplay();
 int algoritmoIA(posizione* dati, char direzione, char algortmoScelto, char direzioneIniziale);
 void goToPointAndGetIt(posizione *campo);
 char checkPositions(posizione posizioni);
+char checkEnd (posizione* campo, char direzioneOriginale, char direzione);
 
 int main(int argc, char const *argv[]) {
     srand(time(NULL));
@@ -455,6 +456,8 @@ void controllaPunteggio(int coordinatay, int coordinatax, posizione* campo){
         campo->numberOfDrill +=3;
     } else  if (campo->campoSporco[coordinatay][coordinatax] == campo->simboloSnakeCorpo) {
         // togliere pezzi del corpo fino alla testa
+
+        // Fare una funzione?
     } else {
         campo->punti--;
     }
@@ -859,6 +862,7 @@ int algoritmoIA(posizione* dati, char direzione, char algortmoScelto, char direz
     if (dati->indiceMoves!=0 && direzione=='d' && algortmoScelto=='2') {
         goToPointAndGetIt(dati);
     }
+    direzione = checkEnd(dati, direzioneIniziale, direzione);
     
     int risultatoSpostamento = spostamento(direzione, dati, true);
     if (risultatoSpostamento==-1) {
@@ -933,7 +937,7 @@ void goToPointAndGetIt(posizione *campo) {
     // ora vado a vedere se sopra ho delle monete
     numeroMoneteTrovate=0;
     for (int i = campo->posizioneYSnake-1; i > 0; i--) {
-        // guarado se sotto c' e' almeno una moneta
+        // guarado se sopra c'e' almeno una moneta
         if (campo->campoSporco[i][campo->posizioneXSnake]=='$') {
             numeroMoneteTrovate++;
         }
@@ -966,4 +970,31 @@ char checkPositions(posizione posizioni) {
     }
     // la fine si trova alla mia sx
     return 'a';
+}
+
+char checkEnd (posizione* campo, char direzioneOriginale, char direzione) {
+    // mi ritorna true se nella colonna successiva c'è la fine altrimenti false
+    int piuOMeno = 1;
+    if (direzioneOriginale=='a') {
+        piuOMeno=-1;
+    }
+
+    if (campo->posizioneYSnake==campo->posizioneYFine && campo->posizioneXSnake+piuOMeno==campo->posizioneXFine) {
+        direzione = direzioneOriginale;
+    } else {
+        for (int i = campo->posizioneYSnake+1; i < altezzaCampo; i++) {
+            // guarado se sotto c'e' la fine
+            if (campo->campoSporco[i][campo->posizioneXSnake+piuOMeno]=='_') {
+                direzione='s';
+            }
+        }
+
+        for (int i = campo->posizioneYSnake-1; i > 0; i--) {
+            // guarado se sopra c'e' la fine
+            if (campo->campoSporco[i][campo->posizioneXSnake+piuOMeno]=='_') {
+                direzione='w';
+            }
+        }
+    }
+    return direzione;
 }
