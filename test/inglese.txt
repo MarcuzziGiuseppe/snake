@@ -76,4 +76,3 @@ Choose interaction mode:
 --> 1) Press any key for the next move
 --> 2) Enable automatic mode
 </replay4>
-a

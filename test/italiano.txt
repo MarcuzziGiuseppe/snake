@@ -76,4 +76,3 @@ Scegli la modalita' di interazione che preferisci:
 --> 1) Premi un tasto qualsiasi per fare la mossa successiva
 --> 2) Visualizza in modo automatico
 </replay4>
-a

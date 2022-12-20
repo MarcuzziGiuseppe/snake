@@ -3,7 +3,6 @@
     Faccin Leonardo 896837
     21/10/2022 - 02/12/2022
     TO DO
-    --> Mettere la cosa che si toglie il corpo fino a dove si è mangiato
     --> aggiungere la possibilità far mettere dall'utente un labirinto inerito da tastiera (Fax)
     --> Documentazione
     --> algoritmo IA (path finding, DFS) (Campa)
@@ -78,6 +77,7 @@ typedef struct {
     char simboloSnakeTesta;
     char simboloSnakeCorpo;
     int numeroPezziCorpo;
+    bool removeBody;
     // campo e "potenziamenti"
     char campoVergine[altezzaCampo][larghezzaCampo];
     char campoSporco[altezzaCampo][larghezzaCampo];
@@ -88,15 +88,6 @@ typedef struct {
     char moves[300];
     int indiceMoves;
 } posizione;
-
-typedef struct __node{
-    struct __node *parent;
-    bool visited;
-    char directions[4];  // W S A D
-    struct __node *children[4];
-    int x;
-    int y;
-} _node;
 
 // funzioni "strane"
 void fermaStampa(); // non fa altro che impedire che le stampe successive vengano eseguite
@@ -128,10 +119,6 @@ void goToPointAndGetIt(posizione *campo);
 char checkPositions(posizione posizioni);
 char checkEnd (posizione* campo, char direzioneOriginale, char direzione);
 
-
-void algoritrmo(posizione* campo, _node* node);
-int spostamentoIA(char direction, posizione* campo, _node* node);
-
 int main(int argc, char const *argv[]) {
     srand(time(NULL));
     posizione datiPartita;
@@ -150,6 +137,7 @@ int main(int argc, char const *argv[]) {
         datiPartita.posizioneXFine=0;
         datiPartita.posizioneYFine=0;
         datiPartita.numeroPezziCorpo=0;
+        datiPartita.removeBody = false;
         
         datiPartita.punti=0;
         datiPartita.numero_monete=0;
@@ -387,46 +375,62 @@ void stampaCampo(posizione* campo, bool isIA) {
                 break;
         }
     }
-    
 
-    // for per stampare il corpo di snake
+    campo->campoSporco[campo->posizioneYSnake][campo->posizioneXSnake]=campo->simboloSnakeTesta;
+    
     int index = 0;
+    bool termina=false;
     tempY = campo->posizioneYSnake;
     tempX = campo->posizioneXSnake;
     for (size_t i = campo->indiceMoves; index < campo->numeroPezziCorpo; i--) {
         switch (campo->moves[i-1]) {
             case 'w':
-                if (tempY+1!=campo->posizioneYSnake && tempX!=campo->posizioneXSnake) {
+                if (campo->campoSporco[tempY+1][tempX]!=campo->simboloSnakeTesta) {
                     campo->campoSporco[tempY+1][tempX] = campo->simboloSnakeCorpo;
                 } else {
-                    campo->numero_monete -= (campo->numeroPezziCorpo-1);
-                    if (campo->numero_monete<0) {
-                        campo->numero_monete=0;
-                    }
-                    campo->numeroPezziCorpo = index;
+                    termina=true;
                 }
                 tempY++;
                 break;
             case 's':
-                campo->campoSporco[tempY-1][tempX] = campo->simboloSnakeCorpo;
+                if (campo->campoSporco[tempY-1][tempX]!=campo->simboloSnakeTesta) {
+                    campo->campoSporco[tempY-1][tempX] = campo->simboloSnakeCorpo;
+                } else {
+                    termina=true;
+                }
                 tempY--;
                 break;
             case 'a':
-                campo->campoSporco[tempY][tempX+1] = campo->simboloSnakeCorpo;
+                if (campo->campoSporco[tempY][tempX+1]!=campo->simboloSnakeTesta) {
+                    campo->campoSporco[tempY][tempX+1] = campo->simboloSnakeCorpo;
+                } else {
+                    termina=true;
+                }
                 tempX++;
                 break;
             case 'd':
-                campo->campoSporco[tempY][tempX-1] = campo->simboloSnakeCorpo;
+                if (campo->campoSporco[tempY][tempX-1]!=campo->simboloSnakeTesta) {
+                    campo->campoSporco[tempY][tempX-1] = campo->simboloSnakeCorpo;
+                } else {
+                    termina=true;
+                }
                 tempX--;
                 break;
             default:
                 break;
         }
+        if (termina==true) {
+            campo->numero_monete -= campo->numeroPezziCorpo - index;
+            if (campo->numero_monete<0) {
+                campo->numero_monete=0;
+            }
+            
+            break;
+        }
         index++;
     }
+    campo->numeroPezziCorpo=index;
     printf("\n");
-    
-    campo->campoSporco[campo->posizioneYSnake][campo->posizioneXSnake]=campo->simboloSnakeTesta;
     for (size_t i = 0; i < altezzaCampo; i++) {
         for (size_t j = 0; j < larghezzaCampo; j++) {
             printf("%c", campo->campoSporco[i][j]);
@@ -449,8 +453,7 @@ void stampaCampo(posizione* campo, bool isIA) {
 }
 
 void generaElemento(char elemento, int numeroMassimo, char (*matrix)[larghezzaCampo]){
-	int elementi_totali = randomNumber(numeroMassimo,1);	
-
+	int elementi_totali = randomNumber(numeroMassimo,1);
 	for(int z=0; z < elementi_totali; z++){
 		int elementox = randomNumber(larghezzaCampo-2,1);
 		int elementoy = randomNumber(altezzaCampo-2,1);
@@ -474,8 +477,10 @@ void controllaPunteggio(int coordinatay, int coordinatax, posizione* campo){
 	} else if (campo->campoSporco[coordinatay][coordinatax] == 'T') {
         campo->numberOfDrill +=3;
     } else  if (campo->campoSporco[coordinatay][coordinatax] == campo->simboloSnakeCorpo) {
-        // togliere pezzi del corpo fino alla testa
-        
+        // dico che mi sono mangiato e quindi devo togliere i pezzi del corpo
+        if (campo->numeroPezziCorpo>1) {
+            campo->removeBody=true;
+        }
     } else {
         campo->punti--;
     }
@@ -753,7 +758,6 @@ void saveReplay(posizione datiPartita) {
 }
 
 void watchReplay() {
-
     if (controlloDeiFile("replays") == false) {
         clearScreen();
         printf("Error! opening file, file not in the same folder of the program\n");
@@ -1015,135 +1019,4 @@ char checkEnd (posizione* campo, char direzioneOriginale, char direzione) {
         }
     }
     return direzione;
-}
-
-
-
-
-
-
-
-/*
-typedef struct {
-    // posizioni e simboli snake + fine
-    int posizioneXSnake;
-    int posizioneYSnake;
-    int posizioneXSnakeOriginali;
-    int posizioneYSnakeOriginali;
-    int posizioneXFine;
-    int posizioneYFine;
-    char simboloScia;
-    char simboloSnakeTesta;
-    char simboloSnakeCorpo;
-    int numeroPezziCorpo;
-    // campo e "potenziamenti"
-    char campoVergine[altezzaCampo][larghezzaCampo];
-    char campoSporco[altezzaCampo][larghezzaCampo];
-    int punti;
-    int numero_monete;
-    int numberOfDrill;
-    // salvataggio movimenti
-    char moves[300];
-    int indiceMoves;
-} posizione;
-*/
-
-/*
-typedef struct __node{
-    __ *parent;
-    bool visited;
-    char directions[4]; // W S A D
-    struct __node *children[4];
-    int x;
-    int y;
-} _node;
-*/
-void algoritrmo(posizione* campo, _node* node){
-    // caso base
-    if (campo->posizioneXFine==node->x && campo->posizioneYFine==node->y) {
-        // ritorna il percorso
-    } else {
-        for (size_t i = 0; i < 4; i++) {
-            int result = spostamentoIA(node->directions[i], campo, node);
-            _node* child;
-            child->parent = &node;
-            switch (i) {
-            case 0:
-                // W
-
-                break;
-            case 1:
-                // S
-                break;
-            case 2:
-                // A
-                break;
-            case 03:
-                // D
-                break;
-            default:
-                break;
-            }
-            if (result==0) {
-                // posso spostarmi
-                // crea nodo
-                child->visited=false;
-                node->children[i] = child;
-            } else {
-                // ho il muro
-                child->visited=true;
-                node->children[i] = child;
-            }
-            
-        }
-    }
-}
-
-int spostamentoIA(char direction, posizione* campo, _node* node){
-    bool spostamentoRiuscito = false;
-    switch (direction) {
-    case 'w':
-        //alto
-        if ((campo->campoSporco[node->y-1][node->x]!='#' || campo->numberOfDrill>=1) && node->y-1>=0) {
-            if (campo->numberOfDrill>=1 && campo->campoSporco[node->y-1][node->x]=='#') {
-                campo->numberOfDrill--;
-            }
-            spostamentoRiuscito=true;
-        }
-        break;
-    case 's':
-        //basso
-        if ((campo->campoSporco[node->y+1][node->x]!='#' || campo->numberOfDrill>=1) && node->y+1<altezzaCampo) {
-            if (campo->numberOfDrill>=1 && campo->campoSporco[node->y+1][node->x]=='#') {
-                campo->numberOfDrill--;
-            }
-            spostamentoRiuscito=true;
-        }
-        break;
-    case 'a':
-        //sinistra
-        if (((campo->campoSporco[node->y][node->x-1]!='#' && node->x-1>0) || campo->numberOfDrill>=1) && node->x-1>=0) {
-            if (campo->numberOfDrill>=1 && campo->campoSporco[node->y][node->x-1]=='#') {
-                campo->numberOfDrill--;
-            }
-            spostamentoRiuscito=true;
-        }
-        break;
-    case 'd':
-        //destra
-        if ((campo->campoSporco[node->y][node->x+1]!='#' || campo->numberOfDrill>=1) && node->x+1<larghezzaCampo) {
-            if (campo->numberOfDrill>=1 && campo->campoSporco[node->y][node->x+1]=='#') {
-                campo->numberOfDrill--;
-            }
-            spostamentoRiuscito=true;
-        }
-        break;
-    default:
-        break;
-    }
-    if (spostamentoRiuscito==true) {
-        return 0;
-    }
-    
-    return -1; // al momento mi serve per capire se è andato contro un muro o se cerca di uscire dalla mappa
 }
