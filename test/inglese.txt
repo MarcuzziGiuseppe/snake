@@ -35,14 +35,16 @@ In this game to let move Snake you have to press one of this 4 keys:
 When you're playing press 'q' to return to game menu
 </regole>
 <IA>
-Choose your desired AI algorith:
---> 1) algorithm that is trying to make as few moves as possible but it doesn't disretake count of the coins
---> 2) algorithm that goes for all the coins but doesn't take count of the number of moves
+Pess any key to make start the AI
 </IA>
+<IA2>
+Is now calculating the path to coplating the labirinth
+</IA2>
 <partecipanti>
 Editors:
 Marcuzzi Giuseppe 894698
 Campagnolo Alberto 897569
+Faccin Leonardo 896837
 </partecipanti>
 <sceltaErrata>
 Wrong chose
@@ -64,7 +66,7 @@ Chose the language
 You have:
 </replay>
 <replay2>
-replay ad available,
+replay available,
 Peess the corrisponding number and press enter
 </replay2>
 <replay3>

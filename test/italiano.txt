@@ -35,14 +35,16 @@ In questo gioco Snake per far muovere Snake bisonga premere uno dei seguanti 4 t
 Mentre stai giocando premi il tasto 'q' per tornare al menu' di gioco
 </regole>
 <IA>
-Scegli l'agoritmo di IA che preferisci:
---> 1) algoritrmo che cerca di fare meno mosse possibili ma che non tiene conto delle monete
---> 2) algoritrmo che va a prendere tutte le monete ma non tiene conto del numero di mosse
+Premi un tasto per far iniziare l'IA
 </IA>
+<IA2>
+Sta calcolando il percorso per copletare il labirinto
+</IA2>
 <partecipanti>
 Editors:
 Marcuzzi Giuseppe 894698
 Campagnolo Alberto 897569
+Faccin Leonardo 896837
 </partecipanti>
 <sceltaErrata>
 Scelta errata

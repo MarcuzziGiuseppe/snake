@@ -119,15 +119,12 @@ void saveReplay(posizione datiPartita);
 void watchReplay();
 
 // IA
-int algoritmoIA(posizione *dati, char direzione, char algortmoScelto, char direzioneIniziale);
+int algoritmoIA(posizione *dati);
 bool solveMazeUtil(posizione* dati, int maze[altezzaCampo][larghezzaCampo], int x, int y, int sol[altezzaCampo][larghezzaCampo]);
 bool solveMaze(posizione* dati,int maze[altezzaCampo][larghezzaCampo]);
-void printSolution(int sol[altezzaCampo][larghezzaCampo]);
 bool isSafe(int maze[altezzaCampo][larghezzaCampo], int sol[altezzaCampo][larghezzaCampo], int x, int y);
-
-void goToPointAndGetIt(posizione *campo);
 char checkPositions(posizione posizioni);
-char checkEnd(posizione *campo, char direzioneOriginale, char direzione);
+char checkEnd (posizione* campo, char direzioneOriginale, char direzione);
 
 int main(int argc, char const *argv[])
 {
@@ -211,46 +208,39 @@ int main(int argc, char const *argv[])
             stampaAVideoIlTesto("regole", false);
             fermaStampa();
             break;
-        case '3':
-        {
+        case '3': {
             // IA
             creazioneCampo(&datiPartita);
             clearScreen();
-            stampaAVideoIlTesto("IA", false);
-            char algoritmoScelto = getch();
-            clearScreen();
-            //loading();
+            loading();
             stampaCampo(&datiPartita, true);
+            stampaAVideoIlTesto("IA", false);
+            getch();
+            stampaAVideoIlTesto("IA2", false);
 
             datiPartita.indiceMoves = 0;
-            for (size_t i = 0; i < altezzaCampo; i++)
-            {
-                for (size_t k = 0; k < larghezzaCampo; k++)
-                {
-                    if (datiPartita.campoSporco[i][k] == datiPartita.simboloSnakeTesta)
-                    {
+            for (size_t i = 0; i < altezzaCampo; i++) {
+                for (size_t k = 0; k < larghezzaCampo; k++) {
+                    if (datiPartita.campoSporco[i][k] == datiPartita.simboloSnakeTesta) {
                         datiPartita.posizioneYSnake = i;
                         datiPartita.posizioneXSnake = k;
                     }
-                    else if (datiPartita.campoSporco[i][k] == '_')
-                    {
+                    else if (datiPartita.campoSporco[i][k] == '_') {
                         datiPartita.posizioneYFine = i;
                         datiPartita.posizioneXFine = k;
                     }
                 }
             }
-            datiPartita.indiceMoves = algoritmoIA(&datiPartita, checkPositions(datiPartita), algoritmoScelto, checkPositions(datiPartita));
+            datiPartita.indiceMoves = algoritmoIA(&datiPartita);
 
             printf("Moves: ");
-            for (int i = 0; i < datiPartita.indiceMoves; i++)
-            {
+            for (int i = 0; i < datiPartita.indiceMoves; i++) {
                 printf("%c", datiPartita.moves[i]);
             }
             saveReplay(datiPartita);
             printf("\n");
             fermaStampa();
-        }
-        break;
+        } break;
         case '4':
             // replay
             clearScreen();
@@ -263,12 +253,10 @@ int main(int argc, char const *argv[])
             stampaAVideoIlTesto("partecipanti", false);
             fermaStampa();
             break;
-        case '6':
-        {
+        case '6': {
             // lingue
             bool linguaSelezionataCorrettamente = true;
-            do
-            {
+            do {
                 linguaSelezionataCorrettamente = true;
                 clearScreen();
                 stampaAVideoIlTesto("lingue", false);
@@ -301,8 +289,7 @@ int main(int argc, char const *argv[])
             break;
         }
         clearScreen();
-        for (size_t i = 0; i < datiPartita.indiceMoves; i++)
-        {
+        for (size_t i = 0; i < datiPartita.indiceMoves; i++) {
             datiPartita.moves[i] = '\0';
         }
 
@@ -311,77 +298,80 @@ int main(int argc, char const *argv[])
     return 0;
 }
 
-void fermaStampa()
-{
+void fermaStampa() {
     // getchar mi peremette di non dover premere invio dopo aver scritto ma ovviamnete prende solo il primo carattere
     stampaAVideoIlTesto("fermaStampa", false);
     getch();
 }
 
-int randomNumber(int max, int min)
-{
-
+int randomNumber(int max, int min) {
     return rand() % (max - min + 1) + min;
 }
 
-void clearScreen()
-{
+void clearScreen() {
     system("@cls||clear");
 }
 
-void creazioneCampo(posizione *campo)
-{
-    for (size_t i = 0; i < altezzaCampo; i++)
-    {
-        for (size_t j = 0; j < larghezzaCampo; j++)
-        {
-            if ((i == 0 || i == altezzaCampo - 1) || (j == 0 || j == larghezzaCampo - 1))
-            {
-                campo->campoVergine[i][j] = '#';
-            }
-            else
-            {
-                campo->campoVergine[i][j] = ' ';
+void creazioneCampo(posizione *campo) {
+    for (size_t i = 0; i < altezzaCampo; i++) {
+        for (size_t j = 0; j < larghezzaCampo; j++) {
+            if ((i==0 || i==altezzaCampo-1) || (j==0 || j==larghezzaCampo-1)) {
+                campo->campoVergine[i][j]='#';
+            } else {
+                campo->campoVergine[i][j]=' ';
             }
         }
     }
 
     // creazione punto di partenza e di arrivo
-    int coordinataY = randomNumber(altezzaCampo - 2, 1);
-    campo->campoVergine[coordinataY][0] = campo->simboloSnakeTesta; // partenza
-    campo->posizioneYSnake = coordinataY;
-    campo->posizioneYSnakeOriginali = coordinataY;
-    coordinataY = randomNumber(altezzaCampo - 2, 1);
-    campo->campoVergine[altezzaCampo-1][18] = '_'; // arrivo
-    campo->posizioneXFine = larghezzaCampo - 1;
+    int coordinataY = randomNumber(altezzaCampo-2, 1);
+    campo->campoVergine[coordinataY][0]=campo->simboloSnakeTesta; // partenza
+    campo->posizioneYSnake=coordinataY;
+    campo->posizioneYSnakeOriginali=coordinataY;
+    coordinataY = randomNumber(altezzaCampo-2,1);
+    campo->campoVergine[coordinataY][larghezzaCampo-1]='_'; // arrivo
+    campo->posizioneXFine = larghezzaCampo-1;
     campo->posizioneYFine = coordinataY;
 
     // creazione colonne
-    for (size_t i = randomNumber(distanzaMassimaTraColonne, distanzaMinimaTraColonne); i < larghezzaCampo - 3; i += randomNumber(distanzaMassimaTraColonne, distanzaMinimaTraColonne))
-    {
-        for (size_t j = 1; j < altezzaCampo - 1; j++)
-        {
-            campo->campoVergine[j][i] = '#';
+    for (size_t i = randomNumber(distanzaMassimaTraColonne,distanzaMinimaTraColonne); i < larghezzaCampo-3; i+=randomNumber(distanzaMassimaTraColonne,distanzaMinimaTraColonne)) {
+        for (size_t j = 1; j < altezzaCampo-1; j++) {
+            campo->campoVergine[j][i]='#';
         }
         int grandezzaSpazioPerPassare = randomNumber(ampiezzaMassimaSpazioPerPassare, ampiezzaMinimaSpazioPerPassare);
-        int puntoPerLoSpazio = randomNumber(altezzaCampo - ampiezzaMassimaSpazioPerPassare, 1); // punto in cui creare lo spazio
-        for (size_t j = 0; j < grandezzaSpazioPerPassare; j++)
-        {
-            if (puntoPerLoSpazio < altezzaCampo - 1)
-            {
-                campo->campoVergine[puntoPerLoSpazio][i] = ' ';
+	int puntoPerLoSpazio = randomNumber(altezzaCampo-ampiezzaMassimaSpazioPerPassare, 1); // punto in cui creare lo spazio
+        for (size_t j = 0; j < grandezzaSpazioPerPassare; j++) {
+            if (puntoPerLoSpazio<altezzaCampo-1) {
+                campo->campoVergine[puntoPerLoSpazio][i]=' ';
                 puntoPerLoSpazio++;
             }
         }
     }
-    generaElemento('$', 10, campo->campoVergine);
-    generaElemento('!', 2, campo->campoVergine);
-    generaElemento('T', 3, campo->campoVergine);
+    generaElemento('$',10,campo->campoVergine);
+    generaElemento('!',2,campo->campoVergine);
+    generaElemento('T',3,campo->campoVergine);
 
-    for (size_t i = 0; i < altezzaCampo; i++)
-    {
-        for (size_t k = 0; k < larghezzaCampo; k++)
-        {
+    /*
+    clearScreen();
+    printf("INSERISCI IL CAMPO\n");
+
+    char rigaCheMiPassa[larghezzaCampo];
+    bool ultimaRiga=false;
+    for (size_t i = 0; i < altezzaCampo && ultimaRiga==false; i++) {
+        fgets(rigaCheMiPassa, larghezzaCampo+1, stdin);
+        if (rigaCheMiPassa[0]!='\n') {
+            strcpy(campo->campoVergine[i], rigaCheMiPassa);
+            if (i==altezzaCampo-1 && rigaCheMiPassa[larghezzaCampo-1]=='#') {
+                ultimaRiga=true;
+            }
+        } else {
+            i--;
+        }
+    }
+    */
+
+    for (size_t i = 0; i < altezzaCampo; i++) {
+        for (size_t k = 0; k < larghezzaCampo; k++) {
             campo->campoSporco[i][k] = campo->campoVergine[i][k];
         }
     }
@@ -389,22 +379,18 @@ void creazioneCampo(posizione *campo)
     return;
 }
 
-void stampaCampo(posizione *campo, bool isIA)
-{
-    if (isIA == true)
-    {
+void stampaCampo(posizione *campo, bool isIA) {
+    if (isIA == true) {
         campo->simboloScia = '.';
     }
-    else
-    {
+    else {
         campo->simboloScia = ' ';
     }
 
     // for per "resettare" il corpo di snake
     int tempY = campo->posizioneYSnake;
     int tempX = campo->posizioneXSnake;
-    for (size_t i = campo->indiceMoves; i > 0; i--)
-    {
+    for (size_t i = campo->indiceMoves; i > 0; i--) {
         switch (campo->moves[i - 1])
         {
         case 'w':
@@ -434,50 +420,41 @@ void stampaCampo(posizione *campo, bool isIA)
     bool termina = false;
     tempY = campo->posizioneYSnake;
     tempX = campo->posizioneXSnake;
-    for (size_t i = campo->indiceMoves; index < campo->numeroPezziCorpo; i--)
-    {
+    for (size_t i = campo->indiceMoves; index < campo->numeroPezziCorpo; i--) {
         switch (campo->moves[i - 1])
         {
         case 'w':
-            if (campo->campoSporco[tempY + 1][tempX] != campo->simboloSnakeTesta)
-            {
+            if (campo->campoSporco[tempY + 1][tempX] != campo->simboloSnakeTesta) {
                 campo->campoSporco[tempY + 1][tempX] = campo->simboloSnakeCorpo;
             }
-            else
-            {
+            else {
                 termina = true;
             }
             tempY++;
             break;
         case 's':
-            if (campo->campoSporco[tempY - 1][tempX] != campo->simboloSnakeTesta)
-            {
+            if (campo->campoSporco[tempY - 1][tempX] != campo->simboloSnakeTesta) {
                 campo->campoSporco[tempY - 1][tempX] = campo->simboloSnakeCorpo;
             }
-            else
-            {
+            else {
                 termina = true;
             }
             tempY--;
             break;
         case 'a':
-            if (campo->campoSporco[tempY][tempX + 1] != campo->simboloSnakeTesta)
-            {
+            if (campo->campoSporco[tempY][tempX + 1] != campo->simboloSnakeTesta) {
                 campo->campoSporco[tempY][tempX + 1] = campo->simboloSnakeCorpo;
             }
-            else
-            {
+            else {
                 termina = true;
             }
             tempX++;
             break;
         case 'd':
-            if (campo->campoSporco[tempY][tempX - 1] != campo->simboloSnakeTesta)
-            {
+            if (campo->campoSporco[tempY][tempX - 1] != campo->simboloSnakeTesta) {
                 campo->campoSporco[tempY][tempX - 1] = campo->simboloSnakeCorpo;
             }
-            else
-            {
+            else {
                 termina = true;
             }
             tempX--;
@@ -488,8 +465,7 @@ void stampaCampo(posizione *campo, bool isIA)
         if (termina == true)
         {
             campo->numero_monete -= campo->numeroPezziCorpo - index;
-            if (campo->numero_monete < 0)
-            {
+            if (campo->numero_monete < 0) {
                 campo->numero_monete = 0;
             }
 
@@ -499,46 +475,36 @@ void stampaCampo(posizione *campo, bool isIA)
     }
     campo->numeroPezziCorpo = index;
     printf("\n");
-    for (size_t i = 0; i < altezzaCampo; i++)
-    {
-        for (size_t j = 0; j < larghezzaCampo; j++)
-        {
+    for (size_t i = 0; i < altezzaCampo; i++) {
+        for (size_t j = 0; j < larghezzaCampo; j++) {
             printf("%c", campo->campoSporco[i][j]);
         }
         printf("\n");
     }
     // questa parte serve unicamnete per rendere piu' carina la separazione tra le 2 stampe
-    for (size_t i = 0; i < larghezzaCampo; i++)
-    {
-        if (i == 3)
-        {
+    for (size_t i = 0; i < larghezzaCampo; i++) {
+        if (i == 3) {
             printf("|%d|", campo->punti);
         }
-        else if (i == 8)
-        {
+        else if (i == 8) {
             printf("|%d|", campo->numero_monete);
         }
-        else if (i == 13)
-        {
+        else if (i == 13) {
             printf("|%d|", campo->numberOfDrill);
         }
-        else
-        {
+        else {
             printf(" ");
         }
     }
     printf("\n");
 }
 
-void generaElemento(char elemento, int numeroMassimo, char (*matrix)[larghezzaCampo])
-{
+void generaElemento(char elemento, int numeroMassimo, char (*matrix)[larghezzaCampo]) {
     int elementi_totali = randomNumber(numeroMassimo, 1);
-    for (int z = 0; z < elementi_totali; z++)
-    {
+    for (int z = 0; z < elementi_totali; z++) {
         int elementox = randomNumber(larghezzaCampo - 2, 1);
         int elementoy = randomNumber(altezzaCampo - 2, 1);
-        while (matrix[elementoy][elementox] == '#')
-        {
+        while (matrix[elementoy][elementox] == '#') {
             elementoy = randomNumber(larghezzaCampo - 2, 1);
             elementox = randomNumber(altezzaCampo - 2, 1);
         }
@@ -546,50 +512,39 @@ void generaElemento(char elemento, int numeroMassimo, char (*matrix)[larghezzaCa
     }
 }
 
-void controllaPunteggio(int coordinatay, int coordinatax, posizione *campo)
-{
-    if (campo->campoSporco[coordinatay][coordinatax] == '$')
-    {
+void controllaPunteggio(int coordinatay, int coordinatax, posizione *campo) {
+    if (campo->campoSporco[coordinatay][coordinatax] == '$') {
         campo->numero_monete++;
         campo->numeroPezziCorpo++;
     }
-    else if (campo->campoSporco[coordinatay][coordinatax] == '!')
-    {
+    else if (campo->campoSporco[coordinatay][coordinatax] == '!') {
         campo->numero_monete = campo->numero_monete / 2;
-        if (campo->numeroPezziCorpo > 0)
-        {
+        if (campo->numeroPezziCorpo > 0) {
             campo->numeroPezziCorpo--;
         }
     }
-    else if (campo->campoSporco[coordinatay][coordinatax] == 'T')
-    {
+    else if (campo->campoSporco[coordinatay][coordinatax] == 'T') {
         campo->numberOfDrill += 3;
     }
-    else if (campo->campoSporco[coordinatay][coordinatax] == campo->simboloSnakeCorpo)
-    {
+    else if (campo->campoSporco[coordinatay][coordinatax] == campo->simboloSnakeCorpo) {
         // dico che mi sono mangiato e quindi devo togliere i pezzi del corpo
-        if (campo->numeroPezziCorpo > 1)
-        {
+        if (campo->numeroPezziCorpo > 1) {
             campo->removeBody = true;
         }
     }
-    else
-    {
+    else {
         campo->punti--;
     }
 }
 
-char recevimentoMovimentoSpostamento()
-{
+char recevimentoMovimentoSpostamento() {
     bool sceltaErrata = false;
     char spostamento;
-    do
-    {
+    do {
         sceltaErrata = false;
         spostamento = getch();
         // scanf("%c", &spostamento);
-        if (spostamento != 'w' && spostamento != 's' && spostamento != 'a' && spostamento != 'd' && spostamento != 'q')
-        {
+        if (spostamento != 'w' && spostamento != 's' && spostamento != 'a' && spostamento != 'd' && spostamento != 'q') {
             sceltaErrata = true;
         }
     } while (sceltaErrata == true);
@@ -597,22 +552,18 @@ char recevimentoMovimentoSpostamento()
     return spostamento;
 }
 
-int spostamento(char direction, posizione *campo, bool isIA)
-{
+int spostamento(char direction, posizione *campo, bool isIA) {
 
     int posizioneXOriginale = campo->posizioneXSnake;
     int posizioneYOriginale = campo->posizioneYSnake;
 
     bool spostamenteoRiuscito = false;
 
-    switch (direction)
-    {
+    switch (direction) {
     case 'w':
         // alto
-        if ((campo->campoSporco[campo->posizioneYSnake - 1][campo->posizioneXSnake] != '#' || campo->numberOfDrill >= 1) && campo->posizioneYSnake - 1 >= 0)
-        {
-            if (campo->numberOfDrill >= 1 && campo->campoSporco[campo->posizioneYSnake - 1][campo->posizioneXSnake] == '#')
-            {
+        if ((campo->campoSporco[campo->posizioneYSnake - 1][campo->posizioneXSnake] != '#' || campo->numberOfDrill >= 1) && campo->posizioneYSnake - 1 >= 0) {
+            if (campo->numberOfDrill >= 1 && campo->campoSporco[campo->posizioneYSnake - 1][campo->posizioneXSnake] == '#') {
                 campo->numberOfDrill--;
             }
             controllaPunteggio(campo->posizioneYSnake - 1, campo->posizioneXSnake, campo);
@@ -622,10 +573,8 @@ int spostamento(char direction, posizione *campo, bool isIA)
         break;
     case 's':
         // basso
-        if ((campo->campoSporco[campo->posizioneYSnake + 1][campo->posizioneXSnake] != '#' || campo->numberOfDrill >= 1) && campo->posizioneYSnake + 1 < altezzaCampo)
-        {
-            if (campo->numberOfDrill >= 1 && campo->campoSporco[campo->posizioneYSnake + 1][campo->posizioneXSnake] == '#')
-            {
+        if ((campo->campoSporco[campo->posizioneYSnake + 1][campo->posizioneXSnake] != '#' || campo->numberOfDrill >= 1) && campo->posizioneYSnake + 1 < altezzaCampo) {
+            if (campo->numberOfDrill >= 1 && campo->campoSporco[campo->posizioneYSnake + 1][campo->posizioneXSnake] == '#') {
                 campo->numberOfDrill--;
             }
             controllaPunteggio(campo->posizioneYSnake + 1, campo->posizioneXSnake, campo);
@@ -635,10 +584,8 @@ int spostamento(char direction, posizione *campo, bool isIA)
         break;
     case 'a':
         // sinistra
-        if (((campo->campoSporco[campo->posizioneYSnake][campo->posizioneXSnake - 1] != '#' && campo->posizioneXSnake - 1 > 0) || campo->numberOfDrill >= 1) && campo->posizioneXSnake - 1 >= 0)
-        {
-            if (campo->numberOfDrill >= 1 && campo->campoSporco[campo->posizioneYSnake][campo->posizioneXSnake - 1] == '#')
-            {
+        if (((campo->campoSporco[campo->posizioneYSnake][campo->posizioneXSnake - 1] != '#' && campo->posizioneXSnake - 1 > 0) || campo->numberOfDrill >= 1) && campo->posizioneXSnake - 1 >= 0) {
+            if (campo->numberOfDrill >= 1 && campo->campoSporco[campo->posizioneYSnake][campo->posizioneXSnake - 1] == '#') {
                 campo->numberOfDrill--;
             }
             controllaPunteggio(campo->posizioneYSnake, campo->posizioneXSnake - 1, campo);
@@ -648,10 +595,8 @@ int spostamento(char direction, posizione *campo, bool isIA)
         break;
     case 'd':
         // destra
-        if ((campo->campoSporco[campo->posizioneYSnake][campo->posizioneXSnake + 1] != '#' || campo->numberOfDrill >= 1) && campo->posizioneXSnake + 1 < larghezzaCampo)
-        {
-            if (campo->numberOfDrill >= 1 && campo->campoSporco[campo->posizioneYSnake][campo->posizioneXSnake + 1] == '#')
-            {
+        if ((campo->campoSporco[campo->posizioneYSnake][campo->posizioneXSnake + 1] != '#' || campo->numberOfDrill >= 1) && campo->posizioneXSnake + 1 < larghezzaCampo) {
+            if (campo->numberOfDrill >= 1 && campo->campoSporco[campo->posizioneYSnake][campo->posizioneXSnake + 1] == '#') {
                 campo->numberOfDrill--;
             }
             controllaPunteggio(campo->posizioneYSnake, campo->posizioneXSnake + 1, campo);
@@ -666,14 +611,11 @@ int spostamento(char direction, posizione *campo, bool isIA)
         break;
     }
 
-    if (spostamenteoRiuscito == true)
-    {
-        if (isIA == true)
-        {
+    if (spostamenteoRiuscito == true) {
+        if (isIA == true) {
             campo->campoSporco[posizioneYOriginale][posizioneXOriginale] = '.';
         }
-        else
-        {
+        else {
             campo->campoSporco[posizioneYOriginale][posizioneXOriginale] = ' ';
         }
         return 0;
@@ -682,43 +624,34 @@ int spostamento(char direction, posizione *campo, bool isIA)
     return -1; // al momento mi serve per capire se è andato contro un muro o se cerca di uscire dalla mappa
 }
 
-bool controlloDeiFile(char nomeFile[])
-{
+bool controlloDeiFile(char nomeFile[]) {
     char stringaTemp[100];
     strcpy(stringaTemp, nomeFile);
     strcat(stringaTemp, ".txt");
     FILE *fin = fopen(stringaTemp, "r");
-    if (fin != NULL)
-    {
+    if (fin != NULL) {
         fclose(fin);
         return true;
     }
     return false;
 }
 
-void stampaAVideoIlTesto(char paragrafo[], bool isLoading)
-{
-
+void stampaAVideoIlTesto(char paragrafo[], bool isLoading) {
     char file[100];
     strcpy(file, "italiano");
-    if (isLoading == true)
-    {
+    if (isLoading == true) {
         strcpy(file, "loadings");
     }
-    else if (linguaTesto == 1)
-    {
+    else if (linguaTesto == 1) {
         strcpy(file, "inglese");
     }
 
-    if (controlloDeiFile(file) == false)
-    {
+    if (controlloDeiFile(file) == false) {
         printf("Error! opening file, file not in the same folder of the program\n");
         fermaStampa();
         // Programma esce se non esite il file nella stessa cartella del programma-*+
         exit(1);
-    }
-    else
-    {
+    } else {
         strcat(file, ".txt");
         FILE *fin = fopen(file, "r");
 
@@ -727,16 +660,12 @@ void stampaAVideoIlTesto(char paragrafo[], bool isLoading)
         strcat(strcat(tagIniziale, paragrafo), fineTag);
         char tagFinale[100] = "</";
         strcat(strcat(tagFinale, paragrafo), fineTag);
-        do
-        {
+        do {
             fgets(stringaDaStampare, sizeof(stringaDaStampare), fin);
-            if (strcmp(stringaDaStampare, tagIniziale) == 0)
-            {
-                do
-                {
+            if (strcmp(stringaDaStampare, tagIniziale) == 0) {
+                do {
                     fgets(stringaDaStampare, sizeof(stringaDaStampare), fin);
-                    if ((strcmp(stringaDaStampare, tagIniziale) != 0) && (strcmp(stringaDaStampare, tagFinale) != 0))
-                    {
+                    if ((strcmp(stringaDaStampare, tagIniziale) != 0) && (strcmp(stringaDaStampare, tagFinale) != 0)) {
                         printf("%s", stringaDaStampare);
                     }
                 } while (strcmp(stringaDaStampare, tagFinale) != 0);
@@ -747,8 +676,7 @@ void stampaAVideoIlTesto(char paragrafo[], bool isLoading)
     return;
 }
 
-void loading()
-{
+void loading() {
     char a = ' ', b = '#';
     printf("\n\n\n\n");
     // leggo la prima riga del file loadings.txt per sapere quanti loading ci sono nel file
@@ -759,18 +687,15 @@ void loading()
     stampaAVideoIlTesto(c, true);
     printf("\n\t\t\t[");
 
-    for (int i = 0; i < 26; i++)
-    {
+    for (int i = 0; i < 26; i++) {
         printf("%c", a);
     }
     printf("]");
     printf("\r");
     printf("\t\t\t");
 
-    for (int i = 0; i < 26; i++)
-    {
-        if (i == 0)
-        {
+    for (int i = 0; i < 26; i++) {
+        if (i == 0) {
             printf("[");
         }
         printf("%c", b);
@@ -780,21 +705,18 @@ void loading()
     clearScreen();
 }
 
-int nextNumberOfTag(char *file)
-{
+int nextNumberOfTag(char *file) {
     char fileString[100];
     char initialTag[] = "<";
     char secondTag[] = "</";
     int fileNumber = 1;
-    char fileNumberChar[2];
-    char tag1[7];
-    char tag2[7];
+    char fileNumberChar[10];
+    char tag1[10];
+    char tag2[10];
     FILE *fin = fopen(file, "r");
-    while (!feof(fin))
-    {
+    while (!feof(fin)) {
         // "pulisco" i tag
-        for (size_t i = 0; i < sizeof(tag1); i++)
-        {
+        for (size_t i = 0; i < sizeof(tag1); i++) {
             tag1[i] = '\0';
             tag2[i] = '\0';
         }
@@ -805,26 +727,20 @@ int nextNumberOfTag(char *file)
         strcat(tag1, fileNumberChar);
         strcat(tag1, fineTag);
         // concateno il secondo tag
-        itoa(fileNumber, fileNumberChar, 10);
-        secondTag[0] = '<';
         strcat(tag2, secondTag);
         strcat(tag2, fileNumberChar);
-        tag2[4] = '\0';
         strcat(tag2, fineTag);
 
         fgets(fileString, sizeof(fileString), fin);
         // controllo se la stringa che legge è una stringa che mi interressa
-        if (strcmp(fileString, tag1) == 0)
-        {
+        if (strcmp(fileString, tag1) == 0) {
             // le 2 stringhe sono uguali
             fileNumber++;
             // leggo fino a quando non leggo il tag di fine
             bool endTagFinde = false;
-            while (endTagFinde == false)
-            {
+            while (endTagFinde == false) {
                 fgets(fileString, sizeof(fileString), fin);
-                if (strcmp(fileString, tag2) == 0)
-                {
+                if (strcmp(fileString, tag2) == 0) {
                     endTagFinde = true;
                 }
             }
@@ -835,26 +751,23 @@ int nextNumberOfTag(char *file)
     return fileNumber;
 }
 
-void saveReplay(posizione datiPartita)
-{
+void saveReplay(posizione datiPartita) {
     // mi i replay nel file replays.txt
-    if (controlloDeiFile("replays") == false)
-    {
+    if (controlloDeiFile("replays") == false) {
         clearScreen();
         printf("Error! opening file, file not in the same folder of the program\n");
         fermaStampa();
         // Programma esce se non esite il file nella stessa cartella del programma
         exit(1);
     }
-    else
-    {
+    else {
         // mi salvo su un file il campo con i relativi movimenti
         int nextNumber = nextNumberOfTag("replays.txt");
         char initialTag[] = "<";
         char secondTag[] = "</";
-        char fileNumberChar[2];
-        char tag1[7] = {"\0"};
-        char tag2[7] = {"\0"};
+        char fileNumberChar[10];
+        char tag1[10] = {"\0"};
+        char tag2[10] = {"\0"};
         // concateno le stringhe
         itoa(nextNumber, fileNumberChar, 10);
         // concateno il primo tag
@@ -863,10 +776,8 @@ void saveReplay(posizione datiPartita)
         strcat(tag1, fineTag);
         // concateno il secondo tag
         itoa(nextNumber, fileNumberChar, 10);
-        secondTag[0] = '<';
         strcat(tag2, secondTag);
         strcat(tag2, fileNumberChar);
-        tag2[4] = '\0';
         strcat(tag2, fineTag);
         char fieldLine[larghezzaCampo + 1];
         fieldLine[larghezzaCampo] = '\0';
@@ -874,10 +785,8 @@ void saveReplay(posizione datiPartita)
         FILE *fout = fopen("replays.txt", "a");
         // scrivo il primo tag
         fprintf(fout, tag1);
-        for (size_t i = 0; i < altezzaCampo; i++)
-        {
-            for (size_t k = 0; k < larghezzaCampo; k++)
-            {
+        for (size_t i = 0; i < altezzaCampo; i++) {
+            for (size_t k = 0; k < larghezzaCampo; k++) {
                 fieldLine[k] = datiPartita.campoVergine[i][k];
             }
             fprintf(fout, fieldLine);
@@ -889,29 +798,24 @@ void saveReplay(posizione datiPartita)
         datiPartita.moves[datiPartita.indiceMoves] = '\0';
         fprintf(fout, datiPartita.moves);
         fprintf(fout, "\n");
-        tag2[6] = '\0';
         fprintf(fout, tag2);
         fclose(fout);
     }
     return;
 }
 
-void watchReplay()
-{
-    if (controlloDeiFile("replays") == false)
-    {
+void watchReplay() {
+    if (controlloDeiFile("replays") == false) {
         clearScreen();
         printf("Error! opening file, file not in the same folder of the program\n");
         fermaStampa();
         // Programma esce se non esite il file nella stessa cartella del programma
         exit(1);
     }
-    else
-    {
+    else {
         // numero di replay disponibili
         int numberReplaysAvailable = nextNumberOfTag("replays.txt") - 1;
-        if (numberReplaysAvailable == 0)
-        {
+        if (numberReplaysAvailable == 0) {
             clearScreen();
             stampaAVideoIlTesto("replay3", false);
             return;
@@ -921,12 +825,11 @@ void watchReplay()
         stampaAVideoIlTesto("replay2", false);
         int getNumber = 0;
         scanf("%d", &getNumber);
-        if (getNumber >= 1 && getNumber <= numberReplaysAvailable)
-        {
+        if (getNumber >= 1 && getNumber <= numberReplaysAvailable) {
             // mi ha dato un numero che esiste tra i miei replay
             char fileString[100];
             char initialTag[] = "<";
-            char fileNumberChar[2];
+            char fileNumberChar[10];
             char tag1[7];
             posizione parita;
             parita.posizioneXSnake = 0;
@@ -935,8 +838,7 @@ void watchReplay()
             parita.simboloSnakeCorpo = '0';
 
             // for fors inutile ma lo faccio per sicurezza (per "pulire" l'array)
-            for (size_t i = 0; i < sizeof(tag1); i++)
-            {
+            for (size_t i = 0; i < sizeof(tag1); i++) {
                 tag1[i] = '\0';
             }
             // concateno le stringhe
@@ -947,18 +849,12 @@ void watchReplay()
             strcat(tag1, fineTag);
 
             FILE *fin = fopen("replays.txt", "r");
-            do
-            {
+            do {
                 fgets(fileString, sizeof(fileString), fin);
             } while (strcmp(fileString, tag1) != 0);
-            for (size_t i = 0; i < altezzaCampo; i++)
-            {
-                for (size_t k = 0; k < larghezzaCampo + 1; k++)
-                {
+            for (size_t i = 0; i < altezzaCampo; i++) {
+                for (size_t k = 0; k < larghezzaCampo + 1; k++) {
                     parita.campoSporco[i][k] = fgetc(fin);
-                    if (parita.campoSporco[i][k] == '?')
-                    {
-                    }
                 }
             }
             fgets(fileString, sizeof(fileString), fin);
@@ -967,17 +863,13 @@ void watchReplay()
             fclose(fin);
 
             // ricreo il labirinto
-            for (size_t i = 0; i < altezzaCampo; i++)
-            {
-                if (parita.campoSporco[i][0] == '?')
-                {
+            for (size_t i = 0; i < altezzaCampo; i++) {
+                if (parita.campoSporco[i][0] == '?') {
                     parita.posizioneXSnake = 0;
                     parita.posizioneYSnake = i;
                 }
-                for (size_t k = 1; k < larghezzaCampo; k++)
-                {
-                    if (parita.campoSporco[i][k] == '.' || parita.campoSporco[i][k] == '?')
-                    {
+                for (size_t k = 1; k < larghezzaCampo; k++) {
+                    if (parita.campoSporco[i][k] == '.' || parita.campoSporco[i][k] == '?') {
                         parita.campoSporco[i][k] = ' ';
                     }
                 }
@@ -986,13 +878,11 @@ void watchReplay()
 
             // fare scelta automatica o spostamenteo "manuale"
             char chose;
-            do
-            {
+            do {
                 clearScreen();
                 stampaAVideoIlTesto("replay4", false);
                 chose = getch();
-                if (chose != '1' && chose != '2')
-                {
+                if (chose != '1' && chose != '2') {
                     clearScreen();
                     stampaAVideoIlTesto("sceltaErrata", false);
                     fermaStampa();
@@ -1007,21 +897,17 @@ void watchReplay()
             int numeroMosse = parita.indiceMoves;
             parita.indiceMoves = 0;
             loading();
-            for (size_t i = 0; i < numeroMosse + 1; i++)
-            {
+            for (size_t i = 0; i < numeroMosse + 1; i++) {
                 clearScreen();
                 stampaCampo(&parita, true);
                 spostamento(parita.moves[i], &parita, true);
                 parita.indiceMoves++;
-                if (chose == '1' && i < numeroMosse)
-                {
+                if (chose == '1' && i < numeroMosse) {
                     fermaStampa();
                 }
             }
             printf("Score ==>%d\n", (parita.punti + (parita.numero_monete * 10)));
-        }
-        else
-        {
+        } else {
             clearScreen();
             stampaAVideoIlTesto("sceltaErrata", false);
         }
@@ -1029,100 +915,7 @@ void watchReplay()
     return;
 }
 
-bool solveMaze(posizione* dati,int maze[altezzaCampo][larghezzaCampo])
-{
-    /*int sol[N][N] = {{0, 0, 0, 0},
-                     {0, 0, 0, 0},
-                     {0, 0, 0, 0},
-                     {0, 0, 0, 0}};
-    
-    example of what there is inside sol when we create it for the first time
-    */ 
-    int sol[altezzaCampo][larghezzaCampo];
-    
-    //sol population
-    for(int i = 0; i < altezzaCampo; i++){
-        for(int j = 0; j < larghezzaCampo; j++){
-            sol[i][j] = 0;
-        }
-    }
-    if (solveMazeUtil(dati, maze, dati->posizioneYSnake, dati->posizioneXSnake, sol) == false)
-    {
-        printf("Solution doesn't exist");
-        return false;
-    }
-    //printf the path found.
-    printSolution(sol);
-    return true;
-}
-
-// A recursive function to solve Maze problem, baktracking algorithm optimized for 4 direction, is this DFS??
-bool solveMazeUtil(posizione* dati, int maze[altezzaCampo][larghezzaCampo], int x, int y, int sol[altezzaCampo][larghezzaCampo])
-{
-    // if x, y is equals to the end coordinate, return true
-    if(x == dati->posizioneYFine && y == dati->posizioneXFine && maze[x][y] == 1)
-    {
-        sol[x][y] = 1;
-        return true;
-    }
-    // Check if the position in x y is valid
-    if (isSafe(maze, sol, x, y) == true)
-    {
-        // check if the position is already inside the path, if it isn't, add to the path.
-        if (sol[x][y] == 1)
-            return false;
-        sol[x][y] = 1;
-        /* Move forward directions */
-        if(dati->posizioneYFine < dati->posizioneYSnakeOriginali){
-            if (solveMazeUtil(dati, maze, x, y - 1, sol) == true)
-                return true;
-            if (solveMazeUtil(dati, maze, x + 1, y, sol) == true)
-                return true;
-            if (solveMazeUtil(dati, maze, x - 1, y, sol) == true)
-                return true;
-            if (solveMazeUtil(dati, maze, x, y + 1, sol) == true)
-                return true;
-        
-        } else {
-            if (solveMazeUtil(dati, maze, x, y + 1, sol) == true)
-                return true;
-            if (solveMazeUtil(dati, maze, x + 1, y, sol) == true)
-                return true;
-            if (solveMazeUtil(dati, maze, x - 1, y, sol) == true)
-                return true;
-            if (solveMazeUtil(dati, maze, x, y - 1, sol) == true)
-                return true;
-        }
-        // If none of the above movements work then remove x, y from the solution solution path
-        sol[x][y] = 0;
-        return false;
-    }
-    return false;
-}
-
-void printSolution(int sol[altezzaCampo][larghezzaCampo])
-{
-    for (int i = 0; i < altezzaCampo; i++)
-    {
-        for (int j = 0; j < larghezzaCampo; j++)
-            if(sol[i][j] == 1)
-                printf(" ");
-            else 
-                printf("%d", sol[i][j]);
-        printf("\n");
-    }
-}
-
-bool isSafe(int maze[altezzaCampo][larghezzaCampo],int sol[altezzaCampo][larghezzaCampo], int x, int y)
-{
-    // if (x, y outside maze) return false
-    if (x >= 0 && x < altezzaCampo && y >= 0 && y < larghezzaCampo && maze[x][y] == 1 && sol[x][y] == 0)
-        return true;
-    return false;
-}
-
-int algoritmoIA(posizione *dati, char direzione, char algortmoScelto, char direzioneIniziale)
-{
+int algoritmoIA(posizione *dati) {
     // bool solveMazeUtil(int maze[N][N], int x, int y,int sol[N][N]);
     //  A utility function to print solution matrix sol[N][N]
 
@@ -1138,128 +931,148 @@ int algoritmoIA(posizione *dati, char direzione, char algortmoScelto, char direz
     int maze[altezzaCampo][larghezzaCampo];
     for(int i = 0; i < altezzaCampo; i++){
         for(int j = 0; j < larghezzaCampo; j++){
-            if(dati->campoSporco[i][j] != '#')
+            if(dati->campoSporco[i][j] != '#') { //  && dati->campoSporco[i][j] != '!'
                 maze[i][j] = 1;
-            else
-                maze[i][j] = 0;
+            } else {
+                maze[i][j] = 0; 
+            }
         }
     }
     solveMaze(dati, maze);
-    return 0;
+
+    clearScreen();
+    stampaCampo(dati, true);
+
+    return dati->indiceMoves;
     // This code is contributed by Aditya Kumar (adityakumar129)
 }
 
-void goToPointAndGetIt(posizione *campo)
-{
-    int numeroMoneteTrovate = 0;
-    char direzione;
-
-    for (int i = campo->posizioneYSnake + 1; i < altezzaCampo; i++)
-    {
-        // guarado se sotto c'e' almeno una moneta
-        if (campo->campoSporco[i][campo->posizioneXSnake] == '$')
-        {
-            numeroMoneteTrovate++;
+bool solveMaze(posizione* dati,int maze[altezzaCampo][larghezzaCampo]) {
+    /*int sol[N][N] = {{0, 0, 0, 0},
+                     {0, 0, 0, 0},
+                     {0, 0, 0, 0},
+                     {0, 0, 0, 0}};
+    
+    example of what there is inside sol when we create it for the first time
+    */ 
+    int sol[altezzaCampo][larghezzaCampo];
+    
+    //sol population
+    for(int i = 0; i < altezzaCampo; i++){
+        for(int j = 0; j < larghezzaCampo; j++){
+            sol[i][j] = 0;
         }
     }
-    if (numeroMoneteTrovate != 0)
-    {
-        // vado a prendermi i punti
-        direzione = 's';
-        int numeroMoneteAttuali = 0;
-        for (int i = campo->posizioneYSnake; numeroMoneteAttuali < numeroMoneteTrovate; i++)
-        {
-            if (campo->campoSporco[i + 1][campo->posizioneXSnake] == '$')
-            {
-                numeroMoneteAttuali++;
-            }
-            campo->moves[campo->indiceMoves] = direzione;
-            campo->indiceMoves++;
-            spostamento(direzione, campo, true);
-            clearScreen();
-            stampaCampo(campo, true);
-        }
+    if (solveMazeUtil(dati, maze, dati->posizioneYSnake, dati->posizioneXSnake, sol) == false) {
+        printf("Solution doesn't exist");
+        return false;
     }
 
-    // ora vado a vedere se sopra ho delle monete
-    numeroMoneteTrovate = 0;
-    for (int i = campo->posizioneYSnake - 1; i > 0; i--)
-    {
-        // guarado se sopra c'e' almeno una moneta
-        if (campo->campoSporco[i][campo->posizioneXSnake] == '$')
-        {
-            numeroMoneteTrovate++;
-        }
+    char direzioneIniziale = checkPositions(*dati);
+    int piuOMeno = 1;
+    if (direzioneIniziale=='a') {
+        piuOMeno=-1;
     }
-    if (numeroMoneteTrovate != 0)
-    {
-        // vado a prendermi i punti
-        direzione = 'w';
-        int numeroMoneteAttuali = 0;
-        for (int i = campo->posizioneYSnake - 1; numeroMoneteAttuali < numeroMoneteTrovate; i--)
-        {
-            if (campo->campoSporco[i][campo->posizioneXSnake] == '$')
-            {
-                numeroMoneteAttuali++;
+    do {
+        if (sol[dati->posizioneYSnake][dati->posizioneXSnake+piuOMeno]==1) {
+            sol[dati->posizioneYSnake][dati->posizioneXSnake+piuOMeno]=0;
+            dati->moves[dati->indiceMoves] = direzioneIniziale;
+        } else if (sol[dati->posizioneYSnake][dati->posizioneXSnake+piuOMeno]==0) {
+            char direzione = 'w';
+            for (size_t i = dati->posizioneYSnake; i < altezzaCampo-1; i++) {
+                if (sol[i][dati->posizioneXSnake+1]==1) {
+                    direzione = 's';
+                    break;
+                }
             }
-            campo->moves[campo->indiceMoves] = direzione;
-            campo->indiceMoves++;
-            spostamento(direzione, campo, true);
-            clearScreen();
-            stampaCampo(campo, true);
+            if (direzione=='w') {
+                sol[dati->posizioneYSnake-1][dati->posizioneXSnake]=0;
+            } else {
+                sol[dati->posizioneYSnake+1][dati->posizioneXSnake]=0;
+            }
+            dati->moves[dati->indiceMoves] = direzione;
+        } else {
+            sol[dati->posizioneYSnake][dati->posizioneXSnake-piuOMeno]=0;
+            if (direzioneIniziale=='a') {
+                dati->moves[dati->indiceMoves] = 'd';
+            } else {
+                dati->moves[dati->indiceMoves] = 'a';
+            }
         }
-    }
+        clearScreen();
+        stampaCampo(dati, true);
+        spostamento(dati->moves[dati->indiceMoves], dati, true);
+        dati->indiceMoves++;
+    } while (dati->posizioneXSnake!=dati->posizioneXFine || dati->posizioneYSnake!=dati->posizioneYFine);
+
+    return true;
 }
 
-char checkPositions(posizione posizioni)
-{
-    // controllo se la fine si trova alla mia Dx o sotto di me o alla mia SX
-    if (posizioni.posizioneXSnake < posizioni.posizioneXFine)
-    {
+// A recursive function to solve Maze problem, baktracking algorithm optimized for 4 direction, is this DFS??
+bool solveMazeUtil(posizione* dati, int maze[altezzaCampo][larghezzaCampo], int x, int y, int sol[altezzaCampo][larghezzaCampo]) {
+    // if x, y is equals to the end coordinate, return true
+    if(x == dati->posizioneYFine && y == dati->posizioneXFine && maze[x][y] == 1) {
+        sol[x][y] = 1;
+        return true;
+    }
+    // Check if the position in x y is valid
+    if (isSafe(maze, sol, x, y) == true) {
+        // check if the position is already inside the path, if it isn't, add to the path.
+        // 123456789 NON CAPISCO QUESTO IF GUARDARE isSafe e l'ultima condizione dell'if
+        if (sol[x][y] == 1) {
+            return false;
+        }
+        sol[x][y] = 1;
+        /* Move forward directions */
+        if(dati->posizioneYFine < dati->posizioneYSnakeOriginali){
+            if (solveMazeUtil(dati, maze, x, y - 1, sol) == true) {
+                return true;
+            }
+            if (solveMazeUtil(dati, maze, x + 1, y, sol) == true) {
+                return true;
+            }
+            if (solveMazeUtil(dati, maze, x - 1, y, sol) == true) {
+                return true;
+            }
+            if (solveMazeUtil(dati, maze, x, y + 1, sol) == true) {
+                return true;
+            }
+        
+        } else {
+            if (solveMazeUtil(dati, maze, x, y + 1, sol) == true) {
+                return true;
+            }
+            if (solveMazeUtil(dati, maze, x + 1, y, sol) == true) {
+                return true;
+            }
+            if (solveMazeUtil(dati, maze, x - 1, y, sol) == true) {
+                return true;
+            }
+            if (solveMazeUtil(dati, maze, x, y - 1, sol) == true) {
+                return true;
+            }
+        }
+        // If none of the above movements work then remove x, y from the solution solution path
+        sol[x][y] = 0;
+        return false;
+    }
+    return false;
+}
+
+bool isSafe(int maze[altezzaCampo][larghezzaCampo],int sol[altezzaCampo][larghezzaCampo], int x, int y) {
+    // if (x, y outside maze) return false
+    if (x >= 0 && x < altezzaCampo && y >= 0 && y < larghezzaCampo && maze[x][y] == 1 && sol[x][y] == 0) {
+        return true;
+    }
+    return false;
+}
+
+char checkPositions(posizione posizioni) {
+    // controllo se la fine si trova alla mia Dx o alla mia SX
+    if (posizioni.posizioneXSnake<posizioni.posizioneXFine) {
         // la fine si trova alla mia dx
         return 'd';
     }
-    else if (posizioni.posizioneXFine == posizioni.posizioneXSnake)
-    {
-        // si trova sotto di me
-        return 's';
-    }
     // la fine si trova alla mia sx
     return 'a';
-}
-
-char checkEnd(posizione *campo, char direzioneOriginale, char direzione)
-{
-    // mi ritorna true se nella colonna successiva c'è la fine altrimenti false
-    int piuOMeno = 1;
-    if (direzioneOriginale == 'a')
-    {
-        piuOMeno = -1;
-    }
-
-    if (campo->posizioneYSnake == campo->posizioneYFine && campo->posizioneXSnake + piuOMeno == campo->posizioneXFine)
-    {
-        direzione = direzioneOriginale;
-    }
-    else
-    {
-        for (int i = campo->posizioneYSnake + 1; i < altezzaCampo; i++)
-        {
-            // guarado se sotto c'e' la fine
-            if (campo->campoSporco[i][campo->posizioneXSnake + piuOMeno] == '_')
-            {
-                direzione = 's';
-            }
-        }
-
-        for (int i = campo->posizioneYSnake - 1; i > 0; i--)
-        {
-            // guarado se sopra c'e' la fine
-            if (campo->campoSporco[i][campo->posizioneXSnake + piuOMeno] == '_')
-            {
-                direzione = 'w';
-            }
-        }
-    }
-    return direzione;
 }
