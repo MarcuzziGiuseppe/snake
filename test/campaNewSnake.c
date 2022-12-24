@@ -23,6 +23,8 @@
 #else
 #include <unistd.h>
 #include <termios.h>
+#include <sys/ioctl.h>
+
 static struct termios old, new;
 void initTermios(int echo)
 {
@@ -212,7 +214,7 @@ int main(int argc, char const *argv[])
             // IA
             creazioneCampo(&datiPartita);
             clearScreen();
-            loading();
+            //loading();
             stampaCampo(&datiPartita, true);
             stampaAVideoIlTesto("IA", false);
             getch();
@@ -654,7 +656,6 @@ void stampaAVideoIlTesto(char paragrafo[], bool isLoading) {
     } else {
         strcat(file, ".txt");
         FILE *fin = fopen(file, "r");
-
         char stringaDaStampare[300] = "bho";
         char tagIniziale[100] = "<";
         strcat(strcat(tagIniziale, paragrafo), fineTag);
@@ -677,6 +678,7 @@ void stampaAVideoIlTesto(char paragrafo[], bool isLoading) {
 }
 
 void loading() {
+    /*
     char a = ' ', b = '#';
     printf("\n\n\n\n");
     // leggo la prima riga del file loadings.txt per sapere quanti loading ci sono nel file
@@ -700,7 +702,86 @@ void loading() {
         }
         printf("%c", b);
         fflush(stdout);
-        Sleep(i == 24 ? randomNumber(300, 100) * 10 : randomNumber(20, 10) * 10);
+        #ifdef _WIN32
+            Sleep(i == 24 ? randomNumber(300, 100) * 10 : randomNumber(20, 10) * 10);
+        #else 
+            if(i == 24)
+                usleep((randomNumber(300, 100) * 10000));
+            else
+                usleep((randomNumber(20, 10) * 10000));
+        #endif
+    }*/
+    int i;
+    int width;
+
+    #ifdef __linux__
+        // Get the terminal window size on Linux
+        struct winsize w;
+        ioctl(0, TIOCGWINSZ, &w);
+        width = w.ws_col;
+    #endif
+
+    #ifdef _WIN32
+        // Get the terminal window size on Windows
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+        width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    #endif
+    char file[100];
+    strcpy(file, "loadings");
+    int numeroLoadings = nextNumberOfTag("loadings.txt") - 1;
+    char c[10];
+    sprintf(c, "%d", randomNumber(numeroLoadings, 1));
+    strcat(file, ".txt");
+        FILE *fin = fopen(file, "r");
+
+        char stringaDaStampare[300] = "bho";
+        char tagIniziale[100] = "<";
+        strcat(strcat(tagIniziale, c), fineTag);
+        char tagFinale[100] = "</";
+        strcat(strcat(tagFinale, c), fineTag);
+        do {
+            fgets(stringaDaStampare, sizeof(stringaDaStampare), fin);
+            if (strcmp(stringaDaStampare, tagIniziale) == 0) {
+                do {
+                    fgets(stringaDaStampare, sizeof(stringaDaStampare), fin);
+                    if ((strcmp(stringaDaStampare, tagIniziale) != 0) && (strcmp(stringaDaStampare, tagFinale) != 0)) {
+                        int move = (width - sizeof(stringaDaStampare)) / 2;
+                        printf("%*s", move, " ");
+                        printf("%s", stringaDaStampare);
+                    }
+                } while (strcmp(stringaDaStampare, tagFinale) != 0);
+            }
+        } while ((strcmp(stringaDaStampare, tagFinale) != 0));
+        fclose(fin);
+    printf("\n");
+
+    int spaces = (width - sizeof(stringaDaStampare)) / 2 - 7;
+    for(int j = 0; j < 100; j++){
+        // Calculate the number of spaces needed to center the progress bar
+        // Move cursor to the beginning of the line
+    #ifdef __linux__
+        usleep(50000);
+    #else
+        Sleep(15);
+    #endif
+        printf("\r");
+
+        // Print the spaces and the progress bar
+        printf("%*s[", spaces, " ");
+        for (i = 0; i < 50; i++)
+        {
+            if (i < (j / 2))
+            {
+                printf("#");
+            }
+            else
+            {
+                printf(" ");
+            }
+        }
+        printf("] %d%%", j);  // Print the percentage
+        fflush(stdout);  // Flush the output buffer
     }
     clearScreen();
 }
@@ -721,7 +802,8 @@ int nextNumberOfTag(char *file) {
             tag2[i] = '\0';
         }
         // concateno le stringhe
-        itoa(fileNumber, fileNumberChar, 10);
+        //itoa(fileNumber, fileNumberChar, 10);
+        snprintf(fileNumberChar, 10, "%d", fileNumber);
         // concateno il primo tag
         strcat(tag1, initialTag);
         strcat(tag1, fileNumberChar);
@@ -769,13 +851,15 @@ void saveReplay(posizione datiPartita) {
         char tag1[10] = {"\0"};
         char tag2[10] = {"\0"};
         // concateno le stringhe
-        itoa(nextNumber, fileNumberChar, 10);
+        //itoa(nextNumber, fileNumberChar, 10);
+        snprintf(fileNumberChar, 10, "%d", nextNumber);
         // concateno il primo tag
         strcat(tag1, initialTag);
         strcat(tag1, fileNumberChar);
         strcat(tag1, fineTag);
         // concateno il secondo tag
-        itoa(nextNumber, fileNumberChar, 10);
+        //itoa(nextNumber, fileNumberChar, 10);
+        snprintf(fileNumberChar, 10, "%d", nextNumber);
         strcat(tag2, secondTag);
         strcat(tag2, fileNumberChar);
         strcat(tag2, fineTag);
@@ -792,7 +876,8 @@ void saveReplay(posizione datiPartita) {
             fprintf(fout, fieldLine);
             fprintf(fout, "\n");
         }
-        itoa(datiPartita.indiceMoves, fileNumberChar, 10);
+        //itoa(datiPartita.indiceMoves, fileNumberChar, 10);
+        snprintf(fileNumberChar, 10, "%d", datiPartita.indiceMoves);
         fprintf(fout, fileNumberChar);
         fprintf(fout, "\n");
         datiPartita.moves[datiPartita.indiceMoves] = '\0';
@@ -842,7 +927,8 @@ void watchReplay() {
                 tag1[i] = '\0';
             }
             // concateno le stringhe
-            itoa(getNumber, fileNumberChar, 10);
+            //itoa(getNumber, fileNumberChar, 10);
+            snprintf(fileNumberChar, 10, "%d", getNumber);
             // concateno il primo tag
             strcat(tag1, initialTag);
             strcat(tag1, fileNumberChar);
