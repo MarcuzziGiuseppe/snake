@@ -23,8 +23,7 @@
 #include <unistd.h>
 #include <termios.h>
 static struct termios old, new;
-void initTermios(int echo)
-{
+void initTermios(int echo) {
     tcgetattr(0, &old);                 // grab old terminal i/o settings
     new = old;                          // make new settings same as old settings
     new.c_lflag &= ~ICANON;             // disable buffered i/o
@@ -33,26 +32,22 @@ void initTermios(int echo)
 }
 
 /* Restore old terminal i/o settings */
-void resetTermios(void)
-{
+void resetTermios(void) {
     tcsetattr(0, TCSANOW, &old);
 }
 
 /* Read 1 character - echo defines echo mode */
-char getch_(int echo)
-{
+char getch_(int echo) {
     char ch;
     initTermios(echo);
     ch = getchar();
     resetTermios();
     return ch;
 }
-char getch(void)
-{
+char getch(void) {
     return getch_(0);
 }
-void Sleep(int tempo)
-{
+void Sleep(int tempo) {
     sleep(tempo / 700); // controllare meglio il valore per cui dividere (non so non mi paice molto il tempo di attesa)
 }
 #define fineTag ">\r\n"
@@ -69,8 +64,7 @@ void Sleep(int tempo)
 int linguaTesto = 0; // 0=Italiano 1=Inglese
 
 // Struct varie
-typedef struct
-{
+typedef struct {
     // posizioni e simboli snake + fine
     int posizioneXSnake;
     int posizioneYSnake;
@@ -125,8 +119,7 @@ bool isSafe(int maze[altezzaCampo][larghezzaCampo], int sol[altezzaCampo][larghe
 char checkPositions(posizione posizioni);
 char checkEnd (posizione* campo, char direzioneOriginale, char direzione);
 
-int main(int argc, char const *argv[])
-{
+int main(int argc, char const *argv[]) {
     srand(time(NULL));
     posizione datiPartita;
     datiPartita.simboloSnakeTesta = '?';
@@ -135,8 +128,7 @@ int main(int argc, char const *argv[])
     bool arrivatoAllaFine = false; // indica se sono arrivato alla fine del labirinto
     bool esciDalGioco = false;
 
-    do
-    {
+    do {
         // "costruzione" della struct (tipo il constractor nelle classi)
         datiPartita.posizioneXSnake = 0;
         datiPartita.posizioneYSnake = 0;
@@ -158,10 +150,8 @@ int main(int argc, char const *argv[])
         esciDalGioco = false;
         char sceltaPlayer;
         sceltaPlayer = getch();
-        switch (sceltaPlayer)
-        {
-        case '1':
-        {
+        switch (sceltaPlayer) {
+        case '1': {
             // Giocare
             // le parentesi grafe servono per evitare l'errore jump-to-case-label-in-switch-statement
             // dovuto alla inizializzazione di variabili all'interno di un case dello switch ma che non vengono inizializzate nei case successivi
@@ -175,22 +165,18 @@ int main(int argc, char const *argv[])
             char direzione;
             int risultatoSpostamento;
             arrivatoAllaFine = false;
-            do
-            {
+            do {
                 direzione = recevimentoMovimentoSpostamento();
                 risultatoSpostamento = spostamento(direzione, &datiPartita, false);
-                if (risultatoSpostamento == -2)
-                {
+                if (risultatoSpostamento == -2) {
                     break;
                 }
-                else if (risultatoSpostamento != -1)
-                {
+                else if (risultatoSpostamento != -1) {
                     datiPartita.moves[datiPartita.indiceMoves] = direzione;
                     datiPartita.indiceMoves++;
                 }
                 clearScreen();
-                if ((datiPartita.posizioneXFine == datiPartita.posizioneXSnake) && (datiPartita.posizioneYFine == datiPartita.posizioneYSnake))
-                {
+                if ((datiPartita.posizioneXFine == datiPartita.posizioneXSnake) && (datiPartita.posizioneYFine == datiPartita.posizioneYSnake)) {
                     stampaAVideoIlTesto("vittoriaGioco", false);
                     printf("Score ==>%d\n", (datiPartita.punti + (datiPartita.numero_monete * 10)));
                     arrivatoAllaFine = true;
@@ -676,34 +662,77 @@ void stampaAVideoIlTesto(char paragrafo[], bool isLoading) {
 }
 
 void loading() {
-    char a = ' ', b = '#';
-    printf("\n\n\n\n");
-    // leggo la prima riga del file loadings.txt per sapere quanti loading ci sono nel file
-    int numeroLoadings = nextNumberOfTag("loadings.txt") - 1;
+    int i;
+    int width;
 
+    #ifdef __linux__
+        // Get the terminal window size on Linux
+        struct winsize w;
+        ioctl(0, TIOCGWINSZ, &w);
+        width = w.ws_col;
+    #endif
+
+    #ifdef _WIN32
+        // Get the terminal window size on Windows
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+        width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    #endif
+    char file[100];
+    strcpy(file, "loadings");
+    int numeroLoadings = nextNumberOfTag("loadings.txt") - 1;
     char c[10];
     sprintf(c, "%d", randomNumber(numeroLoadings, 1));
-    stampaAVideoIlTesto(c, true);
-    printf("\n\t\t\t[");
+    strcat(file, ".txt");
+    FILE *fin = fopen(file, "r");
 
-    for (int i = 0; i < 26; i++) {
-        printf("%c", a);
-    }
-    printf("]");
-    printf("\r");
-    printf("\t\t\t");
-
-    for (int i = 0; i < 26; i++) {
-        if (i == 0) {
-            printf("[");
+    char stringaDaStampare[300] = "bho";
+    char tagIniziale[100] = "<";
+    strcat(strcat(tagIniziale, c), fineTag);
+    char tagFinale[100] = "</";
+    strcat(strcat(tagFinale, c), fineTag);
+    do {
+        fgets(stringaDaStampare, sizeof(stringaDaStampare), fin);
+        if (strcmp(stringaDaStampare, tagIniziale) == 0) {
+            do {
+                fgets(stringaDaStampare, sizeof(stringaDaStampare), fin);
+                if ((strcmp(stringaDaStampare, tagIniziale) != 0) && (strcmp(stringaDaStampare, tagFinale) != 0)) {
+                    int move = (width - sizeof(stringaDaStampare)) / 2;
+                    printf("%*s", move, " ");
+                    printf("%s", stringaDaStampare);
+                }
+            } while (strcmp(stringaDaStampare, tagFinale) != 0);
         }
-        printf("%c", b);
-        fflush(stdout);
-        Sleep(i == 24 ? randomNumber(300, 100) * 10 : randomNumber(20, 10) * 10);
+    } while ((strcmp(stringaDaStampare, tagFinale) != 0));
+    fclose(fin);
+    printf("\n");
+
+    int spaces = (width - sizeof(stringaDaStampare)) / 2 - 7;
+    for(int j = 0; j < 100; j++) {
+        // Calculate the number of spaces needed to center the progress bar
+        // Move cursor to the beginning of the line
+        #ifdef __linux__
+        usleep(50000);
+        #else
+        Sleep(15);
+        #endif
+        printf("\r");
+
+        // Print the spaces and the progress bar
+        printf("%*s[", spaces, " ");
+        for (i = 0; i < 50; i++) {
+            if (i < (j / 2)) {
+                printf("#");
+            }
+            else {
+                printf(" ");
+            }
+        }
+        printf("] %d%%", j);  // Print the percentage
+        fflush(stdout);  // Flush the output buffer
     }
     clearScreen();
 }
-
 int nextNumberOfTag(char *file) {
     char fileString[100];
     char initialTag[] = "<";
@@ -720,7 +749,7 @@ int nextNumberOfTag(char *file) {
             tag2[i] = '\0';
         }
         // concateno le stringhe
-        itoa(fileNumber, fileNumberChar, 10);
+        sprintf( fileNumberChar, "%d", fileNumber);
         // concateno il primo tag
         strcat(tag1, initialTag);
         strcat(tag1, fileNumberChar);
@@ -768,13 +797,13 @@ void saveReplay(posizione datiPartita) {
         char tag1[10] = {"\0"};
         char tag2[10] = {"\0"};
         // concateno le stringhe
-        itoa(nextNumber, fileNumberChar, 10);
+        sprintf( fileNumberChar, "%d", nextNumber);
         // concateno il primo tag
         strcat(tag1, initialTag);
         strcat(tag1, fileNumberChar);
         strcat(tag1, fineTag);
         // concateno il secondo tag
-        itoa(nextNumber, fileNumberChar, 10);
+        sprintf( fileNumberChar, "%d", nextNumber);
         strcat(tag2, secondTag);
         strcat(tag2, fileNumberChar);
         strcat(tag2, fineTag);
@@ -791,7 +820,7 @@ void saveReplay(posizione datiPartita) {
             fprintf(fout, fieldLine);
             fprintf(fout, "\n");
         }
-        itoa(datiPartita.indiceMoves, fileNumberChar, 10);
+        sprintf( fileNumberChar, "%d", datiPartita.indiceMoves);
         fprintf(fout, fileNumberChar);
         fprintf(fout, "\n");
         datiPartita.moves[datiPartita.indiceMoves] = '\0';
@@ -810,8 +839,7 @@ void watchReplay() {
         fermaStampa();
         // Programma esce se non esite il file nella stessa cartella del programma
         exit(1);
-    }
-    else {
+    } else {
         // numero di replay disponibili
         int numberReplaysAvailable = nextNumberOfTag("replays.txt") - 1;
         if (numberReplaysAvailable == 0) {
@@ -841,7 +869,7 @@ void watchReplay() {
                 tag1[i] = '\0';
             }
             // concateno le stringhe
-            itoa(getNumber, fileNumberChar, 10);
+            sprintf(fileNumberChar, "%d", getNumber);
             // concateno il primo tag
             strcat(tag1, initialTag);
             strcat(tag1, fileNumberChar);
