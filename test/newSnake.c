@@ -1,9 +1,7 @@
 /*  Marcuzzi Giuseppe  894698
     Campagnolo Alberto 897569
-    Faccin Leonardo 896837
     21/10/2022 - 23/12/2022
     TO DO
-    --> aggiungere la possibilità far mettere dall'utente un labirinto inerito da tastiera (Fax)
     --> Documentazione
     // to do molto improbabili da fare
     --> altro
@@ -16,7 +14,7 @@
 #include <string.h>
 // switch based on os system: https://stackoverflow.com/questions/6649936/c-compiling-on-windows-and-linux-ifdef-switch
 #ifdef _WIN32
-#include <conio.h>
+#include <conio.h> // getch
 #include <windows.h>
 #define fineTag ">\n"
 #else
@@ -53,8 +51,8 @@ void Sleep(int tempo) {
 #define fineTag ">\r\n"
 #endif
 
-#define altezzaCampo 10
-#define larghezzaCampo 25
+#define altezzaCampoBase 10
+#define larghezzaCampoBase 25
 #define ampiezzaMinimaSpazioPerPassare 1
 #define ampiezzaMassimaSpazioPerPassare 2
 #define distanzaMinimaTraColonne 2 // non minore di 2
@@ -62,6 +60,8 @@ void Sleep(int tempo) {
 
 // variabili Globali
 int linguaTesto = 0; // 0=Italiano 1=Inglese
+int altezzaCampo = 10;
+int larghezzaCampo = 25;
 
 // Struct varie
 typedef struct {
@@ -78,8 +78,8 @@ typedef struct {
     int numeroPezziCorpo;
     bool removeBody;
     // campo e "potenziamenti"
-    char campoVergine[altezzaCampo][larghezzaCampo];
-    char campoSporco[altezzaCampo][larghezzaCampo];
+    char **campoVergine;
+    char **campoSporco;
     int punti;
     int numero_monete;
     int numberOfDrill;
@@ -96,7 +96,7 @@ void clearScreen();
 // gestione Campo
 void creazioneCampo(posizione *campo);
 void stampaCampo(posizione *campo, bool isIA);
-void generaElemento(char elemento, int numeroMassimo, char (*matrix)[larghezzaCampo]);
+void generaElemento(char elemento, int numeroMassimo, char **matrix);
 void controllaPunteggio(int coordinatay, int coordinatax, posizione *campo);
 
 // gestione movimento
@@ -113,9 +113,9 @@ void watchReplay();
 
 // IA
 int algoritmoIA(posizione *dati);
-bool solveMazeUtil(posizione* dati, int maze[altezzaCampo][larghezzaCampo], int x, int y, int sol[altezzaCampo][larghezzaCampo]);
-bool solveMaze(posizione* dati,int maze[altezzaCampo][larghezzaCampo]);
-bool isSafe(int maze[altezzaCampo][larghezzaCampo], int sol[altezzaCampo][larghezzaCampo], int x, int y);
+bool solveMazeUtil(posizione* dati, int **maze, int x, int y, int **sol);
+bool solveMaze(posizione* dati,int **maze);
+bool isSafe(int **maze, int **sol, int x, int y);
 char checkPositions(posizione posizioni);
 char checkEnd (posizione* campo, char direzioneOriginale, char direzione);
 
@@ -129,6 +129,9 @@ int main(int argc, char const *argv[]) {
     bool esciDalGioco = false;
 
     do {
+        altezzaCampo = altezzaCampoBase;
+        larghezzaCampo = larghezzaCampoBase;
+
         // "costruzione" della struct (tipo il constractor nelle classi)
         datiPartita.posizioneXSnake = 0;
         datiPartita.posizioneYSnake = 0;
@@ -138,6 +141,14 @@ int main(int argc, char const *argv[]) {
         datiPartita.posizioneYFine = 0;
         datiPartita.numeroPezziCorpo = 0;
         datiPartita.removeBody = false;
+
+        datiPartita.campoVergine = malloc(altezzaCampo * sizeof(char*));
+        datiPartita.campoSporco = malloc(altezzaCampo * sizeof(char*));
+        for (size_t i = 0; i < altezzaCampo; i++) {
+            datiPartita.campoVergine[i] = calloc(larghezzaCampo, sizeof(char));
+            datiPartita.campoSporco[i] = calloc(larghezzaCampo, sizeof(char));
+        }
+        
 
         datiPartita.punti = 0;
         datiPartita.numero_monete = 0;
@@ -277,7 +288,10 @@ int main(int argc, char const *argv[]) {
         for (size_t i = 0; i < datiPartita.indiceMoves; i++) {
             datiPartita.moves[i] = '\0';
         }
-
+        for (size_t i = 0; i < altezzaCampo; i++) {
+            free(datiPartita.campoVergine[i]);
+            free(datiPartita.campoSporco[i]);
+        }
     } while (esciDalGioco == false);
 
     return 0;
@@ -298,62 +312,74 @@ void clearScreen() {
 }
 
 void creazioneCampo(posizione *campo) {
-    for (size_t i = 0; i < altezzaCampo; i++) {
-        for (size_t j = 0; j < larghezzaCampo; j++) {
-            if ((i==0 || i==altezzaCampo-1) || (j==0 || j==larghezzaCampo-1)) {
-                campo->campoVergine[i][j]='#';
+    char sceltaUtente = '1';
+    do {
+        clearScreen();
+        stampaAVideoIlTesto("campo", false);
+        sceltaUtente = getch();
+    } while (sceltaUtente!='1' && sceltaUtente!='2');
+
+    if (sceltaUtente=='2') {
+        for (size_t i = 0; i < altezzaCampo; i++) {
+            for (size_t j = 0; j < larghezzaCampo; j++) {
+                if ((i==0 || i==altezzaCampo-1) || (j==0 || j==larghezzaCampo-1)) {
+                    campo->campoVergine[i][j]='#';
+                } else {
+                    campo->campoVergine[i][j]=' ';
+                }
+            }
+        }
+
+        // creazione punto di partenza e di arrivo
+        int coordinataY = randomNumber(altezzaCampo-2, 1);
+        campo->campoVergine[coordinataY][0]=campo->simboloSnakeTesta; // partenza
+        campo->posizioneYSnake=coordinataY;
+        campo->posizioneYSnakeOriginali=coordinataY;
+        coordinataY = randomNumber(altezzaCampo-2,1);
+        campo->campoVergine[coordinataY][larghezzaCampo-1]='_'; // arrivo
+        campo->posizioneXFine = larghezzaCampo-1;
+        campo->posizioneYFine = coordinataY;
+
+        // creazione colonne
+        for (size_t i = randomNumber(distanzaMassimaTraColonne,distanzaMinimaTraColonne); i < larghezzaCampo-3; i+=randomNumber(distanzaMassimaTraColonne,distanzaMinimaTraColonne)) {
+            for (size_t j = 1; j < altezzaCampo-1; j++) {
+                campo->campoVergine[j][i]='#';
+            }
+            int grandezzaSpazioPerPassare = randomNumber(ampiezzaMassimaSpazioPerPassare, ampiezzaMinimaSpazioPerPassare);
+            int puntoPerLoSpazio = randomNumber(altezzaCampo-ampiezzaMassimaSpazioPerPassare, 1); // punto in cui creare lo spazio
+            for (size_t j = 0; j < grandezzaSpazioPerPassare; j++) {
+                if (puntoPerLoSpazio<altezzaCampo-1) {
+                    campo->campoVergine[puntoPerLoSpazio][i]=' ';
+                    puntoPerLoSpazio++;
+                }
+            }
+        }
+        generaElemento('$',10,campo->campoVergine);
+        generaElemento('!',2,campo->campoVergine);
+        generaElemento('T',3,campo->campoVergine);
+    } else {
+        clearScreen();
+        stampaAVideoIlTesto("campo2", false);
+        scanf("%d", &altezzaCampo);
+        clearScreen();
+        stampaAVideoIlTesto("campo3", false);
+        scanf("%d", &larghezzaCampo);
+        clearScreen();
+        stampaAVideoIlTesto("campo4", false);
+        char *rigaCheMiPassa = malloc(larghezzaCampo * sizeof(char));
+        bool ultimaRiga=false;
+        for (size_t i = 0; i < altezzaCampo && ultimaRiga==false; i++) {
+            fgets(rigaCheMiPassa, larghezzaCampo+1, stdin);
+            if (rigaCheMiPassa[0]!='\n') {
+                strcpy(campo->campoVergine[i], rigaCheMiPassa);
+                if (i==altezzaCampo-1 && rigaCheMiPassa[larghezzaCampo-1]=='#') {
+                    ultimaRiga=true;
+                }
             } else {
-                campo->campoVergine[i][j]=' ';
+                i--;
             }
         }
     }
-
-    // creazione punto di partenza e di arrivo
-    int coordinataY = randomNumber(altezzaCampo-2, 1);
-    campo->campoVergine[coordinataY][0]=campo->simboloSnakeTesta; // partenza
-    campo->posizioneYSnake=coordinataY;
-    campo->posizioneYSnakeOriginali=coordinataY;
-    coordinataY = randomNumber(altezzaCampo-2,1);
-    campo->campoVergine[coordinataY][larghezzaCampo-1]='_'; // arrivo
-    campo->posizioneXFine = larghezzaCampo-1;
-    campo->posizioneYFine = coordinataY;
-
-    // creazione colonne
-    for (size_t i = randomNumber(distanzaMassimaTraColonne,distanzaMinimaTraColonne); i < larghezzaCampo-3; i+=randomNumber(distanzaMassimaTraColonne,distanzaMinimaTraColonne)) {
-        for (size_t j = 1; j < altezzaCampo-1; j++) {
-            campo->campoVergine[j][i]='#';
-        }
-        int grandezzaSpazioPerPassare = randomNumber(ampiezzaMassimaSpazioPerPassare, ampiezzaMinimaSpazioPerPassare);
-	int puntoPerLoSpazio = randomNumber(altezzaCampo-ampiezzaMassimaSpazioPerPassare, 1); // punto in cui creare lo spazio
-        for (size_t j = 0; j < grandezzaSpazioPerPassare; j++) {
-            if (puntoPerLoSpazio<altezzaCampo-1) {
-                campo->campoVergine[puntoPerLoSpazio][i]=' ';
-                puntoPerLoSpazio++;
-            }
-        }
-    }
-    generaElemento('$',10,campo->campoVergine);
-    generaElemento('!',2,campo->campoVergine);
-    generaElemento('T',3,campo->campoVergine);
-
-    /*
-    clearScreen();
-    printf("INSERISCI IL CAMPO\n");
-
-    char rigaCheMiPassa[larghezzaCampo];
-    bool ultimaRiga=false;
-    for (size_t i = 0; i < altezzaCampo && ultimaRiga==false; i++) {
-        fgets(rigaCheMiPassa, larghezzaCampo+1, stdin);
-        if (rigaCheMiPassa[0]!='\n') {
-            strcpy(campo->campoVergine[i], rigaCheMiPassa);
-            if (i==altezzaCampo-1 && rigaCheMiPassa[larghezzaCampo-1]=='#') {
-                ultimaRiga=true;
-            }
-        } else {
-            i--;
-        }
-    }
-    */
 
     for (size_t i = 0; i < altezzaCampo; i++) {
         for (size_t k = 0; k < larghezzaCampo; k++) {
@@ -484,14 +510,16 @@ void stampaCampo(posizione *campo, bool isIA) {
     printf("\n");
 }
 
-void generaElemento(char elemento, int numeroMassimo, char (*matrix)[larghezzaCampo]) {
+void generaElemento(char elemento, int numeroMassimo, char **matrix) {
     int elementi_totali = randomNumber(numeroMassimo, 1);
+    int elementox = 0;
+    int elementoy = 0;
     for (int z = 0; z < elementi_totali; z++) {
-        int elementox = randomNumber(larghezzaCampo - 2, 1);
-        int elementoy = randomNumber(altezzaCampo - 2, 1);
+        elementox = randomNumber((larghezzaCampo - 2), 1);
+        elementoy = randomNumber((altezzaCampo - 2), 1);
         while (matrix[elementoy][elementox] == '#') {
-            elementoy = randomNumber(larghezzaCampo - 2, 1);
-            elementox = randomNumber(altezzaCampo - 2, 1);
+            elementox = randomNumber((larghezzaCampo - 2), 1);
+            elementoy = randomNumber((altezzaCampo - 2), 1);
         }
         matrix[elementoy][elementox] = elemento;
     }
@@ -797,7 +825,7 @@ void saveReplay(posizione datiPartita) {
         char tag1[10] = {"\0"};
         char tag2[10] = {"\0"};
         // concateno le stringhe
-        sprintf( fileNumberChar, "%d", nextNumber);
+        sprintf(fileNumberChar, "%d", nextNumber);
         // concateno il primo tag
         strcat(tag1, initialTag);
         strcat(tag1, fileNumberChar);
@@ -807,12 +835,17 @@ void saveReplay(posizione datiPartita) {
         strcat(tag2, secondTag);
         strcat(tag2, fileNumberChar);
         strcat(tag2, fineTag);
-        char fieldLine[larghezzaCampo + 1];
+        char *fieldLine = malloc(larghezzaCampo+1 * sizeof(char));
         fieldLine[larghezzaCampo] = '\0';
-        strcat(fieldLine, "\n");
         FILE *fout = fopen("replays.txt", "a");
         // scrivo il primo tag
         fprintf(fout, tag1);
+        sprintf(fileNumberChar, "%d", altezzaCampo);
+        strcat(fileNumberChar, "\n");
+        fprintf(fout, fileNumberChar);
+        sprintf(fileNumberChar, "%d", larghezzaCampo);
+        strcat(fileNumberChar, "\n");
+        fprintf(fout, fileNumberChar);
         for (size_t i = 0; i < altezzaCampo; i++) {
             for (size_t k = 0; k < larghezzaCampo; k++) {
                 fieldLine[k] = datiPartita.campoVergine[i][k];
@@ -879,6 +912,16 @@ void watchReplay() {
             do {
                 fgets(fileString, sizeof(fileString), fin);
             } while (strcmp(fileString, tag1) != 0);
+            fgets(fileString, sizeof(fileString), fin);
+            altezzaCampo = atoi(fileString);
+            fgets(fileString, sizeof(fileString), fin);
+            larghezzaCampo = atoi(fileString);
+            parita.campoVergine = malloc(altezzaCampo * sizeof(char*));
+            parita.campoSporco = malloc(altezzaCampo * sizeof(char*));
+            for (size_t i = 0; i < altezzaCampo; i++) {
+                parita.campoVergine[i] = calloc(larghezzaCampo, sizeof(char));
+                parita.campoSporco[i] = calloc(larghezzaCampo, sizeof(char));
+            }
             for (size_t i = 0; i < altezzaCampo; i++) {
                 for (size_t k = 0; k < larghezzaCampo + 1; k++) {
                     parita.campoSporco[i][k] = fgetc(fin);
@@ -955,7 +998,11 @@ int algoritmoIA(posizione *dati) {
     // that there may be more than one solutions, this function
     // prints one of the feasible solutions.
     // driver program to test above function
-    int maze[altezzaCampo][larghezzaCampo];
+    int **maze = malloc(altezzaCampo * sizeof(int*));
+    for (size_t i = 0; i < altezzaCampo; i++) {
+        maze[i] = calloc(larghezzaCampo, sizeof(int));
+    }
+    
     for(int i = 0; i < altezzaCampo; i++){
         for(int j = 0; j < larghezzaCampo; j++){
             if(dati->campoSporco[i][j] != '#') { //  && dati->campoSporco[i][j] != '!'
@@ -974,7 +1021,7 @@ int algoritmoIA(posizione *dati) {
     // This code is contributed by Aditya Kumar (adityakumar129)
 }
 
-bool solveMaze(posizione* dati,int maze[altezzaCampo][larghezzaCampo]) {
+bool solveMaze(posizione* dati,int **maze) {
     /*int sol[N][N] = {{0, 0, 0, 0},
                      {0, 0, 0, 0},
                      {0, 0, 0, 0},
@@ -982,7 +1029,10 @@ bool solveMaze(posizione* dati,int maze[altezzaCampo][larghezzaCampo]) {
     
     example of what there is inside sol when we create it for the first time
     */ 
-    int sol[altezzaCampo][larghezzaCampo];
+    int **sol = malloc(altezzaCampo * sizeof(int*));
+    for (size_t i = 0; i < altezzaCampo; i++) {
+        sol[i] = calloc(larghezzaCampo, sizeof(int));
+    }
     
     //sol population
     for(int i = 0; i < altezzaCampo; i++){
@@ -1000,6 +1050,8 @@ bool solveMaze(posizione* dati,int maze[altezzaCampo][larghezzaCampo]) {
     if (direzioneIniziale=='a') {
         piuOMeno=-1;
     }
+    
+    dati->campoSporco[0][0] = '#';
     do {
         if (sol[dati->posizioneYSnake][dati->posizioneXSnake+piuOMeno]==1) {
             sol[dati->posizioneYSnake][dati->posizioneXSnake+piuOMeno]=0;
@@ -1036,7 +1088,7 @@ bool solveMaze(posizione* dati,int maze[altezzaCampo][larghezzaCampo]) {
 }
 
 // A recursive function to solve Maze problem, baktracking algorithm optimized for 4 direction, is this DFS??
-bool solveMazeUtil(posizione* dati, int maze[altezzaCampo][larghezzaCampo], int x, int y, int sol[altezzaCampo][larghezzaCampo]) {
+bool solveMazeUtil(posizione* dati, int **maze, int x, int y, int **sol) {
     // if x, y is equals to the end coordinate, return true
     if(x == dati->posizioneYFine && y == dati->posizioneXFine && maze[x][y] == 1) {
         sol[x][y] = 1;
@@ -1086,7 +1138,7 @@ bool solveMazeUtil(posizione* dati, int maze[altezzaCampo][larghezzaCampo], int 
     return false;
 }
 
-bool isSafe(int maze[altezzaCampo][larghezzaCampo],int sol[altezzaCampo][larghezzaCampo], int x, int y) {
+bool isSafe(int **maze,int **sol, int x, int y) {
     // if (x, y outside maze) return false
     if (x >= 0 && x < altezzaCampo && y >= 0 && y < larghezzaCampo && maze[x][y] == 1 && sol[x][y] == 0) {
         return true;
