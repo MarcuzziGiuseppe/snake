@@ -384,8 +384,8 @@ void creazioneCampo(posizione *campo) {
         campo->campoSporco = realloc(campo->campoSporco, altezzaCampo * sizeof(char*));
         printf("gg\n");
         for(int i = 0; i < altezzaCampo; i++){
-            campo->campoVergine[i] = realloc(campo->campoVergine[i], larghezzaCampo * sizeof(char));
-            campo->campoSporco[i] = realloc(campo->campoSporco[i], larghezzaCampo * sizeof(char));
+            campo->campoVergine[i] = malloc(larghezzaCampo * sizeof(char));
+            campo->campoSporco[i] = malloc(larghezzaCampo * sizeof(char));
         }
         char *rigaCheMiPassa = malloc(larghezzaCampo * sizeof(char*));
         bool ultimaRiga=false;
@@ -404,9 +404,11 @@ void creazioneCampo(posizione *campo) {
 
     for (size_t i = 0; i < altezzaCampo; i++) {
         for (size_t k = 0; k < larghezzaCampo; k++) {
-            if(campo->campoVergine[i][k] == '?'){
+            if(campo->campoVergine[i][k] == '?' || campo->campoVergine[i][k] == 'o'){
                 campo->posizioneYSnakeOriginali = i;
+                campo->posizioneXSnakeOriginali = k;
                 campo->posizioneYSnake = i;
+                campo->posizioneXSnake = k;
             }
             if(campo->campoVergine[i][k] == '_'){
                 campo->posizioneXFine = k;
@@ -994,7 +996,7 @@ void watchReplay() {
                 clearScreen();
                 stampaAVideoIlTesto("replay4", false);
                 chose = getch();
-                if (chose != '1' && chose != '2') {
+                if (chose != '1' || chose != '2') {
                     clearScreen();
                     stampaAVideoIlTesto("sceltaErrata", false);
                     fermaStampa();
