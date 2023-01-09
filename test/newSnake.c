@@ -289,10 +289,10 @@ int main(int argc, char const *argv[]) {
         for (size_t i = 0; i < datiPartita.indiceMoves; i++) {
             datiPartita.moves[i] = '\0';
         }
-        /*for (size_t i = 0; i < altezzaCampo; i++) {
+        for (size_t i = 0; i < altezzaCampo; i++) {
             free(datiPartita.campoVergine[i]);
             free(datiPartita.campoSporco[i]);
-        }*/
+        }
         free(datiPartita.campoVergine);
         free(datiPartita.campoSporco);       
     } while (esciDalGioco == false);
@@ -366,6 +366,13 @@ void creazioneCampo(posizione *campo) {
         generaElemento('!',2,campo->campoVergine);
         generaElemento('T',3,campo->campoVergine);
     } else {
+        for (size_t i = 0; i < altezzaCampo; i++) {
+            free(campo->campoVergine[i]);
+            free(campo->campoSporco[i]);
+        }
+        free(campo->campoVergine);
+        free(campo->campoSporco);
+
         clearScreen();
         stampaAVideoIlTesto("campo2", false);
         scanf("%d", &altezzaCampo);
@@ -374,25 +381,24 @@ void creazioneCampo(posizione *campo) {
         scanf("%d", &larghezzaCampo);
         clearScreen();
         stampaAVideoIlTesto("campo4", false);
-        /*campo->campoVergine = realloc(altezzaCampo * sizeof(char*));
-        campo->campoSporco = realloc(altezzaCampo * sizeof(char*));
-        for (size_t i = 0; i < altezzaCampo; i++) {
-            campo->campoVergine[i] = calloc(larghezzaCampo, sizeof(char));
-            campo->campoSporco[i] = calloc(larghezzaCampo, sizeof(char));
-        }*/
-        campo->campoVergine = realloc(campo->campoVergine, altezzaCampo * sizeof(char*));
-        campo->campoSporco = realloc(campo->campoSporco, altezzaCampo * sizeof(char*));
-        printf("gg\n");
+
+        campo->campoVergine = malloc(altezzaCampo * sizeof(char*));
+        campo->campoSporco = malloc(altezzaCampo * sizeof(char*));
+
         for(int i = 0; i < altezzaCampo; i++){
-            campo->campoVergine[i] = malloc(larghezzaCampo * sizeof(char));
-            campo->campoSporco[i] = malloc(larghezzaCampo * sizeof(char));
+            campo->campoVergine[i] = malloc(larghezzaCampo+2 * sizeof(char));
+            campo->campoSporco[i] = malloc(larghezzaCampo+2 * sizeof(char));
         }
-        char *rigaCheMiPassa = malloc(larghezzaCampo * sizeof(char*));
+        char *rigaCheMiPassa = malloc(larghezzaCampo+1 * sizeof(char*));
         bool ultimaRiga=false;
         for (size_t i = 0; i < altezzaCampo && ultimaRiga==false; i++) {
             fgets(rigaCheMiPassa, larghezzaCampo+1, stdin);
             if (rigaCheMiPassa[0]!='\n') {
                 strcpy(campo->campoVergine[i], rigaCheMiPassa);
+                // for (size_t k = 0; k < larghezzaCampo; k++) {
+                //     campo->campoVergine[i][k]=rigaCheMiPassa[k];
+                // }
+                
                 if (i==altezzaCampo-1 && rigaCheMiPassa[larghezzaCampo-1]=='#') {
                     ultimaRiga=true;
                 }
@@ -406,8 +412,8 @@ void creazioneCampo(posizione *campo) {
         for (size_t k = 0; k < larghezzaCampo; k++) {
             if(campo->campoVergine[i][k] == '?' || campo->campoVergine[i][k] == 'o'){
                 campo->posizioneYSnakeOriginali = i;
-                campo->posizioneXSnakeOriginali = k;
                 campo->posizioneYSnake = i;
+                campo->posizioneXSnakeOriginali = k;
                 campo->posizioneXSnake = k;
             }
             if(campo->campoVergine[i][k] == '_'){
@@ -936,12 +942,17 @@ void watchReplay() {
             char fileNumberChar[10];
             char tag1[7];
             posizione parita;
-            parita.posizioneXSnake = 0;
-            parita.posizioneYSnake = 1;
             parita.simboloSnakeTesta = '?';
             parita.simboloSnakeCorpo = '0';
+            // "costruzione" della struct (tipo il constractor nelle classi)
+            parita.numeroPezziCorpo = 0;
+            parita.removeBody = false;
+            parita.punti = 0;
+            parita.numero_monete = 0;
+            parita.numberOfDrill = 0;
+            parita.indiceMoves = 0;
 
-            // for fors inutile ma lo faccio per sicurezza (per "pulire" l'array)
+            // for forse inutile ma lo faccio per sicurezza (per "pulire" l'array)
             for (size_t i = 0; i < sizeof(tag1); i++) {
                 tag1[i] = '\0';
             }
@@ -960,43 +971,38 @@ void watchReplay() {
             altezzaCampo = atoi(fileString);
             fgets(fileString, sizeof(fileString), fin);
             larghezzaCampo = atoi(fileString);
-            parita.campoVergine = malloc(altezzaCampo * sizeof(char*));
             parita.campoSporco = malloc(altezzaCampo * sizeof(char*));
-            for (size_t i = 0; i < altezzaCampo; i++) {
-                parita.campoVergine[i] = calloc(larghezzaCampo, sizeof(char));
-                parita.campoSporco[i] = calloc(larghezzaCampo, sizeof(char));
+
+            for(int i = 0; i < altezzaCampo; i++){
+                parita.campoSporco[i] = malloc(larghezzaCampo+2 * sizeof(char));
             }
             for (size_t i = 0; i < altezzaCampo; i++) {
                 for (size_t k = 0; k < larghezzaCampo + 1; k++) {
                     parita.campoSporco[i][k] = fgetc(fin);
                 }
             }
+            for (size_t i = 0; i < altezzaCampo; i++) {
+                for (size_t k = 0; k < larghezzaCampo; k++) {
+                    if (parita.campoSporco[i][k] == '?' || parita.campoSporco[i][k] == 'o') {
+                        parita.posizioneXSnake = k;
+                        parita.posizioneXSnakeOriginali = k;
+                        parita.posizioneYSnake = i;
+                        parita.posizioneYSnakeOriginali = i;
+                    }
+                }
+            }
+
             fgets(fileString, sizeof(fileString), fin);
             parita.indiceMoves = atoi(fileString);
             fgets(parita.moves, sizeof(parita.moves), fin);
             fclose(fin);
-
-            // ricreo il labirinto
-            for (size_t i = 0; i < altezzaCampo; i++) {
-                if (parita.campoSporco[i][0] == '?') {
-                    parita.posizioneXSnake = 0;
-                    parita.posizioneYSnake = i;
-                }
-                for (size_t k = 1; k < larghezzaCampo; k++) {
-                    if (parita.campoSporco[i][k] == '.' || parita.campoSporco[i][k] == '?') {
-                        parita.campoSporco[i][k] = ' ';
-                    }
-                }
-            }
-            parita.campoSporco[parita.posizioneYSnake][parita.posizioneXSnake] = parita.simboloSnakeTesta;
-
             // fare scelta automatica o spostamenteo "manuale"
             char chose;
             do {
                 clearScreen();
                 stampaAVideoIlTesto("replay4", false);
                 chose = getch();
-                if (chose != '1' || chose != '2') {
+                if (chose != '1' && chose != '2') {
                     clearScreen();
                     stampaAVideoIlTesto("sceltaErrata", false);
                     fermaStampa();
@@ -1021,6 +1027,8 @@ void watchReplay() {
                 }
             }
             printf("Score ==>%d\n", (parita.punti + (parita.numero_monete * 10)));
+            altezzaCampo = altezzaCampoBase;
+            larghezzaCampo = larghezzaCampoBase;
         } else {
             clearScreen();
             stampaAVideoIlTesto("sceltaErrata", false);
