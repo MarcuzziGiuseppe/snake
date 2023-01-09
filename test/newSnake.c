@@ -61,8 +61,8 @@ void Sleep(int tempo) {
 
 // variabili Globali
 int linguaTesto = 0; // 0=Italiano 1=Inglese
-int altezzaCampo = 10;
-int larghezzaCampo = 25;
+int altezzaCampo = 0;
+int larghezzaCampo = 0;
 
 // Struct varie
 typedef struct {
@@ -289,10 +289,12 @@ int main(int argc, char const *argv[]) {
         for (size_t i = 0; i < datiPartita.indiceMoves; i++) {
             datiPartita.moves[i] = '\0';
         }
-        for (size_t i = 0; i < altezzaCampo; i++) {
+        /*for (size_t i = 0; i < altezzaCampo; i++) {
             free(datiPartita.campoVergine[i]);
             free(datiPartita.campoSporco[i]);
-        }
+        }*/
+        free(datiPartita.campoVergine);
+        free(datiPartita.campoSporco);       
     } while (esciDalGioco == false);
 
     return 0;
@@ -372,7 +374,20 @@ void creazioneCampo(posizione *campo) {
         scanf("%d", &larghezzaCampo);
         clearScreen();
         stampaAVideoIlTesto("campo4", false);
-        char *rigaCheMiPassa = malloc(larghezzaCampo * sizeof(char));
+        /*campo->campoVergine = realloc(altezzaCampo * sizeof(char*));
+        campo->campoSporco = realloc(altezzaCampo * sizeof(char*));
+        for (size_t i = 0; i < altezzaCampo; i++) {
+            campo->campoVergine[i] = calloc(larghezzaCampo, sizeof(char));
+            campo->campoSporco[i] = calloc(larghezzaCampo, sizeof(char));
+        }*/
+        campo->campoVergine = realloc(campo->campoVergine, altezzaCampo * sizeof(char*));
+        campo->campoSporco = realloc(campo->campoSporco, altezzaCampo * sizeof(char*));
+        printf("gg\n");
+        for(int i = 0; i < altezzaCampo; i++){
+            campo->campoVergine[i] = realloc(campo->campoVergine[i], larghezzaCampo * sizeof(char));
+            campo->campoSporco[i] = realloc(campo->campoSporco[i], larghezzaCampo * sizeof(char));
+        }
+        char *rigaCheMiPassa = malloc(larghezzaCampo * sizeof(char*));
         bool ultimaRiga=false;
         for (size_t i = 0; i < altezzaCampo && ultimaRiga==false; i++) {
             fgets(rigaCheMiPassa, larghezzaCampo+1, stdin);
@@ -389,11 +404,17 @@ void creazioneCampo(posizione *campo) {
 
     for (size_t i = 0; i < altezzaCampo; i++) {
         for (size_t k = 0; k < larghezzaCampo; k++) {
+            if(campo->campoVergine[i][k] == '?'){
+                campo->posizioneYSnakeOriginali = i;
+                campo->posizioneYSnake = i;
+            }
+            if(campo->campoVergine[i][k] == '_'){
+                campo->posizioneXFine = k;
+                campo->posizioneYFine = i;            
+            }
             campo->campoSporco[i][k] = campo->campoVergine[i][k];
         }
     }
-
-    return;
 }
 
 void stampaCampo(posizione *campo, bool isIA) {
