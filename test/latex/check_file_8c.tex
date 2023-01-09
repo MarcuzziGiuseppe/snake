@@ -1,0 +1,306 @@
+\hypertarget{check_file_8c}{}\doxysection{check\+File.\+c File Reference}
+\label{check_file_8c}\index{checkFile.c@{checkFile.c}}
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include $<$time.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include $<$termios.\+h$>$}\newline
+Include dependency graph for check\+File.\+c\+:
+% FIG 0
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structposizione}{posizione}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{check_file_8c_a32ad5c18d963f4a106704fea5c73dbfe}{fine\+Tag}}~\char`\"{}$>$\textbackslash{}r\textbackslash{}n\char`\"{}
+\item 
+\#define \mbox{\hyperlink{check_file_8c_a85294ac2d1105761bb383819977597d9}{altezza\+Campo}}~10
+\item 
+\#define \mbox{\hyperlink{check_file_8c_a7767751c3723d5523a95cc020c08ace9}{larghezza\+Campo}}~25
+\item 
+\#define \mbox{\hyperlink{check_file_8c_a22057d9d6d43d7fc5e6bb2ccc926fd4d}{ampiezza\+Minima\+Spazio\+Per\+Passare}}~1
+\item 
+\#define \mbox{\hyperlink{check_file_8c_a1167e10ad317b7b9a2d982e6992d1002}{ampiezza\+Massima\+Spazio\+Per\+Passare}}~2
+\item 
+\#define \mbox{\hyperlink{check_file_8c_a970b2ccad15b71e2b2b442cefabddff1}{distanza\+Minima\+Tra\+Colonne}}~3
+\item 
+\#define \mbox{\hyperlink{check_file_8c_ababc0e108b7b334af6a7bf39b72fd94f}{distanza\+Massima\+Tra\+Colonne}}~6
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{check_file_8c_ab44bf9d3158f256a1002b4d655c5d920}{init\+Termios}} (int echo)
+\item 
+void \mbox{\hyperlink{check_file_8c_ad1adbbc98b665023f93c101f2f8b61b1}{reset\+Termios}} (void)
+\item 
+char \mbox{\hyperlink{check_file_8c_a59b332121e913b544382bf6599ce59b0}{getch\+\_\+}} (int echo)
+\item 
+char \mbox{\hyperlink{check_file_8c_a9def6cfcc88e75c6a59242a233e1dc5b}{getch}} (void)
+\item 
+void \mbox{\hyperlink{check_file_8c_a3be7dcfb52a0a14137bb23fdd25bdaa8}{Sleep}} (int tempo)
+\item 
+void \mbox{\hyperlink{check_file_8c_a9128a019322db58cf0b1c97fc740caa1}{ferma\+Stampa}} ()
+\item 
+int \mbox{\hyperlink{check_file_8c_a7032802341a72df402d33547ae2f0703}{random\+Number}} (int max, int min)
+\item 
+void \mbox{\hyperlink{check_file_8c_a9d7e8af417b6d543da691e9c0e2f6f9f}{clear\+Screen}} ()
+\item 
+void \mbox{\hyperlink{check_file_8c_ac1fea65843c846d5f8e606ccf46c0c5d}{creazione\+Campo}} (\mbox{\hyperlink{structposizione}{posizione}} $\ast$campo)
+\item 
+void \mbox{\hyperlink{check_file_8c_a0d97f993e64a5be4f655f03ea787c63c}{stampa\+Campo}} (\mbox{\hyperlink{structposizione}{posizione}} $\ast$campo, bool is\+IA)
+\item 
+void \mbox{\hyperlink{check_file_8c_a129619523673e74343bdbd384bcee75e}{genera\+Elemento}} (char elemento, int numero\+Massimo, char($\ast$matrix)\mbox{[}\mbox{\hyperlink{campa_new_snake_8c_a7767751c3723d5523a95cc020c08ace9}{larghezza\+Campo}}\mbox{]})
+\item 
+void \mbox{\hyperlink{check_file_8c_a25fb8852431a19c50121525af2bccb7f}{controlla\+Punteggio}} (int coordinatay, int coordinatax, \mbox{\hyperlink{structposizione}{posizione}} $\ast$campo)
+\item 
+char \mbox{\hyperlink{check_file_8c_af862a7be2f7528143c45732d3a8ebe10}{recevimento\+Movimento\+Spostamento}} ()
+\item 
+int \mbox{\hyperlink{check_file_8c_a2a1b68e5ff08470e4d34416ef5fb7d6d}{spostamento}} (char direction, \mbox{\hyperlink{structposizione}{posizione}} $\ast$campo, bool is\+IA)
+\item 
+bool \mbox{\hyperlink{check_file_8c_a50d35812a6d84351b4839609389dce5e}{controllo\+Dei\+File}} (char nome\+File\mbox{[}$\,$\mbox{]})
+\item 
+void \mbox{\hyperlink{check_file_8c_a0bf353b44c0b0558ef394eb9ad4bc4e1}{stampa\+AVideo\+Il\+Testo}} (char paragrafo\mbox{[}$\,$\mbox{]}, bool is\+Loading)
+\item 
+void \mbox{\hyperlink{check_file_8c_ae7c1bbe56322f641e8f3b34e72c5b5f5}{loading}} ()
+\item 
+int \mbox{\hyperlink{check_file_8c_adfbc388deb7e83465eabd0ad07cf8482}{next\+Number\+Of\+Tag}} (char $\ast$file)
+\item 
+void \mbox{\hyperlink{check_file_8c_adf299531e4de7d2db5bb7091aba5e870}{save\+Replay}} (\mbox{\hyperlink{structposizione}{posizione}} dati\+Partita)
+\item 
+void \mbox{\hyperlink{check_file_8c_a435e9bc7a0edf4135b57af3f9a82cdb3}{watch\+Replay}} ()
+\item 
+bool \mbox{\hyperlink{check_file_8c_ace041a761ea9c65a5e70a88f622afd2f}{algoritmo\+IA}} (\mbox{\hyperlink{structposizione}{posizione}} $\ast$dati, char direzione, char direzione\+Iniziale)
+\item 
+int \mbox{\hyperlink{check_file_8c_a7866a0dd4fef9ab611732fab3a7f1c8e}{check\+Dictions}} (\mbox{\hyperlink{structposizione}{posizione}} $\ast$campo, char direzione)
+\item 
+void \mbox{\hyperlink{check_file_8c_aaacee6a30a35865ead34bb52fdd2ba63}{go\+To\+Point\+And\+Get\+It}} (\mbox{\hyperlink{structposizione}{posizione}} $\ast$campo)
+\item 
+char \mbox{\hyperlink{check_file_8c_a44e689ba9f3846a6d0093e490ab92b0f}{check\+Positions}} (\mbox{\hyperlink{structposizione}{posizione}} posizioni)
+\item 
+char \mbox{\hyperlink{check_file_8c_a4e3f39e6c73e6bfd6baffa5bdced605f}{check\+End}} (\mbox{\hyperlink{structposizione}{posizione}} $\ast$campo, char direzione\+Originale, char direzione)
+\item 
+int \mbox{\hyperlink{check_file_8c_abf9e6b7e6f15df4b525a2e7705ba3089}{main}} (int argc, char const $\ast$argv\mbox{[}$\,$\mbox{]})
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{check_file_8c_ad69fe3de7affa5e95a9e62568c09aed0}{lingua\+Testo}} =0
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{check_file_8c_a85294ac2d1105761bb383819977597d9}\label{check_file_8c_a85294ac2d1105761bb383819977597d9}} 
+\index{checkFile.c@{checkFile.c}!altezzaCampo@{altezzaCampo}}
+\index{altezzaCampo@{altezzaCampo}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{altezzaCampo}{altezzaCampo}}
+{\footnotesize\ttfamily \#define altezza\+Campo~10}
+
+\mbox{\Hypertarget{check_file_8c_a1167e10ad317b7b9a2d982e6992d1002}\label{check_file_8c_a1167e10ad317b7b9a2d982e6992d1002}} 
+\index{checkFile.c@{checkFile.c}!ampiezzaMassimaSpazioPerPassare@{ampiezzaMassimaSpazioPerPassare}}
+\index{ampiezzaMassimaSpazioPerPassare@{ampiezzaMassimaSpazioPerPassare}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{ampiezzaMassimaSpazioPerPassare}{ampiezzaMassimaSpazioPerPassare}}
+{\footnotesize\ttfamily \#define ampiezza\+Massima\+Spazio\+Per\+Passare~2}
+
+\mbox{\Hypertarget{check_file_8c_a22057d9d6d43d7fc5e6bb2ccc926fd4d}\label{check_file_8c_a22057d9d6d43d7fc5e6bb2ccc926fd4d}} 
+\index{checkFile.c@{checkFile.c}!ampiezzaMinimaSpazioPerPassare@{ampiezzaMinimaSpazioPerPassare}}
+\index{ampiezzaMinimaSpazioPerPassare@{ampiezzaMinimaSpazioPerPassare}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{ampiezzaMinimaSpazioPerPassare}{ampiezzaMinimaSpazioPerPassare}}
+{\footnotesize\ttfamily \#define ampiezza\+Minima\+Spazio\+Per\+Passare~1}
+
+\mbox{\Hypertarget{check_file_8c_ababc0e108b7b334af6a7bf39b72fd94f}\label{check_file_8c_ababc0e108b7b334af6a7bf39b72fd94f}} 
+\index{checkFile.c@{checkFile.c}!distanzaMassimaTraColonne@{distanzaMassimaTraColonne}}
+\index{distanzaMassimaTraColonne@{distanzaMassimaTraColonne}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{distanzaMassimaTraColonne}{distanzaMassimaTraColonne}}
+{\footnotesize\ttfamily \#define distanza\+Massima\+Tra\+Colonne~6}
+
+\mbox{\Hypertarget{check_file_8c_a970b2ccad15b71e2b2b442cefabddff1}\label{check_file_8c_a970b2ccad15b71e2b2b442cefabddff1}} 
+\index{checkFile.c@{checkFile.c}!distanzaMinimaTraColonne@{distanzaMinimaTraColonne}}
+\index{distanzaMinimaTraColonne@{distanzaMinimaTraColonne}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{distanzaMinimaTraColonne}{distanzaMinimaTraColonne}}
+{\footnotesize\ttfamily \#define distanza\+Minima\+Tra\+Colonne~3}
+
+\mbox{\Hypertarget{check_file_8c_a32ad5c18d963f4a106704fea5c73dbfe}\label{check_file_8c_a32ad5c18d963f4a106704fea5c73dbfe}} 
+\index{checkFile.c@{checkFile.c}!fineTag@{fineTag}}
+\index{fineTag@{fineTag}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{fineTag}{fineTag}}
+{\footnotesize\ttfamily \#define fine\+Tag~\char`\"{}$>$\textbackslash{}r\textbackslash{}n\char`\"{}}
+
+\mbox{\Hypertarget{check_file_8c_a7767751c3723d5523a95cc020c08ace9}\label{check_file_8c_a7767751c3723d5523a95cc020c08ace9}} 
+\index{checkFile.c@{checkFile.c}!larghezzaCampo@{larghezzaCampo}}
+\index{larghezzaCampo@{larghezzaCampo}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{larghezzaCampo}{larghezzaCampo}}
+{\footnotesize\ttfamily \#define larghezza\+Campo~25}
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{check_file_8c_ace041a761ea9c65a5e70a88f622afd2f}\label{check_file_8c_ace041a761ea9c65a5e70a88f622afd2f}} 
+\index{checkFile.c@{checkFile.c}!algoritmoIA@{algoritmoIA}}
+\index{algoritmoIA@{algoritmoIA}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{algoritmoIA()}{algoritmoIA()}}
+{\footnotesize\ttfamily bool algoritmo\+IA (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structposizione}{posizione}} $\ast$}]{dati,  }\item[{char}]{direzione,  }\item[{char}]{direzione\+Iniziale }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_a7866a0dd4fef9ab611732fab3a7f1c8e}\label{check_file_8c_a7866a0dd4fef9ab611732fab3a7f1c8e}} 
+\index{checkFile.c@{checkFile.c}!checkDictions@{checkDictions}}
+\index{checkDictions@{checkDictions}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{checkDictions()}{checkDictions()}}
+{\footnotesize\ttfamily int check\+Dictions (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structposizione}{posizione}} $\ast$}]{campo,  }\item[{char}]{direzione }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_a4e3f39e6c73e6bfd6baffa5bdced605f}\label{check_file_8c_a4e3f39e6c73e6bfd6baffa5bdced605f}} 
+\index{checkFile.c@{checkFile.c}!checkEnd@{checkEnd}}
+\index{checkEnd@{checkEnd}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{checkEnd()}{checkEnd()}}
+{\footnotesize\ttfamily char check\+End (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structposizione}{posizione}} $\ast$}]{campo,  }\item[{char}]{direzione\+Originale,  }\item[{char}]{direzione }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_a44e689ba9f3846a6d0093e490ab92b0f}\label{check_file_8c_a44e689ba9f3846a6d0093e490ab92b0f}} 
+\index{checkFile.c@{checkFile.c}!checkPositions@{checkPositions}}
+\index{checkPositions@{checkPositions}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{checkPositions()}{checkPositions()}}
+{\footnotesize\ttfamily char check\+Positions (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structposizione}{posizione}}}]{posizioni }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_a9d7e8af417b6d543da691e9c0e2f6f9f}\label{check_file_8c_a9d7e8af417b6d543da691e9c0e2f6f9f}} 
+\index{checkFile.c@{checkFile.c}!clearScreen@{clearScreen}}
+\index{clearScreen@{clearScreen}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{clearScreen()}{clearScreen()}}
+{\footnotesize\ttfamily void clear\+Screen (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_a25fb8852431a19c50121525af2bccb7f}\label{check_file_8c_a25fb8852431a19c50121525af2bccb7f}} 
+\index{checkFile.c@{checkFile.c}!controllaPunteggio@{controllaPunteggio}}
+\index{controllaPunteggio@{controllaPunteggio}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{controllaPunteggio()}{controllaPunteggio()}}
+{\footnotesize\ttfamily void controlla\+Punteggio (\begin{DoxyParamCaption}\item[{int}]{coordinatay,  }\item[{int}]{coordinatax,  }\item[{\mbox{\hyperlink{structposizione}{posizione}} $\ast$}]{campo }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_a50d35812a6d84351b4839609389dce5e}\label{check_file_8c_a50d35812a6d84351b4839609389dce5e}} 
+\index{checkFile.c@{checkFile.c}!controlloDeiFile@{controlloDeiFile}}
+\index{controlloDeiFile@{controlloDeiFile}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{controlloDeiFile()}{controlloDeiFile()}}
+{\footnotesize\ttfamily bool controllo\+Dei\+File (\begin{DoxyParamCaption}\item[{char}]{nome\+File\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_ac1fea65843c846d5f8e606ccf46c0c5d}\label{check_file_8c_ac1fea65843c846d5f8e606ccf46c0c5d}} 
+\index{checkFile.c@{checkFile.c}!creazioneCampo@{creazioneCampo}}
+\index{creazioneCampo@{creazioneCampo}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{creazioneCampo()}{creazioneCampo()}}
+{\footnotesize\ttfamily void creazione\+Campo (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structposizione}{posizione}} $\ast$}]{campo }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_a9128a019322db58cf0b1c97fc740caa1}\label{check_file_8c_a9128a019322db58cf0b1c97fc740caa1}} 
+\index{checkFile.c@{checkFile.c}!fermaStampa@{fermaStampa}}
+\index{fermaStampa@{fermaStampa}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{fermaStampa()}{fermaStampa()}}
+{\footnotesize\ttfamily void ferma\+Stampa (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_a129619523673e74343bdbd384bcee75e}\label{check_file_8c_a129619523673e74343bdbd384bcee75e}} 
+\index{checkFile.c@{checkFile.c}!generaElemento@{generaElemento}}
+\index{generaElemento@{generaElemento}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{generaElemento()}{generaElemento()}}
+{\footnotesize\ttfamily void genera\+Elemento (\begin{DoxyParamCaption}\item[{char}]{elemento,  }\item[{int}]{numero\+Massimo,  }\item[{char($\ast$)}]{matrix\mbox{[}larghezza\+Campo\mbox{]} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_a9def6cfcc88e75c6a59242a233e1dc5b}\label{check_file_8c_a9def6cfcc88e75c6a59242a233e1dc5b}} 
+\index{checkFile.c@{checkFile.c}!getch@{getch}}
+\index{getch@{getch}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{getch()}{getch()}}
+{\footnotesize\ttfamily char getch (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_a59b332121e913b544382bf6599ce59b0}\label{check_file_8c_a59b332121e913b544382bf6599ce59b0}} 
+\index{checkFile.c@{checkFile.c}!getch\_@{getch\_}}
+\index{getch\_@{getch\_}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{getch\_()}{getch\_()}}
+{\footnotesize\ttfamily char getch\+\_\+ (\begin{DoxyParamCaption}\item[{int}]{echo }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_aaacee6a30a35865ead34bb52fdd2ba63}\label{check_file_8c_aaacee6a30a35865ead34bb52fdd2ba63}} 
+\index{checkFile.c@{checkFile.c}!goToPointAndGetIt@{goToPointAndGetIt}}
+\index{goToPointAndGetIt@{goToPointAndGetIt}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{goToPointAndGetIt()}{goToPointAndGetIt()}}
+{\footnotesize\ttfamily void go\+To\+Point\+And\+Get\+It (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structposizione}{posizione}} $\ast$}]{campo }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_ab44bf9d3158f256a1002b4d655c5d920}\label{check_file_8c_ab44bf9d3158f256a1002b4d655c5d920}} 
+\index{checkFile.c@{checkFile.c}!initTermios@{initTermios}}
+\index{initTermios@{initTermios}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{initTermios()}{initTermios()}}
+{\footnotesize\ttfamily void init\+Termios (\begin{DoxyParamCaption}\item[{int}]{echo }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_ae7c1bbe56322f641e8f3b34e72c5b5f5}\label{check_file_8c_ae7c1bbe56322f641e8f3b34e72c5b5f5}} 
+\index{checkFile.c@{checkFile.c}!loading@{loading}}
+\index{loading@{loading}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{loading()}{loading()}}
+{\footnotesize\ttfamily void loading (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_abf9e6b7e6f15df4b525a2e7705ba3089}\label{check_file_8c_abf9e6b7e6f15df4b525a2e7705ba3089}} 
+\index{checkFile.c@{checkFile.c}!main@{main}}
+\index{main@{main}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char const $\ast$}]{argv\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_adfbc388deb7e83465eabd0ad07cf8482}\label{check_file_8c_adfbc388deb7e83465eabd0ad07cf8482}} 
+\index{checkFile.c@{checkFile.c}!nextNumberOfTag@{nextNumberOfTag}}
+\index{nextNumberOfTag@{nextNumberOfTag}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{nextNumberOfTag()}{nextNumberOfTag()}}
+{\footnotesize\ttfamily int next\+Number\+Of\+Tag (\begin{DoxyParamCaption}\item[{char $\ast$}]{file }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_a7032802341a72df402d33547ae2f0703}\label{check_file_8c_a7032802341a72df402d33547ae2f0703}} 
+\index{checkFile.c@{checkFile.c}!randomNumber@{randomNumber}}
+\index{randomNumber@{randomNumber}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{randomNumber()}{randomNumber()}}
+{\footnotesize\ttfamily int random\+Number (\begin{DoxyParamCaption}\item[{int}]{max,  }\item[{int}]{min }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_af862a7be2f7528143c45732d3a8ebe10}\label{check_file_8c_af862a7be2f7528143c45732d3a8ebe10}} 
+\index{checkFile.c@{checkFile.c}!recevimentoMovimentoSpostamento@{recevimentoMovimentoSpostamento}}
+\index{recevimentoMovimentoSpostamento@{recevimentoMovimentoSpostamento}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{recevimentoMovimentoSpostamento()}{recevimentoMovimentoSpostamento()}}
+{\footnotesize\ttfamily char recevimento\+Movimento\+Spostamento (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_ad1adbbc98b665023f93c101f2f8b61b1}\label{check_file_8c_ad1adbbc98b665023f93c101f2f8b61b1}} 
+\index{checkFile.c@{checkFile.c}!resetTermios@{resetTermios}}
+\index{resetTermios@{resetTermios}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{resetTermios()}{resetTermios()}}
+{\footnotesize\ttfamily void reset\+Termios (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_adf299531e4de7d2db5bb7091aba5e870}\label{check_file_8c_adf299531e4de7d2db5bb7091aba5e870}} 
+\index{checkFile.c@{checkFile.c}!saveReplay@{saveReplay}}
+\index{saveReplay@{saveReplay}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{saveReplay()}{saveReplay()}}
+{\footnotesize\ttfamily void save\+Replay (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structposizione}{posizione}}}]{dati\+Partita }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_a3be7dcfb52a0a14137bb23fdd25bdaa8}\label{check_file_8c_a3be7dcfb52a0a14137bb23fdd25bdaa8}} 
+\index{checkFile.c@{checkFile.c}!Sleep@{Sleep}}
+\index{Sleep@{Sleep}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{Sleep()}{Sleep()}}
+{\footnotesize\ttfamily void Sleep (\begin{DoxyParamCaption}\item[{int}]{tempo }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_a2a1b68e5ff08470e4d34416ef5fb7d6d}\label{check_file_8c_a2a1b68e5ff08470e4d34416ef5fb7d6d}} 
+\index{checkFile.c@{checkFile.c}!spostamento@{spostamento}}
+\index{spostamento@{spostamento}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{spostamento()}{spostamento()}}
+{\footnotesize\ttfamily int spostamento (\begin{DoxyParamCaption}\item[{char}]{direction,  }\item[{\mbox{\hyperlink{structposizione}{posizione}} $\ast$}]{campo,  }\item[{bool}]{is\+IA }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_a0bf353b44c0b0558ef394eb9ad4bc4e1}\label{check_file_8c_a0bf353b44c0b0558ef394eb9ad4bc4e1}} 
+\index{checkFile.c@{checkFile.c}!stampaAVideoIlTesto@{stampaAVideoIlTesto}}
+\index{stampaAVideoIlTesto@{stampaAVideoIlTesto}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{stampaAVideoIlTesto()}{stampaAVideoIlTesto()}}
+{\footnotesize\ttfamily void stampa\+AVideo\+Il\+Testo (\begin{DoxyParamCaption}\item[{char}]{paragrafo\mbox{[}$\,$\mbox{]},  }\item[{bool}]{is\+Loading }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_a0d97f993e64a5be4f655f03ea787c63c}\label{check_file_8c_a0d97f993e64a5be4f655f03ea787c63c}} 
+\index{checkFile.c@{checkFile.c}!stampaCampo@{stampaCampo}}
+\index{stampaCampo@{stampaCampo}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{stampaCampo()}{stampaCampo()}}
+{\footnotesize\ttfamily void stampa\+Campo (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structposizione}{posizione}} $\ast$}]{campo,  }\item[{bool}]{is\+IA }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{check_file_8c_a435e9bc7a0edf4135b57af3f9a82cdb3}\label{check_file_8c_a435e9bc7a0edf4135b57af3f9a82cdb3}} 
+\index{checkFile.c@{checkFile.c}!watchReplay@{watchReplay}}
+\index{watchReplay@{watchReplay}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{watchReplay()}{watchReplay()}}
+{\footnotesize\ttfamily void watch\+Replay (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{check_file_8c_ad69fe3de7affa5e95a9e62568c09aed0}\label{check_file_8c_ad69fe3de7affa5e95a9e62568c09aed0}} 
+\index{checkFile.c@{checkFile.c}!linguaTesto@{linguaTesto}}
+\index{linguaTesto@{linguaTesto}!checkFile.c@{checkFile.c}}
+\doxysubsubsection{\texorpdfstring{linguaTesto}{linguaTesto}}
+{\footnotesize\ttfamily int lingua\+Testo =0}
+

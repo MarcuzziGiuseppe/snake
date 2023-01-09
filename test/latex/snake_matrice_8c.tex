@@ -1,0 +1,224 @@
+\hypertarget{snake_matrice_8c}{}\doxysection{snake\+Matrice.\+c File Reference}
+\label{snake_matrice_8c}\index{snakeMatrice.c@{snakeMatrice.c}}
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include $<$time.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+Include dependency graph for snake\+Matrice.\+c\+:
+% FIG 0
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structposizione}{posizione}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{snake_matrice_8c_a85294ac2d1105761bb383819977597d9}{altezza\+Campo}}~10
+\item 
+\#define \mbox{\hyperlink{snake_matrice_8c_a7767751c3723d5523a95cc020c08ace9}{larghezza\+Campo}}~25
+\item 
+\#define \mbox{\hyperlink{snake_matrice_8c_a22057d9d6d43d7fc5e6bb2ccc926fd4d}{ampiezza\+Minima\+Spazio\+Per\+Passare}}~1
+\item 
+\#define \mbox{\hyperlink{snake_matrice_8c_a1167e10ad317b7b9a2d982e6992d1002}{ampiezza\+Massima\+Spazio\+Per\+Passare}}~2
+\item 
+\#define \mbox{\hyperlink{snake_matrice_8c_a970b2ccad15b71e2b2b442cefabddff1}{distanza\+Minima\+Tra\+Colonne}}~4
+\item 
+\#define \mbox{\hyperlink{snake_matrice_8c_ababc0e108b7b334af6a7bf39b72fd94f}{distanza\+Massima\+Tra\+Colonne}}~6
+\item 
+\#define \mbox{\hyperlink{snake_matrice_8c_ab7ca096e47f16519c48f0042f9ef830b}{lunghezza\+Massima\+Stringa}}~100
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{snake_matrice_8c_a9128a019322db58cf0b1c97fc740caa1}{ferma\+Stampa}} ()
+\item 
+int \mbox{\hyperlink{snake_matrice_8c_a7032802341a72df402d33547ae2f0703}{random\+Number}} (int max, int min)
+\item 
+void \mbox{\hyperlink{snake_matrice_8c_a9d7e8af417b6d543da691e9c0e2f6f9f}{clear\+Screen}} ()
+\item 
+void \mbox{\hyperlink{snake_matrice_8c_ae7c1bbe56322f641e8f3b34e72c5b5f5}{loading}} ()
+\item 
+int \mbox{\hyperlink{snake_matrice_8c_a3dd480d39eba8ad7d39ea49aef5a5897}{controlla\+Punteggio}} (int coordinatay, int coordinatax, char($\ast$matrix)\mbox{[}\mbox{\hyperlink{campa_new_snake_8c_a7767751c3723d5523a95cc020c08ace9}{larghezza\+Campo}}\mbox{]})
+\item 
+void \mbox{\hyperlink{snake_matrice_8c_a129619523673e74343bdbd384bcee75e}{genera\+Elemento}} (char elemento, int numero\+Massimo, char($\ast$matrix)\mbox{[}\mbox{\hyperlink{campa_new_snake_8c_a7767751c3723d5523a95cc020c08ace9}{larghezza\+Campo}}\mbox{]})
+\item 
+\mbox{\hyperlink{structposizione}{posizione}} \mbox{\hyperlink{snake_matrice_8c_ad3abf8f2991120e21b1b93c42df93e90}{creazione\+Campo}} (char($\ast$matrix)\mbox{[}\mbox{\hyperlink{campa_new_snake_8c_a7767751c3723d5523a95cc020c08ace9}{larghezza\+Campo}}\mbox{]}, \mbox{\hyperlink{structposizione}{posizione}} testa\+Serpente)
+\item 
+void \mbox{\hyperlink{snake_matrice_8c_a7429af69863a0417162a01c21fef643c}{stampa\+Campo}} (char($\ast$matrix)\mbox{[}\mbox{\hyperlink{campa_new_snake_8c_a7767751c3723d5523a95cc020c08ace9}{larghezza\+Campo}}\mbox{]}, int punteggio, \mbox{\hyperlink{structposizione}{posizione}} testa\+Serpente)
+\item 
+char \mbox{\hyperlink{snake_matrice_8c_af862a7be2f7528143c45732d3a8ebe10}{recevimento\+Movimento\+Spostamento}} ()
+\item 
+int \mbox{\hyperlink{snake_matrice_8c_abe8671f2f5d268f487827efb38a837bf}{spostamento}} (char($\ast$matrix)\mbox{[}\mbox{\hyperlink{campa_new_snake_8c_a7767751c3723d5523a95cc020c08ace9}{larghezza\+Campo}}\mbox{]}, char direction, \mbox{\hyperlink{structposizione}{posizione}} $\ast$testa\+Serpente)
+\item 
+bool \mbox{\hyperlink{snake_matrice_8c_a824fb81cc78cbb5eb725daaf7b669d07}{controllo\+Dei\+File}} (char lingua\mbox{[}$\,$\mbox{]})
+\item 
+void \mbox{\hyperlink{snake_matrice_8c_a452d96bf45444ca3abc74e6071c5b21b}{stampa\+AVideo\+Il\+Testo}} (char paragrafo\mbox{[}$\,$\mbox{]}, int \mbox{\hyperlink{campa_new_snake_8c_ad69fe3de7affa5e95a9e62568c09aed0}{lingua\+Testo}})
+\item 
+void \mbox{\hyperlink{snake_matrice_8c_aed691378fc94e6aed09a175394c095aa}{stampa\+Loading}} (char paragrafo\mbox{[}$\,$\mbox{]})
+\item 
+int \mbox{\hyperlink{snake_matrice_8c_abf9e6b7e6f15df4b525a2e7705ba3089}{main}} (int argc, char const $\ast$argv\mbox{[}$\,$\mbox{]})
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{snake_matrice_8c_a55aa42c7a20abb070428265efac9408e}{numero\+\_\+monete}} = 0
+\item 
+int \mbox{\hyperlink{snake_matrice_8c_a7ca2d35c19924e46f52f481a79a76d8d}{punti}} = 0
+\item 
+int \mbox{\hyperlink{snake_matrice_8c_ad69fe3de7affa5e95a9e62568c09aed0}{lingua\+Testo}} =0
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{snake_matrice_8c_a85294ac2d1105761bb383819977597d9}\label{snake_matrice_8c_a85294ac2d1105761bb383819977597d9}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!altezzaCampo@{altezzaCampo}}
+\index{altezzaCampo@{altezzaCampo}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{altezzaCampo}{altezzaCampo}}
+{\footnotesize\ttfamily \#define altezza\+Campo~10}
+
+\mbox{\Hypertarget{snake_matrice_8c_a1167e10ad317b7b9a2d982e6992d1002}\label{snake_matrice_8c_a1167e10ad317b7b9a2d982e6992d1002}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!ampiezzaMassimaSpazioPerPassare@{ampiezzaMassimaSpazioPerPassare}}
+\index{ampiezzaMassimaSpazioPerPassare@{ampiezzaMassimaSpazioPerPassare}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{ampiezzaMassimaSpazioPerPassare}{ampiezzaMassimaSpazioPerPassare}}
+{\footnotesize\ttfamily \#define ampiezza\+Massima\+Spazio\+Per\+Passare~2}
+
+\mbox{\Hypertarget{snake_matrice_8c_a22057d9d6d43d7fc5e6bb2ccc926fd4d}\label{snake_matrice_8c_a22057d9d6d43d7fc5e6bb2ccc926fd4d}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!ampiezzaMinimaSpazioPerPassare@{ampiezzaMinimaSpazioPerPassare}}
+\index{ampiezzaMinimaSpazioPerPassare@{ampiezzaMinimaSpazioPerPassare}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{ampiezzaMinimaSpazioPerPassare}{ampiezzaMinimaSpazioPerPassare}}
+{\footnotesize\ttfamily \#define ampiezza\+Minima\+Spazio\+Per\+Passare~1}
+
+\mbox{\Hypertarget{snake_matrice_8c_ababc0e108b7b334af6a7bf39b72fd94f}\label{snake_matrice_8c_ababc0e108b7b334af6a7bf39b72fd94f}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!distanzaMassimaTraColonne@{distanzaMassimaTraColonne}}
+\index{distanzaMassimaTraColonne@{distanzaMassimaTraColonne}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{distanzaMassimaTraColonne}{distanzaMassimaTraColonne}}
+{\footnotesize\ttfamily \#define distanza\+Massima\+Tra\+Colonne~6}
+
+\mbox{\Hypertarget{snake_matrice_8c_a970b2ccad15b71e2b2b442cefabddff1}\label{snake_matrice_8c_a970b2ccad15b71e2b2b442cefabddff1}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!distanzaMinimaTraColonne@{distanzaMinimaTraColonne}}
+\index{distanzaMinimaTraColonne@{distanzaMinimaTraColonne}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{distanzaMinimaTraColonne}{distanzaMinimaTraColonne}}
+{\footnotesize\ttfamily \#define distanza\+Minima\+Tra\+Colonne~4}
+
+\mbox{\Hypertarget{snake_matrice_8c_a7767751c3723d5523a95cc020c08ace9}\label{snake_matrice_8c_a7767751c3723d5523a95cc020c08ace9}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!larghezzaCampo@{larghezzaCampo}}
+\index{larghezzaCampo@{larghezzaCampo}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{larghezzaCampo}{larghezzaCampo}}
+{\footnotesize\ttfamily \#define larghezza\+Campo~25}
+
+\mbox{\Hypertarget{snake_matrice_8c_ab7ca096e47f16519c48f0042f9ef830b}\label{snake_matrice_8c_ab7ca096e47f16519c48f0042f9ef830b}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!lunghezzaMassimaStringa@{lunghezzaMassimaStringa}}
+\index{lunghezzaMassimaStringa@{lunghezzaMassimaStringa}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{lunghezzaMassimaStringa}{lunghezzaMassimaStringa}}
+{\footnotesize\ttfamily \#define lunghezza\+Massima\+Stringa~100}
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{snake_matrice_8c_a9d7e8af417b6d543da691e9c0e2f6f9f}\label{snake_matrice_8c_a9d7e8af417b6d543da691e9c0e2f6f9f}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!clearScreen@{clearScreen}}
+\index{clearScreen@{clearScreen}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{clearScreen()}{clearScreen()}}
+{\footnotesize\ttfamily void clear\+Screen (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{snake_matrice_8c_a3dd480d39eba8ad7d39ea49aef5a5897}\label{snake_matrice_8c_a3dd480d39eba8ad7d39ea49aef5a5897}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!controllaPunteggio@{controllaPunteggio}}
+\index{controllaPunteggio@{controllaPunteggio}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{controllaPunteggio()}{controllaPunteggio()}}
+{\footnotesize\ttfamily int controlla\+Punteggio (\begin{DoxyParamCaption}\item[{int}]{coordinatay,  }\item[{int}]{coordinatax,  }\item[{char($\ast$)}]{matrix\mbox{[}larghezza\+Campo\mbox{]} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{snake_matrice_8c_a824fb81cc78cbb5eb725daaf7b669d07}\label{snake_matrice_8c_a824fb81cc78cbb5eb725daaf7b669d07}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!controlloDeiFile@{controlloDeiFile}}
+\index{controlloDeiFile@{controlloDeiFile}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{controlloDeiFile()}{controlloDeiFile()}}
+{\footnotesize\ttfamily bool controllo\+Dei\+File (\begin{DoxyParamCaption}\item[{char}]{lingua\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{snake_matrice_8c_ad3abf8f2991120e21b1b93c42df93e90}\label{snake_matrice_8c_ad3abf8f2991120e21b1b93c42df93e90}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!creazioneCampo@{creazioneCampo}}
+\index{creazioneCampo@{creazioneCampo}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{creazioneCampo()}{creazioneCampo()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structposizione}{posizione}} creazione\+Campo (\begin{DoxyParamCaption}\item[{char($\ast$)}]{matrix\mbox{[}larghezza\+Campo\mbox{]},  }\item[{\mbox{\hyperlink{structposizione}{posizione}}}]{testa\+Serpente }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{snake_matrice_8c_a9128a019322db58cf0b1c97fc740caa1}\label{snake_matrice_8c_a9128a019322db58cf0b1c97fc740caa1}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!fermaStampa@{fermaStampa}}
+\index{fermaStampa@{fermaStampa}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{fermaStampa()}{fermaStampa()}}
+{\footnotesize\ttfamily void ferma\+Stampa (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{snake_matrice_8c_a129619523673e74343bdbd384bcee75e}\label{snake_matrice_8c_a129619523673e74343bdbd384bcee75e}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!generaElemento@{generaElemento}}
+\index{generaElemento@{generaElemento}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{generaElemento()}{generaElemento()}}
+{\footnotesize\ttfamily void genera\+Elemento (\begin{DoxyParamCaption}\item[{char}]{elemento,  }\item[{int}]{numero\+Massimo,  }\item[{char($\ast$)}]{matrix\mbox{[}larghezza\+Campo\mbox{]} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{snake_matrice_8c_ae7c1bbe56322f641e8f3b34e72c5b5f5}\label{snake_matrice_8c_ae7c1bbe56322f641e8f3b34e72c5b5f5}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!loading@{loading}}
+\index{loading@{loading}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{loading()}{loading()}}
+{\footnotesize\ttfamily void loading (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{snake_matrice_8c_abf9e6b7e6f15df4b525a2e7705ba3089}\label{snake_matrice_8c_abf9e6b7e6f15df4b525a2e7705ba3089}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!main@{main}}
+\index{main@{main}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char const $\ast$}]{argv\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{snake_matrice_8c_a7032802341a72df402d33547ae2f0703}\label{snake_matrice_8c_a7032802341a72df402d33547ae2f0703}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!randomNumber@{randomNumber}}
+\index{randomNumber@{randomNumber}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{randomNumber()}{randomNumber()}}
+{\footnotesize\ttfamily int random\+Number (\begin{DoxyParamCaption}\item[{int}]{max,  }\item[{int}]{min }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{snake_matrice_8c_af862a7be2f7528143c45732d3a8ebe10}\label{snake_matrice_8c_af862a7be2f7528143c45732d3a8ebe10}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!recevimentoMovimentoSpostamento@{recevimentoMovimentoSpostamento}}
+\index{recevimentoMovimentoSpostamento@{recevimentoMovimentoSpostamento}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{recevimentoMovimentoSpostamento()}{recevimentoMovimentoSpostamento()}}
+{\footnotesize\ttfamily char recevimento\+Movimento\+Spostamento (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{snake_matrice_8c_abe8671f2f5d268f487827efb38a837bf}\label{snake_matrice_8c_abe8671f2f5d268f487827efb38a837bf}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!spostamento@{spostamento}}
+\index{spostamento@{spostamento}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{spostamento()}{spostamento()}}
+{\footnotesize\ttfamily int spostamento (\begin{DoxyParamCaption}\item[{char($\ast$)}]{matrix\mbox{[}larghezza\+Campo\mbox{]},  }\item[{char}]{direction,  }\item[{\mbox{\hyperlink{structposizione}{posizione}} $\ast$}]{testa\+Serpente }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{snake_matrice_8c_a452d96bf45444ca3abc74e6071c5b21b}\label{snake_matrice_8c_a452d96bf45444ca3abc74e6071c5b21b}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!stampaAVideoIlTesto@{stampaAVideoIlTesto}}
+\index{stampaAVideoIlTesto@{stampaAVideoIlTesto}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{stampaAVideoIlTesto()}{stampaAVideoIlTesto()}}
+{\footnotesize\ttfamily void stampa\+AVideo\+Il\+Testo (\begin{DoxyParamCaption}\item[{char}]{paragrafo\mbox{[}$\,$\mbox{]},  }\item[{int}]{lingua\+Testo }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{snake_matrice_8c_a7429af69863a0417162a01c21fef643c}\label{snake_matrice_8c_a7429af69863a0417162a01c21fef643c}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!stampaCampo@{stampaCampo}}
+\index{stampaCampo@{stampaCampo}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{stampaCampo()}{stampaCampo()}}
+{\footnotesize\ttfamily void stampa\+Campo (\begin{DoxyParamCaption}\item[{char($\ast$)}]{matrix\mbox{[}larghezza\+Campo\mbox{]},  }\item[{int}]{punteggio,  }\item[{\mbox{\hyperlink{structposizione}{posizione}}}]{testa\+Serpente }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{snake_matrice_8c_aed691378fc94e6aed09a175394c095aa}\label{snake_matrice_8c_aed691378fc94e6aed09a175394c095aa}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!stampaLoading@{stampaLoading}}
+\index{stampaLoading@{stampaLoading}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{stampaLoading()}{stampaLoading()}}
+{\footnotesize\ttfamily void stampa\+Loading (\begin{DoxyParamCaption}\item[{char}]{paragrafo\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{snake_matrice_8c_ad69fe3de7affa5e95a9e62568c09aed0}\label{snake_matrice_8c_ad69fe3de7affa5e95a9e62568c09aed0}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!linguaTesto@{linguaTesto}}
+\index{linguaTesto@{linguaTesto}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{linguaTesto}{linguaTesto}}
+{\footnotesize\ttfamily int lingua\+Testo =0}
+
+\mbox{\Hypertarget{snake_matrice_8c_a55aa42c7a20abb070428265efac9408e}\label{snake_matrice_8c_a55aa42c7a20abb070428265efac9408e}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!numero\_monete@{numero\_monete}}
+\index{numero\_monete@{numero\_monete}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{numero\_monete}{numero\_monete}}
+{\footnotesize\ttfamily int numero\+\_\+monete = 0}
+
+\mbox{\Hypertarget{snake_matrice_8c_a7ca2d35c19924e46f52f481a79a76d8d}\label{snake_matrice_8c_a7ca2d35c19924e46f52f481a79a76d8d}} 
+\index{snakeMatrice.c@{snakeMatrice.c}!punti@{punti}}
+\index{punti@{punti}!snakeMatrice.c@{snakeMatrice.c}}
+\doxysubsubsection{\texorpdfstring{punti}{punti}}
+{\footnotesize\ttfamily int punti = 0}
+

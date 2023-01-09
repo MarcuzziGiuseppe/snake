@@ -20,6 +20,7 @@
 #else
 #include <unistd.h>
 #include <termios.h>
+#include <sys/ioctl.h>
 static struct termios old, new;
 void initTermios(int echo) {
     tcgetattr(0, &old);                 // grab old terminal i/o settings
@@ -312,6 +313,11 @@ void clearScreen() {
 }
 
 void creazioneCampo(posizione *campo) {
+    /**
+     * create the maze, based 
+     * on what the user choose,
+     * random or from user interaction.
+    */
     char sceltaUtente = '1';
     do {
         clearScreen();
@@ -511,6 +517,11 @@ void stampaCampo(posizione *campo, bool isIA) {
 }
 
 void generaElemento(char elemento, int numeroMassimo, char **matrix) {
+    /**
+     * function for create all the element 
+     * that we need inside the maze, the labyrinth.
+     * T, !, $.
+    */
     int elementi_totali = randomNumber(numeroMassimo, 1);
     int elementox = 0;
     int elementoy = 0;
@@ -540,7 +551,8 @@ void controllaPunteggio(int coordinatay, int coordinatax, posizione *campo) {
         campo->numberOfDrill += 3;
     }
     else if (campo->campoSporco[coordinatay][coordinatax] == campo->simboloSnakeCorpo) {
-        // dico che mi sono mangiato e quindi devo togliere i pezzi del corpo
+        // when the snake eat itself, we remove the parts of the body based on where 
+        // we eat the body.
         if (campo->numeroPezziCorpo > 1) {
             campo->removeBody = true;
         }
@@ -690,6 +702,12 @@ void stampaAVideoIlTesto(char paragrafo[], bool isLoading) {
 }
 
 void loading() {
+    /**
+     * This is a function for create and print
+     * the loading screen with a
+     * cool process bar animation
+     * 
+    */
     int i;
     int width;
 
@@ -706,7 +724,9 @@ void loading() {
         GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
         width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
     #endif
+
     char file[100];
+    //get the loading image randomly.
     strcpy(file, "loadings");
     int numeroLoadings = nextNumberOfTag("loadings.txt") - 1;
     char c[10];
@@ -725,7 +745,7 @@ void loading() {
             do {
                 fgets(stringaDaStampare, sizeof(stringaDaStampare), fin);
                 if ((strcmp(stringaDaStampare, tagIniziale) != 0) && (strcmp(stringaDaStampare, tagFinale) != 0)) {
-                    int move = (width - sizeof(stringaDaStampare)) / 2;
+                    int move = (int)(width - sizeof(stringaDaStampare)) / 2;
                     printf("%*s", move, " ");
                     printf("%s", stringaDaStampare);
                 }
@@ -735,7 +755,7 @@ void loading() {
     fclose(fin);
     printf("\n");
 
-    int spaces = (width - sizeof(stringaDaStampare)) / 2 - 7;
+    int spaces = (int)(width - sizeof(stringaDaStampare)) / 2;
     for(int j = 0; j < 100; j++) {
         // Calculate the number of spaces needed to center the progress bar
         // Move cursor to the beginning of the line
@@ -761,6 +781,7 @@ void loading() {
     }
     clearScreen();
 }
+
 int nextNumberOfTag(char *file) {
     char fileString[100];
     char initialTag[] = "<";
@@ -811,7 +832,7 @@ void saveReplay(posizione datiPartita) {
     // mi i replay nel file replays.txt
     if (controlloDeiFile("replays") == false) {
         clearScreen();
-        printf("Error! opening file, file not in the same folder of the program\n");
+        printf("Error! opening replays.txt file, it isn't in the same program's folder\n");
         fermaStampa();
         // Programma esce se non esite il file nella stessa cartella del programma
         exit(1);
@@ -986,18 +1007,17 @@ void watchReplay() {
 }
 
 int algoritmoIA(posizione *dati) {
-    // bool solveMazeUtil(int maze[N][N], int x, int y,int sol[N][N]);
+    // bool solveMazeUtil(posizione* dati, int **maze, int x, int y, int **sol);
     //  A utility function to print solution matrix sol[N][N]
 
     // A utility function to check if x, y is valid index for
     // N*N maze
-    // This function solves the Maze problem using Backtracking.
+    // This function solves using Backtracking.
     // It mainly uses solveMazeUtil() to solve the problem. It
     // returns false if no path is possible, otherwise return
-    // true and prints the path in the form of 1s. Please note
-    // that there may be more than one solutions, this function
-    // prints one of the feasible solutions.
-    // driver program to test above function
+    // true and prints the path. 
+    // Please note that there may be more than one solutions, this function
+    // prints also one of them.
     int **maze = malloc(altezzaCampo * sizeof(int*));
     for (size_t i = 0; i < altezzaCampo; i++) {
         maze[i] = calloc(larghezzaCampo, sizeof(int));
@@ -1026,7 +1046,7 @@ bool solveMaze(posizione* dati,int **maze) {
                      {0, 0, 0, 0},
                      {0, 0, 0, 0},
                      {0, 0, 0, 0}};
-    
+    this is an example of what we can do
     example of what there is inside sol when we create it for the first time
     */ 
     int **sol = malloc(altezzaCampo * sizeof(int*));
@@ -1139,7 +1159,7 @@ bool solveMazeUtil(posizione* dati, int **maze, int x, int y, int **sol) {
 }
 
 bool isSafe(int **maze,int **sol, int x, int y) {
-    // if (x, y outside maze) return false
+    // if x, y outside labyrinth return false
     if (x >= 0 && x < altezzaCampo && y >= 0 && y < larghezzaCampo && maze[x][y] == 1 && sol[x][y] == 0) {
         return true;
     }

@@ -1,0 +1,143 @@
+\hypertarget{bho_8c}{}\doxysection{bho.\+c File Reference}
+\label{bho_8c}\index{bho.c@{bho.c}}
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+Include dependency graph for bho.\+c\+:
+% FIG 0
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{bho_8c_a0240ac851181b84ac374872dc5434ee4}{N}}~10
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{bho_8c_a3fc2b4c9efe054938dd33f9f2623f966}{solve}} (int x, int y, int i)
+\item 
+int \mbox{\hyperlink{bho_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const int \mbox{\hyperlink{bho_8c_adc8236a72f2ee0fcb3bdab72f177d2a7}{dx}} \mbox{[}4\mbox{]} = \{-\/1, 0, 1, 0\}
+\item 
+const int \mbox{\hyperlink{bho_8c_a0f27050c8f8b1404b08a7cf19fb356d4}{dy}} \mbox{[}4\mbox{]} = \{0, 1, 0, -\/1\}
+\item 
+char \mbox{\hyperlink{bho_8c_acf420dd0ce28be89ae268acd0c01a8b0}{labyrinth}} \mbox{[}\mbox{\hyperlink{bho_8c_a0240ac851181b84ac374872dc5434ee4}{N}}\mbox{]}\mbox{[}\mbox{\hyperlink{bho_8c_a0240ac851181b84ac374872dc5434ee4}{N}}\mbox{]}
+\item 
+bool \mbox{\hyperlink{bho_8c_a12da39227ba80f8ac641cbccb2f58a5b}{visited}} \mbox{[}\mbox{\hyperlink{bho_8c_a0240ac851181b84ac374872dc5434ee4}{N}}\mbox{]}\mbox{[}\mbox{\hyperlink{bho_8c_a0240ac851181b84ac374872dc5434ee4}{N}}\mbox{]}
+\item 
+char \mbox{\hyperlink{bho_8c_af3557424e1b86f11c6f6de7abc118802}{path}} \mbox{[}\mbox{\hyperlink{bho_8c_a0240ac851181b84ac374872dc5434ee4}{N}} $\ast$\mbox{\hyperlink{bho_8c_a0240ac851181b84ac374872dc5434ee4}{N}}\mbox{]}
+\item 
+int \mbox{\hyperlink{bho_8c_a750b5d744c39a06bfb13e6eb010e35d0}{index}} = 0
+\item 
+int \mbox{\hyperlink{bho_8c_a2aa47394e7d93647dd76ec06f28c419d}{start\+\_\+x}} = 0
+\item 
+int \mbox{\hyperlink{bho_8c_a88ee07642c2e4d4dc92b8ab0b2ca9ee1}{start\+\_\+y}} = 1
+\item 
+int \mbox{\hyperlink{bho_8c_adece34bd8b5d2cf3e8824c0c36778211}{end\+\_\+x}} = 7
+\item 
+int \mbox{\hyperlink{bho_8c_aeb92c8aa2bed52b0ea8491c8b8e60272}{end\+\_\+y}} = 8
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{bho_8c_a0240ac851181b84ac374872dc5434ee4}\label{bho_8c_a0240ac851181b84ac374872dc5434ee4}} 
+\index{bho.c@{bho.c}!N@{N}}
+\index{N@{N}!bho.c@{bho.c}}
+\doxysubsubsection{\texorpdfstring{N}{N}}
+{\footnotesize\ttfamily \#define N~10}
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{bho_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}\label{bho_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}} 
+\index{bho.c@{bho.c}!main@{main}}
+\index{main@{main}!bho.c@{bho.c}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{bho_8c_a3fc2b4c9efe054938dd33f9f2623f966}\label{bho_8c_a3fc2b4c9efe054938dd33f9f2623f966}} 
+\index{bho.c@{bho.c}!solve@{solve}}
+\index{solve@{solve}!bho.c@{bho.c}}
+\doxysubsubsection{\texorpdfstring{solve()}{solve()}}
+{\footnotesize\ttfamily bool solve (\begin{DoxyParamCaption}\item[{int}]{x,  }\item[{int}]{y,  }\item[{int}]{i }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{bho_8c_adc8236a72f2ee0fcb3bdab72f177d2a7}\label{bho_8c_adc8236a72f2ee0fcb3bdab72f177d2a7}} 
+\index{bho.c@{bho.c}!dx@{dx}}
+\index{dx@{dx}!bho.c@{bho.c}}
+\doxysubsubsection{\texorpdfstring{dx}{dx}}
+{\footnotesize\ttfamily const int dx\mbox{[}4\mbox{]} = \{-\/1, 0, 1, 0\}}
+
+\mbox{\Hypertarget{bho_8c_a0f27050c8f8b1404b08a7cf19fb356d4}\label{bho_8c_a0f27050c8f8b1404b08a7cf19fb356d4}} 
+\index{bho.c@{bho.c}!dy@{dy}}
+\index{dy@{dy}!bho.c@{bho.c}}
+\doxysubsubsection{\texorpdfstring{dy}{dy}}
+{\footnotesize\ttfamily const int dy\mbox{[}4\mbox{]} = \{0, 1, 0, -\/1\}}
+
+\mbox{\Hypertarget{bho_8c_adece34bd8b5d2cf3e8824c0c36778211}\label{bho_8c_adece34bd8b5d2cf3e8824c0c36778211}} 
+\index{bho.c@{bho.c}!end\_x@{end\_x}}
+\index{end\_x@{end\_x}!bho.c@{bho.c}}
+\doxysubsubsection{\texorpdfstring{end\_x}{end\_x}}
+{\footnotesize\ttfamily int end\+\_\+x = 7}
+
+\mbox{\Hypertarget{bho_8c_aeb92c8aa2bed52b0ea8491c8b8e60272}\label{bho_8c_aeb92c8aa2bed52b0ea8491c8b8e60272}} 
+\index{bho.c@{bho.c}!end\_y@{end\_y}}
+\index{end\_y@{end\_y}!bho.c@{bho.c}}
+\doxysubsubsection{\texorpdfstring{end\_y}{end\_y}}
+{\footnotesize\ttfamily int end\+\_\+y = 8}
+
+\mbox{\Hypertarget{bho_8c_a750b5d744c39a06bfb13e6eb010e35d0}\label{bho_8c_a750b5d744c39a06bfb13e6eb010e35d0}} 
+\index{bho.c@{bho.c}!index@{index}}
+\index{index@{index}!bho.c@{bho.c}}
+\doxysubsubsection{\texorpdfstring{index}{index}}
+{\footnotesize\ttfamily int index = 0}
+
+\mbox{\Hypertarget{bho_8c_acf420dd0ce28be89ae268acd0c01a8b0}\label{bho_8c_acf420dd0ce28be89ae268acd0c01a8b0}} 
+\index{bho.c@{bho.c}!labyrinth@{labyrinth}}
+\index{labyrinth@{labyrinth}!bho.c@{bho.c}}
+\doxysubsubsection{\texorpdfstring{labyrinth}{labyrinth}}
+{\footnotesize\ttfamily char labyrinth\mbox{[}\mbox{\hyperlink{bho_8c_a0240ac851181b84ac374872dc5434ee4}{N}}\mbox{]}\mbox{[}\mbox{\hyperlink{bho_8c_a0240ac851181b84ac374872dc5434ee4}{N}}\mbox{]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \{}
+\DoxyCodeLine{\ \ \ \ \{\textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'}\},}
+\DoxyCodeLine{\ \ \ \ \{\textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'?'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'}\},}
+\DoxyCodeLine{\ \ \ \ \{\textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'}\},}
+\DoxyCodeLine{\ \ \ \ \{\textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'}\},}
+\DoxyCodeLine{\ \ \ \ \{\textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'}\},}
+\DoxyCodeLine{\ \ \ \ \{\textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'}\},}
+\DoxyCodeLine{\ \ \ \ \{\textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'}\},}
+\DoxyCodeLine{\ \ \ \ \{\textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\_'},\ \textcolor{charliteral}{'\ '},\ \textcolor{charliteral}{'\#'}\},}
+\DoxyCodeLine{\ \ \ \ \{\textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'\#'}\},}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{bho_8c_af3557424e1b86f11c6f6de7abc118802}\label{bho_8c_af3557424e1b86f11c6f6de7abc118802}} 
+\index{bho.c@{bho.c}!path@{path}}
+\index{path@{path}!bho.c@{bho.c}}
+\doxysubsubsection{\texorpdfstring{path}{path}}
+{\footnotesize\ttfamily char path\mbox{[}\mbox{\hyperlink{bho_8c_a0240ac851181b84ac374872dc5434ee4}{N}} $\ast$\mbox{\hyperlink{bho_8c_a0240ac851181b84ac374872dc5434ee4}{N}}\mbox{]}}
+
+\mbox{\Hypertarget{bho_8c_a2aa47394e7d93647dd76ec06f28c419d}\label{bho_8c_a2aa47394e7d93647dd76ec06f28c419d}} 
+\index{bho.c@{bho.c}!start\_x@{start\_x}}
+\index{start\_x@{start\_x}!bho.c@{bho.c}}
+\doxysubsubsection{\texorpdfstring{start\_x}{start\_x}}
+{\footnotesize\ttfamily int start\+\_\+x = 0}
+
+\mbox{\Hypertarget{bho_8c_a88ee07642c2e4d4dc92b8ab0b2ca9ee1}\label{bho_8c_a88ee07642c2e4d4dc92b8ab0b2ca9ee1}} 
+\index{bho.c@{bho.c}!start\_y@{start\_y}}
+\index{start\_y@{start\_y}!bho.c@{bho.c}}
+\doxysubsubsection{\texorpdfstring{start\_y}{start\_y}}
+{\footnotesize\ttfamily int start\+\_\+y = 1}
+
+\mbox{\Hypertarget{bho_8c_a12da39227ba80f8ac641cbccb2f58a5b}\label{bho_8c_a12da39227ba80f8ac641cbccb2f58a5b}} 
+\index{bho.c@{bho.c}!visited@{visited}}
+\index{visited@{visited}!bho.c@{bho.c}}
+\doxysubsubsection{\texorpdfstring{visited}{visited}}
+{\footnotesize\ttfamily bool visited\mbox{[}\mbox{\hyperlink{bho_8c_a0240ac851181b84ac374872dc5434ee4}{N}}\mbox{]}\mbox{[}\mbox{\hyperlink{bho_8c_a0240ac851181b84ac374872dc5434ee4}{N}}\mbox{]}}
+

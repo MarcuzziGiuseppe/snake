@@ -54,7 +54,7 @@ Inserisi il labirinto
 Premi un tasto per far iniziare l'IA
 </IA>
 <IA2>
-Sta calcolando il percorso per copletare il labirinto
+Sta calcolando il percorso per completare il labirinto
 </IA2>
 <partecipanti>
 Editors:
